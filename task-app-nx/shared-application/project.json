@@ -4,6 +4,7 @@
   "sourceRoot": "shared-application/src",
   "projectType": "library",
   "tags": [],
+  "implicitDependencies": ["shared-domain"],
   "targets": {
     "build": {
       "executor": "@nx/js:tsc",
@@ -13,7 +14,8 @@
         "main": "shared-application/src/index.ts",
         "tsConfig": "shared-application/tsconfig.lib.json",
         "assets": ["shared-application/*.md"]
-      }
+      },
+      "dependsOn": ["shared-domain:build"]
     }
   }
 }
