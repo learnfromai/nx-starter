@@ -1,0 +1,22 @@
+{
+  "name": "@task-app/domain",
+  "version": "1.0.0",
+  "description": "Shared domain models and types for Task App",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "test": "echo 'No tests defined'",
+    "lint": "echo 'No lint defined'"
+  },
+  "dependencies": {
+    "reflect-metadata": "^0.2.2",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "typescript": "~5.8.3"
+  }
+}
