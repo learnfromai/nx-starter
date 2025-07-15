@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { InMemoryTodoRepository } from '@/core/infrastructure/todo/persistence/InMemoryTodoRepository';
 import { Todo } from '@/core/domain/todo/entities/Todo';
+import { BaseSpecification } from '@/core/domain/todo/specifications/TodoSpecifications';
 
 describe('InMemoryTodoRepository', () => {
   let repository: InMemoryTodoRepository;
@@ -165,6 +166,67 @@ describe('InMemoryTodoRepository', () => {
     it('should count completed todos', async () => {
       const count = await repository.countCompleted();
       expect(count).toBe(1);
+    });
+  });
+
+  describe('findBySpecification', () => {
+    beforeEach(async () => {
+      // Create some test todos
+      const activeTodo1 = new Todo('Active Todo 1', false, new Date('2020-01-01'), undefined, 'high');
+      const activeTodo2 = new Todo('Active Todo 2', false, new Date('2020-01-02'), undefined, 'medium');
+      const completedTodo = new Todo('Completed Todo', true, new Date('2020-01-03'), undefined, 'low');
+      
+      await repository.create(activeTodo1);
+      await repository.create(activeTodo2);
+      await repository.create(completedTodo);
+    });
+
+    it('should find todos by specification', async () => {
+      // Create a specification for high priority todos
+      class HighPrioritySpecification extends BaseSpecification<Todo> {
+        isSatisfiedBy(todo: Todo): boolean {
+          return todo.priority.level === 'high';
+        }
+      }
+
+      const specification = new HighPrioritySpecification();
+      const highPriorityTodos = await repository.findBySpecification(specification);
+
+      expect(highPriorityTodos).toHaveLength(1);
+      expect(highPriorityTodos[0].titleValue).toBe('Active Todo 1');
+      expect(highPriorityTodos[0].priority.level).toBe('high');
+    });
+
+    it('should return todos sorted by creation date (newest first)', async () => {
+      // Create a specification that matches all todos
+      class AllTodosSpecification extends BaseSpecification<Todo> {
+        isSatisfiedBy(todo: Todo): boolean {
+          return true;
+        }
+      }
+
+      const specification = new AllTodosSpecification();
+      const allTodos = await repository.findBySpecification(specification);
+
+      expect(allTodos).toHaveLength(3);
+      // Should be sorted newest first
+      expect(allTodos[0].titleValue).toBe('Completed Todo'); // 2020-01-03
+      expect(allTodos[1].titleValue).toBe('Active Todo 2');   // 2020-01-02
+      expect(allTodos[2].titleValue).toBe('Active Todo 1');   // 2020-01-01
+    });
+
+    it('should return empty array when no todos match specification', async () => {
+      // Create a specification that matches no todos
+      class NoMatchSpecification extends BaseSpecification<Todo> {
+        isSatisfiedBy(todo: Todo): boolean {
+          return false;
+        }
+      }
+
+      const specification = new NoMatchSpecification();
+      const matchingTodos = await repository.findBySpecification(specification);
+
+      expect(matchingTodos).toEqual([]);
     });
   });
 });

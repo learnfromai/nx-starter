@@ -34,6 +34,7 @@ export default defineConfig({
         '**/prisma/**',
         '**/postman*',
         '**/*.d.ts',
+        '**/repositories/ITodoRepository.ts', // Interface file - no implementation to test
       ],
       all: true,
       lines: 100,

@@ -120,6 +120,19 @@ describe('Todo', () => {
       const todo = new Todo('Test Todo');
       expect(todo.dueDate).toBeUndefined();
     });
+
+    it('should return numericId for backwards compatibility (deprecated)', () => {
+      const todo = new Todo('Test Todo', false, new Date(), TEST_UUIDS.TODO_1);
+      expect(todo.numericId).toBe(TEST_UUIDS.TODO_1);
+      
+      const todoWithoutId = new Todo('Test Todo without ID');
+      expect(todoWithoutId.numericId).toBeUndefined();
+    });
+
+    it('should return titleValue shortcut', () => {
+      const todo = new Todo('Test Todo Title');
+      expect(todo.titleValue).toBe('Test Todo Title');
+    });
   });
 
   describe('business methods', () => {
@@ -135,6 +148,17 @@ describe('Todo', () => {
         pastDueDate
       );
       expect(overdueTodo.isOverdue()).toBe(true);
+
+      // Test completed todo should not be overdue even with past due date
+      const completedOverdueTodo = new Todo(
+        'Completed Overdue Todo',
+        true,
+        new Date('2019-12-30'),
+        undefined,
+        'medium',
+        pastDueDate
+      );
+      expect(completedOverdueTodo.isOverdue()).toBe(false);
 
       // Test without due date - uses 7 day rule
       const oldTodo = new Todo('Old Todo', false, new Date(Date.now() - 8 * 24 * 60 * 60 * 1000)); // 8 days ago
@@ -222,6 +246,36 @@ describe('Todo', () => {
       expect(() => validTodoWithDueDate.validate()).not.toThrow();
     });
 
+    it('should validate due date is not before creation date', () => {
+      const creationDate = new Date();
+      const pastDate = new Date(creationDate.getTime() - 24 * 60 * 60 * 1000); // 1 day before
+      
+      // Create todo with due date before creation date
+      const todoWithPastDueDate = new Todo(
+        'Todo with past due date',
+        false,
+        creationDate,
+        undefined,
+        'medium',
+        pastDate
+      );
+      
+      // This should throw an error on validation
+      expect(() => todoWithPastDueDate.validate()).toThrow('Due date cannot be before creation date');
+    });
+
+    it('should validate title is not empty after trimming', () => {
+      // We need to create a todo with empty title by bypassing normal validation
+      // This requires manipulating the internal state to test the validate method
+      const todo = new Todo('Valid Title');
+      
+      // Set the internal title to an empty/whitespace value to test validation
+      // This is a bit hacky but necessary to test the validate method's error path
+      (todo as any)._title = { value: '   ' }; // Mock an empty title
+      
+      expect(() => todo.validate()).toThrow('Todo must have a valid title');
+    });
+
     it('should check equality based on ID', () => {
       const todo1 = new Todo('Todo 1', false, new Date(), TEST_UUIDS.TODO_1);
       const todo2 = new Todo('Todo 2', false, new Date(), TEST_UUIDS.TODO_1);
@@ -261,6 +315,15 @@ describe('Todo', () => {
       expect(originalTodo.title.value).toBe('Original Title');
       expect(updatedTodo.title.value).toBe('Updated Title');
       expect(originalTodo).not.toBe(updatedTodo);
+    });
+
+    it('should update title with TodoTitle object', () => {
+      const originalTodo = new Todo('Original Title', false);
+      const newTitle = new TodoTitle('New Title Object');
+      const updatedTodo = originalTodo.updateTitle(newTitle);
+
+      expect(updatedTodo.title).toBe(newTitle);
+      expect(updatedTodo.title.value).toBe('New Title Object');
     });
   });
 
