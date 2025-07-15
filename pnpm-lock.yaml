@@ -125,9 +125,6 @@ importers:
       '@prisma/client':
         specifier: ^6.11.1
         version: 6.12.0(prisma@6.12.0(typescript@5.5.4))(typescript@5.5.4)
-      '@task-app/domain':
-        specifier: workspace:*
-        version: link:../domain
       '@task-app/shared':
         specifier: workspace:*
         version: link:../shared
@@ -244,19 +241,6 @@ importers:
         specifier: ^2.1.8
         version: 2.1.9(@types/node@22.16.4)(jsdom@26.1.0)(lightningcss@1.30.1)
 
-  packages/domain:
-    dependencies:
-      reflect-metadata:
-        specifier: ^0.2.2
-        version: 0.2.2
-      zod:
-        specifier: ^3.25.76
-        version: 3.25.76
-    devDependencies:
-      typescript:
-        specifier: ~5.8.3
-        version: 5.8.3
-
   packages/shared:
     dependencies:
       zod:
@@ -287,9 +271,6 @@ importers:
       '@radix-ui/react-tabs':
         specifier: ^1.1.12
         version: 1.1.12(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@task-app/domain':
-        specifier: workspace:*
-        version: link:../domain
       '@task-app/shared':
         specifier: workspace:*
         version: link:../shared

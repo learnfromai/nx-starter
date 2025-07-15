@@ -18,7 +18,6 @@
   "dependencies": {
     "@prisma/client": "^6.11.1",
     "@task-app/shared": "workspace:*",
-    "@task-app/domain": "workspace:*",
     "@types/better-sqlite3": "^7.6.13",
     "better-sqlite3": "^11.10.0",
     "compression": "^1.7.4",

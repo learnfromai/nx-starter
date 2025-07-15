@@ -8,7 +8,7 @@
     "dev:web": "pnpm --filter @task-app/web run dev",
     "dev:api": "pnpm --filter @task-app/api run dev",
     "build": "pnpm run build:shared && pnpm run build:packages",
-    "build:shared": "pnpm --filter @task-app/shared run build && pnpm --filter @task-app/domain run build",
+    "build:shared": "pnpm --filter @task-app/shared run build",
     "build:packages": "pnpm --filter @task-app/web run build && pnpm --filter @task-app/api run build",
     "test": "pnpm --recursive run test",
     "test:watch": "pnpm --parallel run test:watch",
