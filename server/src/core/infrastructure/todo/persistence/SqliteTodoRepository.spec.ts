@@ -107,6 +107,16 @@ describe('SqliteTodoRepository', () => {
       expect(updatedTodo?.priority.level).toBe('high');
     });
 
+    it('should update completed status from true to false', async () => {
+      const todo = new Todo('Completed Todo', true, new Date(), undefined, 'medium');
+      const id = await repository.create(todo);
+
+      await repository.update(id, { completed: false });
+
+      const updatedTodo = await repository.getById(id);
+      expect(updatedTodo?.completed).toBe(false);
+    });
+
     it('should update todo with due date', async () => {
       const todo = new Todo('Test Todo', false, new Date(), undefined, 'medium');
       const id = await repository.create(todo);
