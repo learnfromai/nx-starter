@@ -4,6 +4,8 @@ import { Sequelize } from 'sequelize';
 import { SequelizeTodoRepository } from './SequelizeTodoRepository';
 import { TodoSequelizeModel, initTodoModel } from './TodoModel';
 import { Todo } from '@/core/domain/todo/entities/Todo';
+import { TodoTitle } from '@/core/domain/todo/value-objects/TodoTitle';
+import { TodoPriority } from '@/core/domain/todo/value-objects/TodoPriority';
 
 describe('SequelizeTodoRepository', () => {
   let sequelize: Sequelize;
@@ -164,6 +166,28 @@ describe('SequelizeTodoRepository', () => {
 
       const updatedTodo = await repository.getById(id);
       expect(updatedTodo!.dueDate).toEqual(newDueDate);
+    });
+
+    it('should update with TodoTitle object', async () => {
+      const todo = new Todo('Original title');
+      const id = await repository.create(todo);
+
+      const newTitle = new TodoTitle('Updated with TodoTitle object');
+      await repository.update(id, { title: newTitle });
+
+      const updatedTodo = await repository.getById(id);
+      expect(updatedTodo!.titleValue).toBe('Updated with TodoTitle object');
+    });
+
+    it('should update with TodoPriority object', async () => {
+      const todo = new Todo('Test todo', false, new Date(), undefined, 'low');
+      const id = await repository.create(todo);
+
+      const newPriority = new TodoPriority('high');
+      await repository.update(id, { priority: newPriority });
+
+      const updatedTodo = await repository.getById(id);
+      expect(updatedTodo!.priority.level).toBe('high');
     });
 
     it('should update with special characters', async () => {

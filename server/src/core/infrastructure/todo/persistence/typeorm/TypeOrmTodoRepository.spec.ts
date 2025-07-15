@@ -150,6 +150,17 @@ describe('TypeOrmTodoRepository', () => {
       expect(updatedTodo!.priority.level).toBe('high');
     });
 
+    it('should update dueDate property', async () => {
+      const todo = new Todo('Test todo', false, new Date(), undefined, 'medium');
+      const id = await repository.create(todo);
+
+      const newDueDate = new Date('2024-12-31');
+      await repository.update(id, { dueDate: newDueDate });
+
+      const updatedTodo = await repository.getById(id);
+      expect(updatedTodo!.dueDate).toEqual(newDueDate);
+    });
+
     it('should update with special characters', async () => {
       const todo = new Todo('Original');
       const id = await repository.create(todo);
