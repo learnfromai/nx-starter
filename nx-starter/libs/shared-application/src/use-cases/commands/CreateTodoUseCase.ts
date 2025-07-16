@@ -1,0 +1,43 @@
+import { Todo } from '@nx-starter/shared-domain';
+import { TodoTitle } from '@nx-starter/shared-domain';
+import type { ITodoRepository } from '@nx-starter/shared-domain';
+import type { CreateTodoCommand } from '../../dto/TodoCommands';
+
+/**
+ * Use case for creating a new todo
+ * Handles all business logic and validation for todo creation
+ */
+export class CreateTodoUseCase {
+  constructor(private todoRepository: ITodoRepository) {}
+
+  async execute(command: CreateTodoCommand): Promise<Todo> {
+    // Validate command using value objects (domain validation)
+    const title = new TodoTitle(command.title);
+    
+    // Create todo entity with domain logic
+    const todo = new Todo(
+      title,
+      false, // new todos are always incomplete
+      new Date(),
+      undefined, // no ID yet
+      command.priority || 'medium',
+      command.dueDate
+    );
+
+    // Validate business invariants
+    todo.validate();
+
+    // Persist using repository
+    const id = await this.todoRepository.create(todo);
+    
+    // Return the created todo with ID
+    return new Todo(
+      title,
+      todo.completed,
+      todo.createdAt,
+      id,
+      todo.priority.level,
+      todo.dueDate
+    );
+  }
+}

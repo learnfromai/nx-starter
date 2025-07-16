@@ -1,10 +1,6 @@
 /**
  * Query use cases
- * TODO: Export query use cases here
+ * Application layer query handlers
  */
 
-// TODO: Export all query use cases
-// export * from './TodoQueryHandlers';
-
-// Placeholder export to make this a module
-export {};
+export * from './TodoQueryHandlers';
