@@ -1,0 +1,21 @@
+{
+  "name": "nx-starter",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {},
+  "private": true,
+  "dependencies": {
+    "empty": "0.10.1"
+  },
+  "devDependencies": {
+    "@nx/express": "^21.2.3",
+    "@nx/js": "^21.2.3",
+    "@nx/node": "^21.2.3",
+    "@nx/react": "^21.2.3",
+    "@nx/vite": "^21.2.3",
+    "@nx/workspace": "21.2.3",
+    "@vitest/ui": "^3.2.4",
+    "nx": "21.2.3",
+    "vitest": "^3.2.4"
+  }
+}
