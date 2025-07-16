@@ -9,14 +9,17 @@
     "forceConsistentCasingInFileNames": true,
     "declaration": true,
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDir": ".",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@nx-starter/shared-application": ["../nx-starter/libs/shared-application/src/index.ts"],
+      "@nx-starter/shared-domain": ["../nx-starter/libs/shared-domain/src/index.ts"],
+      "@nx-starter/shared-utils": ["../nx-starter/libs/shared-utils/src/index.ts"]
     }
   },
   "include": ["src/**/*"],
