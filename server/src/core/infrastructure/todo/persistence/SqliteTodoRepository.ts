@@ -2,7 +2,7 @@ import Database from 'better-sqlite3';
 import { injectable } from 'tsyringe';
 import { Todo } from '@/core/domain/todo/entities/Todo';
 import type { ITodoRepository } from '@/core/domain/todo/repositories/ITodoRepository';
-import { TodoMapper } from '@/core/application/todo/mappers/TodoMapper';
+import { TodoMapper } from '@nx-starter/shared-application';
 import { generateId } from '@/utils/uuid';
 
 interface TodoRecord {

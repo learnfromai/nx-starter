@@ -5,17 +5,17 @@ import { SqliteTodoRepository } from '@/core/infrastructure/todo/persistence/Sql
 import { TypeOrmTodoRepository } from '@/core/infrastructure/todo/persistence/typeorm/TypeOrmTodoRepository';
 import { MongooseTodoRepository } from '@/core/infrastructure/todo/persistence/mongoose/MongooseTodoRepository';
 import { SequelizeTodoRepository } from '@/core/infrastructure/todo/persistence/sequelize/SequelizeTodoRepository';
-import { CreateTodoUseCase } from '@/core/application/todo/use-cases/commands/CreateTodoUseCase';
-import { UpdateTodoUseCase } from '@/core/application/todo/use-cases/commands/UpdateTodoUseCase';
-import { DeleteTodoUseCase } from '@/core/application/todo/use-cases/commands/DeleteTodoUseCase';
-import { ToggleTodoUseCase } from '@/core/application/todo/use-cases/commands/ToggleTodoUseCase';
-import {
+import { 
+  CreateTodoUseCase,
+  UpdateTodoUseCase,
+  DeleteTodoUseCase,
+  ToggleTodoUseCase,
   GetAllTodosQueryHandler,
   GetActiveTodosQueryHandler,
   GetCompletedTodosQueryHandler,
-  GetTodoByIdQueryHandler,
   GetTodoStatsQueryHandler,
-} from '@/core/application/todo/use-cases/queries/TodoQueryHandlers';
+  GetTodoByIdQueryHandler
+} from '@nx-starter/shared-application';
 import type { ITodoRepository } from '@/core/domain/todo/repositories/ITodoRepository';
 import { config } from '@/config/config';
 import { TOKENS } from './tokens';
@@ -29,18 +29,39 @@ export const configureDI = async () => {
   const repositoryImplementation = await getRepositoryImplementation();
   container.registerInstance<ITodoRepository>(TOKENS.TodoRepository, repositoryImplementation);
 
-  // Application Layer - Use Cases (Commands)
-  container.registerSingleton(TOKENS.CreateTodoUseCase, CreateTodoUseCase);
-  container.registerSingleton(TOKENS.UpdateTodoUseCase, UpdateTodoUseCase);
-  container.registerSingleton(TOKENS.DeleteTodoUseCase, DeleteTodoUseCase);
-  container.registerSingleton(TOKENS.ToggleTodoUseCase, ToggleTodoUseCase);
+  // Application Layer - Use Cases (Commands) - Factory registration for constructor injection
+  container.register(TOKENS.CreateTodoUseCase, {
+    useFactory: () => new CreateTodoUseCase(container.resolve<ITodoRepository>(TOKENS.TodoRepository))
+  });
+  container.register(TOKENS.UpdateTodoUseCase, {
+    useFactory: () => new UpdateTodoUseCase(container.resolve<ITodoRepository>(TOKENS.TodoRepository))
+  });
+  container.register(TOKENS.DeleteTodoUseCase, {
+    useFactory: () => new DeleteTodoUseCase(container.resolve<ITodoRepository>(TOKENS.TodoRepository))
+  });
+  container.register(TOKENS.ToggleTodoUseCase, {
+    useFactory: () => new ToggleTodoUseCase(
+      container.resolve<ITodoRepository>(TOKENS.TodoRepository),
+      container.resolve(TOKENS.UpdateTodoUseCase)
+    )
+  });
 
-  // Application Layer - Use Cases (Queries)
-  container.registerSingleton(TOKENS.GetAllTodosQueryHandler, GetAllTodosQueryHandler);
-  container.registerSingleton(TOKENS.GetActiveTodosQueryHandler, GetActiveTodosQueryHandler);
-  container.registerSingleton(TOKENS.GetCompletedTodosQueryHandler, GetCompletedTodosQueryHandler);
-  container.registerSingleton(TOKENS.GetTodoByIdQueryHandler, GetTodoByIdQueryHandler);
-  container.registerSingleton(TOKENS.GetTodoStatsQueryHandler, GetTodoStatsQueryHandler);
+  // Application Layer - Use Cases (Queries) - Factory registration
+  container.register(TOKENS.GetAllTodosQueryHandler, {
+    useFactory: () => new GetAllTodosQueryHandler(container.resolve<ITodoRepository>(TOKENS.TodoRepository))
+  });
+  container.register(TOKENS.GetActiveTodosQueryHandler, {
+    useFactory: () => new GetActiveTodosQueryHandler(container.resolve<ITodoRepository>(TOKENS.TodoRepository))
+  });
+  container.register(TOKENS.GetCompletedTodosQueryHandler, {
+    useFactory: () => new GetCompletedTodosQueryHandler(container.resolve<ITodoRepository>(TOKENS.TodoRepository))
+  });
+  container.register(TOKENS.GetTodoByIdQueryHandler, {
+    useFactory: () => new GetTodoByIdQueryHandler(container.resolve<ITodoRepository>(TOKENS.TodoRepository))
+  });
+  container.register(TOKENS.GetTodoStatsQueryHandler, {
+    useFactory: () => new GetTodoStatsQueryHandler(container.resolve<ITodoRepository>(TOKENS.TodoRepository))
+  });
 };
 
 async function getRepositoryImplementation(): Promise<ITodoRepository> {

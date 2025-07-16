@@ -102,3 +102,43 @@ export class GetTodoByIdQueryHandler {
     return todo || null;
   }
 }
+
+/**
+ * Query handler for getting active todos
+ * Provides compatibility with backend repository patterns
+ */
+export class GetActiveTodosQueryHandler {
+  constructor(private todoRepository: ITodoRepository) {}
+
+  async execute(): Promise<Todo[]> {
+    // Use repository method if available, otherwise fall back to specification
+    if ('getActive' in this.todoRepository && typeof this.todoRepository.getActive === 'function') {
+      return await (this.todoRepository as any).getActive();
+    }
+    
+    // Fallback to specification-based filtering
+    const allTodos = await this.todoRepository.getAll();
+    const activeSpec = new ActiveTodoSpecification();
+    return allTodos.filter(todo => activeSpec.isSatisfiedBy(todo));
+  }
+}
+
+/**
+ * Query handler for getting completed todos
+ * Provides compatibility with backend repository patterns
+ */
+export class GetCompletedTodosQueryHandler {
+  constructor(private todoRepository: ITodoRepository) {}
+
+  async execute(): Promise<Todo[]> {
+    // Use repository method if available, otherwise fall back to specification
+    if ('getCompleted' in this.todoRepository && typeof this.todoRepository.getCompleted === 'function') {
+      return await (this.todoRepository as any).getCompleted();
+    }
+    
+    // Fallback to specification-based filtering
+    const allTodos = await this.todoRepository.getAll();
+    const completedSpec = new CompletedTodoSpecification();
+    return allTodos.filter(todo => completedSpec.isSatisfiedBy(todo));
+  }
+}

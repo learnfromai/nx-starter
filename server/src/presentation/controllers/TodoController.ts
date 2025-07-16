@@ -1,23 +1,23 @@
 import { Request, Response } from 'express';
 import { injectable, inject } from 'tsyringe';
 import {
-  CreateTodoCommandSchema,
-  UpdateTodoCommandSchema,
-  DeleteTodoCommandSchema,
-  ToggleTodoCommandSchema,
-} from '@/core/application/todo/dto/TodoCommands';
-import { CreateTodoUseCase } from '@/core/application/todo/use-cases/commands/CreateTodoUseCase';
-import { UpdateTodoUseCase } from '@/core/application/todo/use-cases/commands/UpdateTodoUseCase';
-import { DeleteTodoUseCase } from '@/core/application/todo/use-cases/commands/DeleteTodoUseCase';
-import { ToggleTodoUseCase } from '@/core/application/todo/use-cases/commands/ToggleTodoUseCase';
-import {
+  CreateTodoUseCase,
+  UpdateTodoUseCase,
+  DeleteTodoUseCase,
+  ToggleTodoUseCase,
   GetAllTodosQueryHandler,
   GetActiveTodosQueryHandler,
   GetCompletedTodosQueryHandler,
   GetTodoByIdQueryHandler,
   GetTodoStatsQueryHandler,
-} from '@/core/application/todo/use-cases/queries/TodoQueryHandlers';
-import { TodoMapper } from '@/core/application/todo/mappers/TodoMapper';
+  TodoMapper
+} from '@nx-starter/shared-application';
+import {
+  CreateTodoCommandSchema,
+  UpdateTodoCommandSchema,
+  DeleteTodoCommandSchema,
+  ToggleTodoCommandSchema,
+} from '@/core/application/todo/dto/TodoCommands'; // Keep local Zod schemas
 import { DomainException } from '@/core/domain/todo/exceptions/DomainExceptions';
 import { TOKENS } from '@/core/infrastructure/di/tokens';
 import { asyncHandler } from '@/shared/middleware/ErrorHandler';

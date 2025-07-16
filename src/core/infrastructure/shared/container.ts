@@ -1,20 +1,21 @@
 import 'reflect-metadata';
 import { container } from 'tsyringe';
 import { TodoRepository } from '@/core/infrastructure/todo/persistence/TodoRepository';
-import { TodoCommandService } from '@/core/application/todo/services/TodoCommandService';
-import { TodoQueryService } from '@/core/application/todo/services/TodoQueryService';
-import { CreateTodoUseCase } from '@/core/application/todo/use-cases/commands/CreateTodoUseCase';
-import { UpdateTodoUseCase } from '@/core/application/todo/use-cases/commands/UpdateTodoUseCase';
-import { DeleteTodoUseCase } from '@/core/application/todo/use-cases/commands/DeleteTodoUseCase';
-import { ToggleTodoUseCase } from '@/core/application/todo/use-cases/commands/ToggleTodoUseCase';
 import { 
+  TodoCommandService,
+  TodoQueryService,
+  CreateTodoUseCase,
+  UpdateTodoUseCase,
+  DeleteTodoUseCase,
+  ToggleTodoUseCase,
   GetAllTodosQueryHandler,
   GetFilteredTodosQueryHandler,
   GetTodoStatsQueryHandler,
-  GetTodoByIdQueryHandler
-} from '@/core/application/todo/use-cases/queries/TodoQueryHandlers';
+  GetTodoByIdQueryHandler,
+  type ITodoCommandService,
+  type ITodoQueryService
+} from '@nx-starter/shared-application';
 import type { ITodoRepository } from '@/core/domain/todo/repositories/ITodoRepository';
-import type { ITodoCommandService, ITodoQueryService } from '@/core/application/shared/interfaces/ITodoService';
 import { TOKENS } from './tokens';
 
 // Register dependencies following Clean Architecture layers
@@ -25,23 +26,54 @@ export const configureDI = () => {
     TodoRepository
   );
 
-  // Application Layer - Use Cases (Commands)
-  container.registerSingleton(TOKENS.CreateTodoUseCase, CreateTodoUseCase);
-  container.registerSingleton(TOKENS.UpdateTodoUseCase, UpdateTodoUseCase);
-  container.registerSingleton(TOKENS.DeleteTodoUseCase, DeleteTodoUseCase);
-  container.registerSingleton(TOKENS.ToggleTodoUseCase, ToggleTodoUseCase);
-  container.registerSingleton(TOKENS.DeleteTodoUseCase, DeleteTodoUseCase);
-  container.registerSingleton(TOKENS.ToggleTodoUseCase, ToggleTodoUseCase);
+  // Application Layer - Use Cases (Commands) - Factory registration for constructor injection
+  container.register(TOKENS.CreateTodoUseCase, {
+    useFactory: () => new CreateTodoUseCase(container.resolve<ITodoRepository>(TOKENS.TodoRepository))
+  });
+  container.register(TOKENS.UpdateTodoUseCase, {
+    useFactory: () => new UpdateTodoUseCase(container.resolve<ITodoRepository>(TOKENS.TodoRepository))
+  });
+  container.register(TOKENS.DeleteTodoUseCase, {
+    useFactory: () => new DeleteTodoUseCase(container.resolve<ITodoRepository>(TOKENS.TodoRepository))
+  });
+  container.register(TOKENS.ToggleTodoUseCase, {
+    useFactory: () => new ToggleTodoUseCase(
+      container.resolve<ITodoRepository>(TOKENS.TodoRepository),
+      container.resolve(TOKENS.UpdateTodoUseCase)
+    )
+  });
 
-  // Application Layer - Use Cases (Queries)
-  container.registerSingleton(TOKENS.GetAllTodosQueryHandler, GetAllTodosQueryHandler);
-  container.registerSingleton(TOKENS.GetFilteredTodosQueryHandler, GetFilteredTodosQueryHandler);
-  container.registerSingleton(TOKENS.GetTodoStatsQueryHandler, GetTodoStatsQueryHandler);
-  container.registerSingleton(TOKENS.GetTodoByIdQueryHandler, GetTodoByIdQueryHandler);
+  // Application Layer - Use Cases (Queries) - Factory registration
+  container.register(TOKENS.GetAllTodosQueryHandler, {
+    useFactory: () => new GetAllTodosQueryHandler(container.resolve<ITodoRepository>(TOKENS.TodoRepository))
+  });
+  container.register(TOKENS.GetFilteredTodosQueryHandler, {
+    useFactory: () => new GetFilteredTodosQueryHandler(container.resolve<ITodoRepository>(TOKENS.TodoRepository))
+  });
+  container.register(TOKENS.GetTodoStatsQueryHandler, {
+    useFactory: () => new GetTodoStatsQueryHandler(container.resolve<ITodoRepository>(TOKENS.TodoRepository))
+  });
+  container.register(TOKENS.GetTodoByIdQueryHandler, {
+    useFactory: () => new GetTodoByIdQueryHandler(container.resolve<ITodoRepository>(TOKENS.TodoRepository))
+  });
 
-  // Application Layer - CQRS Services
-  container.registerSingleton<ITodoCommandService>(TOKENS.TodoCommandService, TodoCommandService);
-  container.registerSingleton<ITodoQueryService>(TOKENS.TodoQueryService, TodoQueryService);
+  // Application Layer - CQRS Services - Factory registration
+  container.register<ITodoCommandService>(TOKENS.TodoCommandService, {
+    useFactory: () => new TodoCommandService(
+      container.resolve(TOKENS.CreateTodoUseCase),
+      container.resolve(TOKENS.UpdateTodoUseCase),
+      container.resolve(TOKENS.DeleteTodoUseCase),
+      container.resolve(TOKENS.ToggleTodoUseCase)
+    )
+  });
+  container.register<ITodoQueryService>(TOKENS.TodoQueryService, {
+    useFactory: () => new TodoQueryService(
+      container.resolve(TOKENS.GetAllTodosQueryHandler),
+      container.resolve(TOKENS.GetFilteredTodosQueryHandler),
+      container.resolve(TOKENS.GetTodoStatsQueryHandler),
+      container.resolve(TOKENS.GetTodoByIdQueryHandler)
+    )
+  });
 };
 
 // Export container and tokens for use in components
