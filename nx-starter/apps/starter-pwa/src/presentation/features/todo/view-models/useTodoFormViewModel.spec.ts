@@ -165,7 +165,10 @@ describe('useTodoFormViewModel', () => {
       const { result } = renderHook(() => useTodoFormViewModel());
 
       // Start submission in the background
-      const submitPromise = result.current.submitTodo('Valid title');
+      let submitPromise: Promise<void>;
+      act(() => {
+        submitPromise = result.current.submitTodo('Valid title');
+      });
 
       // Wait for next tick to allow state to update
       await act(async () => {
@@ -181,7 +184,7 @@ describe('useTodoFormViewModel', () => {
       });
 
       await act(async () => {
-        await submitPromise;
+        await submitPromise!;
       });
 
       expect(result.current.isSubmitting).toBe(false);
