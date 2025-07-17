@@ -1,15 +1,14 @@
 // Test UUIDs for consistent testing - using valid 32-character hex format
 export const TEST_UUIDS = {
-  TODO_1: '123456789abcdef0123456789abcdef1',
-  TODO_2: '123456789abcdef0123456789abcdef2',
-  TODO_3: '123456789abcdef0123456789abcdef3',
-  TODO_4: '123456789abcdef0123456789abcdef4',
-  TODO_5: '123456789abcdef0123456789abcdef5',
+  TODO_1: '550e8400e29b41d4a716446655440001',
+  TODO_2: '550e8400e29b41d4a716446655440002',
+  TODO_3: '550e8400e29b41d4a716446655440003',
+  TODO_4: '550e8400e29b41d4a716446655440004',
+  TODO_5: '550e8400e29b41d4a716446655440005',
 } as const;
 
 export const generateTestUuid = (suffix: number) => {
-  const suffixHex = suffix.toString(16);
-  return `123456789abcdef0123456789abcdef${suffixHex}`;
+  return `550e8400e29b41d4a716446655440${suffix.toString().padStart(3, '0')}`;
 };
 
 // Additional test utilities

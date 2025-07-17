@@ -7,35 +7,46 @@ const originalWarn = console.warn;
 
 beforeEach(() => {
   // Suppress React warnings in tests (like act warnings)
-  console.error = (...args) => {
-    if (
-      typeof args[0] === 'string' &&
-      (args[0].includes('Warning: ReactDOM.render is deprecated') ||
-        args[0].includes('Warning: An invalid form control') ||
-        args[0].includes(
-          'Warning: When testing, code that causes React state updates'
-        ))
-    ) {
-      return;
-    }
-    originalError.call(console, ...args);
-  };
+  // Only suppress if console.error is not already spied upon
+  if (!console.error.mockClear) {
+    console.error = (...args) => {
+      if (
+        typeof args[0] === 'string' &&
+        (args[0].includes('Warning: ReactDOM.render is deprecated') ||
+          args[0].includes('Warning: An invalid form control') ||
+          args[0].includes(
+            'Warning: When testing, code that causes React state updates'
+          ))
+      ) {
+        return;
+      }
+      originalError.call(console, ...args);
+    };
+  }
 
-  console.warn = (...args) => {
-    if (
-      typeof args[0] === 'string' &&
-      (args[0].includes('Warning: ReactDOM.render is deprecated') ||
-        args[0].includes('componentWillMount has been renamed'))
-    ) {
-      return;
-    }
-    originalWarn.call(console, ...args);
-  };
+  // Only suppress if console.warn is not already spied upon
+  if (!console.warn.mockClear) {
+    console.warn = (...args) => {
+      if (
+        typeof args[0] === 'string' &&
+        (args[0].includes('Warning: ReactDOM.render is deprecated') ||
+          args[0].includes('componentWillMount has been renamed'))
+      ) {
+        return;
+      }
+      originalWarn.call(console, ...args);
+    };
+  }
 });
 
 afterEach(() => {
-  console.error = originalError;
-  console.warn = originalWarn;
+  // Only restore if not spied upon
+  if (!console.error.mockClear) {
+    console.error = originalError;
+  }
+  if (!console.warn.mockClear) {
+    console.warn = originalWarn;
+  }
   vi.clearAllMocks();
 });
 

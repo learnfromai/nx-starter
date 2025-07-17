@@ -14,7 +14,7 @@ const mockStore = {
   loadTodos: vi.fn(),
 };
 
-vi.mock('../../../infrastructure/state/TodoStore', () => ({
+vi.mock('../../../../infrastructure/state/TodoStore', () => ({
   useTodoStore: () => mockStore,
 }));
 
