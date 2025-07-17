@@ -1,0 +1,735 @@
+{
+  "info": {
+    "name": "Task App API with Authentication",
+    "description": "Complete API collection for the Task App Express.js server with Clean Architecture and JWT Authentication. This collection includes authentication endpoints (register, login, profile) and all CRUD operations for todos with comprehensive test scenarios.",
+    "version": "2.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:4000",
+      "type": "string",
+      "description": "Base URL for the Task App API server"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string",
+      "description": "JWT access token for authentication"
+    },
+    {
+      "key": "refreshToken",
+      "value": "",
+      "type": "string",
+      "description": "JWT refresh token for token renewal"
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "string",
+      "description": "User ID from authentication response"
+    },
+    {
+      "key": "sampleTodoId",
+      "value": "todo-123",
+      "type": "string",
+      "description": "Sample todo ID for testing. Replace with actual ID from create todo response."
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "description": "User authentication endpoints (register, login, profile)",
+      "item": [
+        {
+          "name": "Register User - Happy Path",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', true);",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('user');",
+                  "});",
+                  "",
+                  "pm.test('User object has required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const user = responseJson.data.user;",
+                  "    pm.expect(user).to.have.property('id');",
+                  "    pm.expect(user).to.have.property('firstName');",
+                  "    pm.expect(user).to.have.property('lastName');",
+                  "    pm.expect(user).to.have.property('email');",
+                  "    pm.expect(user).to.have.property('fullName');",
+                  "    pm.expect(user).to.have.property('createdAt');",
+                  "    pm.expect(user).to.have.property('updatedAt');",
+                  "});",
+                  "",
+                  "pm.test('User data is correct', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const user = responseJson.data.user;",
+                  "    pm.expect(user.firstName).to.equal('John');",
+                  "    pm.expect(user.lastName).to.equal('Doe');",
+                  "    pm.expect(user.email).to.equal('john.doe@example.com');",
+                  "    pm.expect(user.fullName).to.equal('John Doe');",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"SecurePass123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "description": "Register a new user with firstName, lastName, email, and password"
+          }
+        },
+        {
+          "name": "Login User - Happy Path",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', true);",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('user');",
+                  "    pm.expect(responseJson.data).to.have.property('accessToken');",
+                  "    pm.expect(responseJson.data).to.have.property('expiresIn');",
+                  "});",
+                  "",
+                  "pm.test('User object has required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const user = responseJson.data.user;",
+                  "    pm.expect(user).to.have.property('id');",
+                  "    pm.expect(user).to.have.property('firstName');",
+                  "    pm.expect(user).to.have.property('lastName');",
+                  "    pm.expect(user).to.have.property('email');",
+                  "    pm.expect(user).to.have.property('fullName');",
+                  "});",
+                  "",
+                  "pm.test('Access token is valid JWT format', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const token = responseJson.data.accessToken;",
+                  "    pm.expect(token).to.match(/^[A-Za-z0-9-_=]+\\.[A-Za-z0-9-_=]+\\.[A-Za-z0-9-_.+/=]*$/);",
+                  "});",
+                  "",
+                  "pm.test('Store auth token for subsequent requests', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.collectionVariables.set('authToken', responseJson.data.accessToken);",
+                  "    pm.collectionVariables.set('userId', responseJson.data.user.id);",
+                  "    if (responseJson.data.refreshToken) {",
+                  "        pm.collectionVariables.set('refreshToken', responseJson.data.refreshToken);",
+                  "    }",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"SecurePass123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Login user with email and password, returns JWT access token"
+          }
+        },
+        {
+          "name": "Get User Profile - Happy Path",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', true);",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('user');",
+                  "});",
+                  "",
+                  "pm.test('User object has required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const user = responseJson.data.user;",
+                  "    pm.expect(user).to.have.property('id');",
+                  "    pm.expect(user).to.have.property('firstName');",
+                  "    pm.expect(user).to.have.property('lastName');",
+                  "    pm.expect(user).to.have.property('email');",
+                  "    pm.expect(user).to.have.property('fullName');",
+                  "    pm.expect(user).to.have.property('createdAt');",
+                  "    pm.expect(user).to.have.property('updatedAt');",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "profile"]
+            },
+            "description": "Get authenticated user profile information"
+          }
+        },
+        {
+          "name": "Refresh Token - Happy Path",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', true);",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('accessToken');",
+                  "    pm.expect(responseJson.data).to.have.property('expiresIn');",
+                  "});",
+                  "",
+                  "pm.test('New access token is valid JWT format', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const token = responseJson.data.accessToken;",
+                  "    pm.expect(token).to.match(/^[A-Za-z0-9-_=]+\\.[A-Za-z0-9-_=]+\\.[A-Za-z0-9-_.+/=]*$/);",
+                  "});",
+                  "",
+                  "pm.test('Update auth token for subsequent requests', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.collectionVariables.set('authToken', responseJson.data.accessToken);",
+                  "    if (responseJson.data.refreshToken) {",
+                  "        pm.collectionVariables.set('refreshToken', responseJson.data.refreshToken);",
+                  "    }",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/refresh",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "refresh"]
+            },
+            "description": "Refresh access token using refresh token"
+          }
+        },
+        {
+          "name": "Register User - Validation Error",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('Response has validation error', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', false);",
+                  "    pm.expect(responseJson).to.have.property('message', 'Validation error');",
+                  "    pm.expect(responseJson).to.have.property('errors');",
+                  "    pm.expect(responseJson.errors).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"\",\n  \"lastName\": \"Doe\",\n  \"email\": \"invalid-email\",\n  \"password\": \"weak\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "description": "Test registration with invalid data to verify validation"
+          }
+        },
+        {
+          "name": "Login User - Invalid Credentials",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 401', function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});",
+                  "",
+                  "pm.test('Response has error message', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', false);",
+                  "    pm.expect(responseJson).to.have.property('message', 'Invalid email or password');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"wrongpassword\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Test login with invalid credentials"
+          }
+        },
+        {
+          "name": "Get Profile - Unauthorized",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 401', function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});",
+                  "",
+                  "pm.test('Response has error message', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', false);",
+                  "    pm.expect(responseJson).to.have.property('message', 'Access token is required');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "profile"]
+            },
+            "description": "Test profile access without authentication token"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health Check",
+      "description": "Server health check endpoint",
+      "item": [
+        {
+          "name": "Health Check - Happy Path",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', true);",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "    pm.expect(responseJson).to.have.property('timestamp');",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(500);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "health"]
+            },
+            "description": "Health check endpoint to verify server is running"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Todos (Protected)",
+      "description": "Todo CRUD operations - all endpoints require authentication",
+      "item": [
+        {
+          "name": "Get All Todos - Happy Path",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', true);",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.be.an('array');",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/todos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "todos"]
+            },
+            "description": "Get all todos for authenticated user"
+          }
+        },
+        {
+          "name": "Create Todo - Happy Path",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', true);",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('id');",
+                  "    pm.expect(responseJson.data).to.have.property('title');",
+                  "    pm.expect(responseJson.data).to.have.property('completed');",
+                  "});",
+                  "",
+                  "pm.test('Todo data is correct', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.data.title).to.equal('Test Todo');",
+                  "    pm.expect(responseJson.data.completed).to.equal(false);",
+                  "});",
+                  "",
+                  "pm.test('Store todo ID for subsequent requests', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.collectionVariables.set('sampleTodoId', responseJson.data.id);",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Test Todo\",\n  \"priority\": \"high\",\n  \"dueDate\": \"2024-12-31T23:59:59Z\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/todos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "todos"]
+            },
+            "description": "Create a new todo for authenticated user"
+          }
+        },
+        {
+          "name": "Get Todos - Unauthorized",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 401', function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});",
+                  "",
+                  "pm.test('Response has error message', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', false);",
+                  "    pm.expect(responseJson).to.have.property('message', 'Access token is required');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/todos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "todos"]
+            },
+            "description": "Test todos access without authentication token"
+          }
+        },
+        {
+          "name": "Update Todo - Happy Path",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', true);",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Test Todo\",\n  \"priority\": \"medium\",\n  \"completed\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/todos/{{sampleTodoId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "todos", "{{sampleTodoId}}"]
+            },
+            "description": "Update an existing todo for authenticated user"
+          }
+        },
+        {
+          "name": "Delete Todo - Happy Path",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', true);",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/todos/{{sampleTodoId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "todos", "{{sampleTodoId}}"]
+            },
+            "description": "Delete a todo for authenticated user"
+          }
+        }
+      ]
+    }
+  ]
+}
