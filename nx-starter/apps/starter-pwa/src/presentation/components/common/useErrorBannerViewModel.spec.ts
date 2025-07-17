@@ -4,7 +4,7 @@ import { useErrorBannerViewModel } from './useErrorBannerViewModel';
 import { useTodoStore } from '../../../infrastructure/store/TodoStore';
 
 // Mock the store
-vi.mock('../../../infrastructure/store/TodoStore');
+vi.mock('../../../infrastructure/state/TodoStore');
 
 describe('useErrorBannerViewModel', () => {
   let mockStore: {

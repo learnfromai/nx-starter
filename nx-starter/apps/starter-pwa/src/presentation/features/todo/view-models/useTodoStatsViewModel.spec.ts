@@ -11,9 +11,10 @@ const mockStore = {
   getIsLoading: vi.fn(),
   loadTodos: vi.fn(),
   setFilter: vi.fn(),
+  filter: 'all',
 };
 
-vi.mock('../../../infrastructure/state/TodoStore', () => ({
+vi.mock('../../../../infrastructure/state/TodoStore', () => ({
   useTodoStore: () => mockStore,
 }));
 
@@ -23,6 +24,7 @@ describe('useTodoStatsViewModel', () => {
     mockStore.getIsLoading.mockReturnValue(false);
     mockStore.getStats.mockReturnValue({ total: 0, active: 0, completed: 0 });
     mockStore.todos = [];
+    mockStore.filter = 'all';
     mockStore.loadTodos.mockResolvedValue(undefined);
   });
 
