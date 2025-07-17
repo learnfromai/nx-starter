@@ -5,6 +5,7 @@ import { SqliteTodoRepository } from '../todo/persistence/SqliteTodoRepository';
 import { TypeOrmTodoRepository } from '../todo/persistence/typeorm/TypeOrmTodoRepository';
 import { MongooseTodoRepository } from '../todo/persistence/mongoose/MongooseTodoRepository';
 import { SequelizeTodoRepository } from '../todo/persistence/sequelize/SequelizeTodoRepository';
+import { InMemoryUserRepository } from '../user/persistence/InMemoryUserRepository';
 import {
   CreateTodoUseCase,
   UpdateTodoUseCase,
@@ -15,9 +16,13 @@ import {
   GetCompletedTodosQueryHandler,
   GetTodoByIdQueryHandler,
   GetTodoStatsQueryHandler,
+  RegisterUserUseCase,
+  LoginUserUseCase,
+  AuthService,
+  JwtService,
   TOKENS,
 } from '@nx-starter/shared-application';
-import type { ITodoRepository } from '@nx-starter/shared-domain';
+import type { ITodoRepository, IUserRepository } from '@nx-starter/shared-domain';
 import { getTypeOrmDataSource } from '../todo/persistence/typeorm/TypeOrmConnection';
 import { connectMongoDB } from '../todo/persistence/mongoose/MongooseConnection';
 import { getSequelizeInstance } from '../todo/persistence/sequelize/SequelizeConnection';
@@ -25,17 +30,30 @@ import { getSequelizeInstance } from '../todo/persistence/sequelize/SequelizeCon
 // Register dependencies following Clean Architecture layers
 export const configureDI = async () => {
   // Infrastructure Layer - Repository (choose based on config)
-  const repositoryImplementation = await getRepositoryImplementation();
+  const todoRepositoryImplementation = await getTodoRepositoryImplementation();
   container.registerInstance<ITodoRepository>(
     TOKENS.TodoRepository,
-    repositoryImplementation
+    todoRepositoryImplementation
   );
+
+  // Infrastructure Layer - User Repository (in-memory for now)
+  const userRepositoryImplementation = new InMemoryUserRepository();
+  container.registerInstance<IUserRepository>(
+    TOKENS.UserRepository,
+    userRepositoryImplementation
+  );
+
+  // Application Layer - Services
+  container.registerSingleton(TOKENS.JwtService, JwtService);
+  container.registerSingleton(TOKENS.AuthService, AuthService);
 
   // Application Layer - Use Cases (Commands)
   container.registerSingleton(TOKENS.CreateTodoUseCase, CreateTodoUseCase);
   container.registerSingleton(TOKENS.UpdateTodoUseCase, UpdateTodoUseCase);
   container.registerSingleton(TOKENS.DeleteTodoUseCase, DeleteTodoUseCase);
   container.registerSingleton(TOKENS.ToggleTodoUseCase, ToggleTodoUseCase);
+  container.registerSingleton(TOKENS.RegisterUserUseCase, RegisterUserUseCase);
+  container.registerSingleton(TOKENS.LoginUserUseCase, LoginUserUseCase);
 
   // Application Layer - Use Cases (Queries)
   container.registerSingleton(
@@ -60,7 +78,7 @@ export const configureDI = async () => {
   );
 };
 
-async function getRepositoryImplementation(): Promise<ITodoRepository> {
+async function getTodoRepositoryImplementation(): Promise<ITodoRepository> {
   const dbType = process.env.DB_TYPE || 'memory';
   const ormType = process.env.ORM_TYPE || 'native';
 

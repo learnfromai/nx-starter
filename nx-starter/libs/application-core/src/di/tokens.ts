@@ -2,6 +2,7 @@
 export const TOKENS = {
   // Infrastructure Layer - Repositories
   TodoRepository: 'ITodoRepository',
+  UserRepository: 'IUserRepository',
 
   // Application Layer - CQRS Services (Interface-based for cleaner injection)
   TodoCommandService: 'ITodoCommandService',
@@ -12,6 +13,8 @@ export const TOKENS = {
   UpdateTodoUseCase: 'UpdateTodoUseCase',
   DeleteTodoUseCase: 'DeleteTodoUseCase',
   ToggleTodoUseCase: 'ToggleTodoUseCase',
+  RegisterUserUseCase: 'RegisterUserUseCase',
+  LoginUserUseCase: 'LoginUserUseCase',
 
   // Application Layer - Use Cases (Queries)
   GetAllTodosQueryHandler: 'GetAllTodosQueryHandler',
@@ -20,6 +23,10 @@ export const TOKENS = {
   GetCompletedTodosQueryHandler: 'GetCompletedTodosQueryHandler',
   GetTodoStatsQueryHandler: 'GetTodoStatsQueryHandler',
   GetTodoByIdQueryHandler: 'GetTodoByIdQueryHandler',
+
+  // Application Layer - Services
+  AuthService: 'AuthService',
+  JwtService: 'JwtService',
 
   // Domain Layer - Services
   TodoDomainService: 'TodoDomainService',
