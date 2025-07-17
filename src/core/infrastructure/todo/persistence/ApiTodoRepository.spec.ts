@@ -1,6 +1,9 @@
-import { describe, it, expect, beforeEach, vi, Mock } from 'vitest';
+import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest';
 import { ApiTodoRepository } from './ApiTodoRepository';
 import { Todo } from '@/core/domain/todo/entities/Todo';
+import { TodoTitle } from '@/core/domain/todo/value-objects/TodoTitle';
+import { TodoPriority } from '@/core/domain/todo/value-objects/TodoPriority';
+import { BaseSpecification } from '@/core/domain/todo/specifications/TodoSpecifications';
 
 // Mock fetch globally
 const mockFetch = vi.fn() as Mock;
@@ -138,9 +141,9 @@ describe('ApiTodoRepository', () => {
       });
 
       await repository.update('test-id', {
-        title: 'Updated Title',
+        title: new TodoTitle('Updated Title'),
         completed: true,
-        priority: 'low'
+        priority: new TodoPriority('low')
       });
 
       expect(mockFetch).toHaveBeenCalledWith(
@@ -164,7 +167,7 @@ describe('ApiTodoRepository', () => {
         statusText: 'Bad Request'
       });
 
-      await expect(repository.update('test-id', { title: 'Updated' }))
+      await expect(repository.update('test-id', { title: new TodoTitle('Updated') }))
         .rejects.toThrow('HTTP 400: Bad Request');
     });
   });
@@ -317,11 +320,11 @@ describe('ApiTodoRepository', () => {
       });
 
       // Mock specification that only accepts high priority todos
-      const mockSpecification = {
-        isSatisfiedBy: vi.fn().mockImplementation((todo: Todo) => 
-          todo.priority.level === 'high'
-        )
-      };
+      const mockSpecification = new (class extends BaseSpecification<Todo> {
+        isSatisfiedBy = vi.fn((todo: Todo): boolean => {
+          return todo.priority.level === 'high';
+        });
+      })();
 
       const todos = await repository.findBySpecification(mockSpecification);
 

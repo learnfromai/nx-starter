@@ -6,7 +6,7 @@ import {
   HighPriorityTodoSpecification,
 } from './TodoSpecifications';
 import { Todo } from '@/core/domain/todo/entities/Todo';
-import { TEST_UUIDS, generateTestUuid } from '@/test/test-helpers';
+import { TEST_UUIDS } from '@/test/test-helpers';
 
 describe('TodoSpecifications', () => {
   describe('CompletedTodoSpecification', () => {

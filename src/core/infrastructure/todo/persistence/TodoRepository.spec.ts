@@ -198,7 +198,7 @@ describe('TodoRepository', () => {
     });
 
     it('should return undefined for non-existent todo', async () => {
-      const id = 999;
+      const id = '999';
 
       const result = await repository.getById(id);
 

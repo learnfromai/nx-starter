@@ -539,7 +539,7 @@ describe('TodoStore Status Management', () => {
       const state = useTodoStore.getState();
       expect(state.status).toBe('succeeded');
       // Todo should not be found and not updated
-      expect(state.todos.find(todo => todo.numericId === 999)).toBeUndefined();
+      expect(state.todos.find(todo => todo.numericId === '999')).toBeUndefined();
     });
 
     it('should handle non-Error objects in catch block', async () => {
@@ -634,11 +634,11 @@ describe('TodoStore Status Management', () => {
         error: null,
       });
 
-      await useTodoStore.getState().updateTodo(999, { completed: true });
+      await useTodoStore.getState().updateTodo('999', { completed: true });
 
       const state = useTodoStore.getState();
       expect(state.status).toBe('succeeded');
-      expect(state.todos.find(todo => todo.numericId === 999)).toBeUndefined();
+      expect(state.todos.find(todo => todo.numericId === '999')).toBeUndefined();
     });
 
     it('should handle clearError when status is not failed', () => {

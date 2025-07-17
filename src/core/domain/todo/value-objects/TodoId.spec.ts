@@ -324,7 +324,7 @@ describe('TodoId Value Object', () => {
         // Create a mock validator that passes initial validation but fails on second call
         let callCount = 0;
         const flakyValidator = {
-          isValid: (id: string) => {
+          isValid: (_id: string) => {
             callCount++;
             // Pass on first call (validateId), fail on second call (findValidator)
             return callCount === 1;

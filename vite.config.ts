@@ -17,10 +17,14 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  optimizeDeps: {
+    exclude: ['src/core']
+  },
   esbuild: {
     tsconfigRaw: {
       compilerOptions: {
         experimentalDecorators: true,
+        emitDecoratorMetadata: true,
       },
     },
   },

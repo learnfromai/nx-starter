@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TodoCommandService } from './TodoCommandService';
 import { Todo } from '@/core/domain/todo/entities/Todo';
 import type { CreateTodoData, UpdateTodoData } from '@/core/application/shared/interfaces/ITodoService';
-import { TEST_UUIDS, generateTestUuid } from '@/test/test-helpers';
+import { TEST_UUIDS } from '@/test/test-helpers';
 
 describe('TodoCommandService', () => {
   let service: TodoCommandService;

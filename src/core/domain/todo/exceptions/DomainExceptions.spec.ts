@@ -46,8 +46,8 @@ describe('DomainExceptions', () => {
   });
 
   describe('TodoNotFoundException', () => {
-    it('should create exception with numeric id', () => {
-      const exception = new TodoNotFoundException(123);
+    it('should create exception with string id', () => {
+      const exception = new TodoNotFoundException('123');
       
       expect(exception.message).toBe('Todo with ID 123 not found');
       expect(exception.code).toBe('TODO_NOT_FOUND');
@@ -63,15 +63,15 @@ describe('DomainExceptions', () => {
     });
 
     it('should inherit from DomainException', () => {
-      const exception = new TodoNotFoundException(456);
+      const exception = new TodoNotFoundException('456');
       
       expect(exception).toBeInstanceOf(DomainException);
       expect(exception).toBeInstanceOf(Error);
     });
 
     it('should handle edge case ids', () => {
-      const zeroException = new TodoNotFoundException(0);
-      const negativeException = new TodoNotFoundException(-1);
+      const zeroException = new TodoNotFoundException('0');
+      const negativeException = new TodoNotFoundException('-1');
       const emptyStringException = new TodoNotFoundException('');
       
       expect(zeroException.message).toBe('Todo with ID 0 not found');
@@ -184,7 +184,7 @@ describe('DomainExceptions', () => {
 
   describe('exception consistency', () => {
     it('should maintain consistent error structure across all exceptions', () => {
-      const notFound = new TodoNotFoundException(123);
+      const notFound = new TodoNotFoundException('123');
       const alreadyCompleted = new TodoAlreadyCompletedException();
       const invalidTitle = new InvalidTodoTitleException('empty');
       const invalidPriority = new InvalidTodoPriorityException('wrong');
@@ -208,7 +208,7 @@ describe('DomainExceptions', () => {
     });
 
     it('should have unique error codes', () => {
-      const notFound = new TodoNotFoundException(1);
+      const notFound = new TodoNotFoundException('1');
       const alreadyCompleted = new TodoAlreadyCompletedException();
       const invalidTitle = new InvalidTodoTitleException('test');
       const invalidPriority = new InvalidTodoPriorityException('test');
@@ -226,7 +226,7 @@ describe('DomainExceptions', () => {
 
     it('should be throwable and catchable', () => {
       expect(() => {
-        throw new TodoNotFoundException(123);
+        throw new TodoNotFoundException('123');
       }).toThrow(TodoNotFoundException);
       
       expect(() => {
@@ -244,7 +244,7 @@ describe('DomainExceptions', () => {
 
     it('should be catchable as DomainException', () => {
       const exceptions = [
-        new TodoNotFoundException(123),
+        new TodoNotFoundException('123'),
         new TodoAlreadyCompletedException(),
         new InvalidTodoTitleException('test'),
         new InvalidTodoPriorityException('test'),

@@ -10,7 +10,7 @@ import type { ITodoRepository } from '@/core/domain/todo/repositories/ITodoRepos
 
 // Factory function for creating mock todos
 export const createMockTodo = (overrides?: {
-  id?: number | TodoId;
+  id?: string | TodoId;
   title?: string | TodoTitle;
   completed?: boolean;
   priority?: TodoPriorityLevel;
@@ -21,7 +21,7 @@ export const createMockTodo = (overrides?: {
     overrides?.title || 'Test Todo',
     overrides?.completed || false,
     overrides?.createdAt || new Date(),
-    overrides?.id || 1,
+    overrides?.id || '1',
     overrides?.priority || 'medium',
     overrides?.dueDate
   );
@@ -29,7 +29,7 @@ export const createMockTodo = (overrides?: {
 
 // Factory function for creating mock todos arrays
 export const createMockTodos = (count: number, overrides?: Array<{
-  id?: number | TodoId;
+  id?: string | TodoId;
   title?: string | TodoTitle;
   completed?: boolean;
   priority?: TodoPriorityLevel;
@@ -38,7 +38,7 @@ export const createMockTodos = (count: number, overrides?: Array<{
 }>): Todo[] => {
   return Array.from({ length: count }, (_, index) => 
     createMockTodo({
-      id: index + 1,
+      id: (index + 1).toString(),
       title: `Todo ${index + 1}`,
       ...overrides?.[index]
     })
@@ -76,9 +76,9 @@ export const testTodos = {
     { completed: true, title: new TodoTitle('Completed Todo 2') },
   ]),
   mixed: [
-    createMockTodo({ id: 1, title: 'Active Todo', completed: false }),
-    createMockTodo({ id: 2, title: 'Completed Todo', completed: true }),
-    createMockTodo({ id: 3, title: 'Another Active', completed: false }),
+    createMockTodo({ id: '1', title: 'Active Todo', completed: false }),
+    createMockTodo({ id: '2', title: 'Completed Todo', completed: true }),
+    createMockTodo({ id: '3', title: 'Another Active', completed: false }),
   ],
 };
 
@@ -87,7 +87,7 @@ export const setupMockRepository = (mockRepo: ITodoRepository, scenario: 'succes
   switch (scenario) {
     case 'success':
       vi.mocked(mockRepo.getAll).mockResolvedValue(testTodos.mixed);
-      vi.mocked(mockRepo.create).mockResolvedValue(1);
+      vi.mocked(mockRepo.create).mockResolvedValue('1');
       vi.mocked(mockRepo.update).mockResolvedValue();
       vi.mocked(mockRepo.delete).mockResolvedValue();
       vi.mocked(mockRepo.getById).mockResolvedValue(testTodos.mixed[0]);
@@ -108,7 +108,7 @@ export const setupMockRepository = (mockRepo: ITodoRepository, scenario: 'succes
     case 'mixed':
       // Some operations succeed, others fail
       vi.mocked(mockRepo.getAll).mockResolvedValue(testTodos.mixed);
-      vi.mocked(mockRepo.create).mockResolvedValueOnce(1);
+      vi.mocked(mockRepo.create).mockResolvedValueOnce('1');
       vi.mocked(mockRepo.create).mockRejectedValueOnce(new Error('Create failed'));
       vi.mocked(mockRepo.update).mockResolvedValue();
       vi.mocked(mockRepo.delete).mockResolvedValue();
