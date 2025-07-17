@@ -2,6 +2,7 @@
 export const TOKENS = {
   // Infrastructure Layer - Repositories
   TodoRepository: 'ITodoRepository',
+  UserRepository: 'IUserRepository',
 
   // Application Layer - CQRS Services (Interface-based for cleaner injection)
   TodoCommandService: 'ITodoCommandService',
@@ -13,6 +14,14 @@ export const TOKENS = {
   DeleteTodoUseCase: 'DeleteTodoUseCase',
   ToggleTodoUseCase: 'ToggleTodoUseCase',
 
+  // User Use Cases
+  RegisterUserUseCase: 'RegisterUserUseCase',
+  LoginUseCase: 'LoginUseCase',
+  RefreshTokenUseCase: 'RefreshTokenUseCase',
+  ChangePasswordUseCase: 'ChangePasswordUseCase',
+  UpdateUserProfileUseCase: 'UpdateUserProfileUseCase',
+  GetUserProfileUseCase: 'GetUserProfileUseCase',
+
   // Application Layer - Use Cases (Queries)
   GetAllTodosQueryHandler: 'GetAllTodosQueryHandler',
   GetFilteredTodosQueryHandler: 'GetFilteredTodosQueryHandler',
@@ -23,6 +32,8 @@ export const TOKENS = {
 
   // Domain Layer - Services
   TodoDomainService: 'TodoDomainService',
+  PasswordService: 'IPasswordService',
+  TokenService: 'ITokenService',
 } as const;
 
 // Type-safe token keys

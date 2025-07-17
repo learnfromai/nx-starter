@@ -10,3 +10,9 @@ export * from './ValueObject';
 export * from './TodoId';
 export * from './TodoTitle';
 export * from './TodoPriority';
+
+// User value objects
+export * from './UserId';
+export * from './Email';
+export * from './Password';
+export * from './HashedPassword';

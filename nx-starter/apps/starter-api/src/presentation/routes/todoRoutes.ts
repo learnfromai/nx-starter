@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { container } from '../../infrastructure/di/container';
 import { TodoController } from '../controllers/TodoController';
+import { authenticateToken } from '../middleware/authMiddleware';
 
 export const createTodoRoutes = (): Router => {
   const router = Router();
@@ -8,6 +9,9 @@ export const createTodoRoutes = (): Router => {
 
   // Bind controller methods to preserve 'this' context
   const bindMethod = (method: Function) => method.bind(todoController);
+
+  // Apply authentication middleware to all todo routes
+  router.use(authenticateToken);
 
   // Todo CRUD routes
   router.get('/', bindMethod(todoController.getAllTodos));

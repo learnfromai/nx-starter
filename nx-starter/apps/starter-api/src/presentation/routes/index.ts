@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { createTodoRoutes } from './todoRoutes';
+import { authRouter } from './authRoutes';
 
 export const createApiRoutes = (): Router => {
   const router = Router();
@@ -14,6 +15,7 @@ export const createApiRoutes = (): Router => {
   });
 
   // API routes
+  router.use('/auth', authRouter);
   router.use('/todos', createTodoRoutes());
 
   return router;
