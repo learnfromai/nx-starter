@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useTodoStore } from '@/core/infrastructure/todo/state/TodoStore';
-import { configureDI, container, TOKENS } from '@/core/infrastructure/shared/container';
+import { configureDI, container, TOKENS } from '@/core/infrastructure/di/container';
 import type { ITodoService, ITodoCommandService, ITodoQueryService } from '@/core/application/shared/interfaces/ITodoService';
 import { Todo } from '@/core/domain/todo/entities/Todo';
 import { TEST_UUIDS, generateTestUuid } from '@/test/test-helpers';

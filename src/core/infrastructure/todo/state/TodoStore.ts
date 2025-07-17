@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { subscribeWithSelector } from 'zustand/middleware';
-import { container, TOKENS } from '@/core/infrastructure/shared/container';
+import { container, TOKENS } from '@/core/infrastructure/di/container';
 import { Todo } from '@/core/domain/todo/entities/Todo';
 import type { TodoStore } from './TodoStoreInterface';
 import type { ITodoCommandService, ITodoQueryService, CreateTodoData, UpdateTodoData } from '@/core/application/shared/interfaces/ITodoService';
