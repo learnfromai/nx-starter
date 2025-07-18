@@ -70,6 +70,24 @@ pnpm nx run-many --target=build --all
 pnpm nx run-many --target=test --all
 ```
 
+### Package Manager Enforcement
+
+This project enforces the use of pnpm as the package manager to ensure consistency across all environments. If you attempt to use npm instead of pnpm, you will receive an error message:
+
+```bash
+# ❌ This will fail
+npm install
+
+# ✅ Use this instead
+pnpm install
+```
+
+The enforcement is implemented through:
+- A `preinstall` script that detects npm usage and prevents installation
+- The `packageManager` field specifying pnpm@10.13.1
+- Engine requirements in package.json
+- Strict engine enforcement in .npmrc
+
 ### Development
 
 ```bash

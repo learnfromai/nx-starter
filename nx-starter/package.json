@@ -2,7 +2,13 @@
   "name": "@nx-starter/source",
   "version": "0.0.0",
   "license": "MIT",
+  "packageManager": "pnpm@10.13.1",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
   "scripts": {
+    "preinstall": "node -e \"if(process.env.npm_config_user_agent && process.env.npm_config_user_agent.startsWith('npm')) { console.error('\\n\\u001b[31mERROR: Please use pnpm instead of npm.\\u001b[39m\\n\\nThis project uses pnpm as the package manager. Please install pnpm and use:\\n\\n  \\u001b[32mpnpm install\\u001b[39m\\n\\nTo install pnpm, run:\\n\\n  \\u001b[32mnpm install -g pnpm\\u001b[39m\\n'); process.exit(1); }\"",
     "start": "nx run-many -t serve -p starter-api --parallel & nx run-many -t serve -p starter-pwa --parallel",
     "start:api": "nx serve starter-api",
     "start:web": "nx serve starter-pwa",
@@ -50,7 +56,8 @@
     "ci:affected": "nx affected -t lint,typecheck,test,build --parallel",
     "prepare:prod": "pnpm run clean && pnpm install && pnpm run ci && pnpm run build:prod",
     "setup": "pnpm install && pnpm run build:libs",
-    "setup:dev": "pnpm install && pnpm run build:libs && pnpm run dev:all"
+    "setup:dev": "pnpm install && pnpm run build:libs && pnpm run dev:all",
+    "test:package-manager": "node scripts/test-package-manager.js"
   },
   "private": true,
   "dependencies": {
