@@ -10,6 +10,16 @@ export const METADATA_KEYS = {
   PARAMETERS: 'parameters',
   VALIDATION: 'validation',
   RESPONSE: 'response',
+  MIDDLEWARE: 'middleware',
+  AUTHORIZATION: 'authorization',
+  CACHE: 'cache',
+  RATE_LIMIT: 'rateLimit',
+  TRANSFORM: 'transform',
+  TIMEOUT: 'timeout',
+  DEPRECATED: 'deprecated',
+  API_TAGS: 'apiTags',
+  VERSION: 'version',
+  SUMMARY: 'summary',
 } as const;
 
 /**
