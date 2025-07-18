@@ -15,7 +15,12 @@ import {
   TOKENS,
 } from '@nx-starter/shared-application';
 import { DomainException } from '@nx-starter/shared-domain';
-import { asyncHandler } from '../../shared/middleware/ErrorHandler';
+import { 
+  asyncHandler, 
+  enhancedAsyncHandler, 
+  createResponse, 
+  EnhancedRequest 
+} from '../../shared/middleware/ErrorHandler';
 
 /**
  * REST API Controller for Todo operations
@@ -48,31 +53,27 @@ export class TodoController {
 
   /**
    * GET /api/todos - Get all todos
+   * Enhanced version using new response standardization
    */
-  getAllTodos = asyncHandler(
-    async (req: Request, res: Response): Promise<void> => {
+  getAllTodos = enhancedAsyncHandler(
+    async (req: EnhancedRequest): Promise<void> => {
       const todos = await this.getAllTodosQueryHandler.execute();
       const todoDtos = TodoMapper.toDtoArray(todos);
-
-      res.json({
-        success: true,
-        data: todoDtos,
-      });
+      
+      req.respond.successData(todoDtos);
     }
   );
 
   /**
    * GET /api/todos/active - Get active todos
+   * Enhanced version using return-based response
    */
-  getActiveTodos = asyncHandler(
-    async (req: Request, res: Response): Promise<void> => {
+  getActiveTodos = enhancedAsyncHandler(
+    async (req: EnhancedRequest) => {
       const todos = await this.getActiveTodosQueryHandler.execute();
       const todoDtos = TodoMapper.toDtoArray(todos);
-
-      res.json({
-        success: true,
-        data: todoDtos,
-      });
+      
+      return createResponse.data(todoDtos);
     }
   );
 
@@ -123,27 +124,26 @@ export class TodoController {
 
   /**
    * POST /api/todos - Create a new todo
+   * Enhanced version demonstrating 201 status code
    */
-  createTodo = asyncHandler(
-    async (req: Request, res: Response): Promise<void> => {
+  createTodo = enhancedAsyncHandler(
+    async (req: EnhancedRequest): Promise<void> => {
       const validatedData = this.validationSchemas.CreateTodoCommandSchema
         ? this.validationSchemas.CreateTodoCommandSchema.parse(req.body)
         : req.body;
       const todo = await this.createTodoUseCase.execute(validatedData);
       const todoDto = TodoMapper.toDto(todo);
 
-      res.status(201).json({
-        success: true,
-        data: todoDto,
-      });
+      req.respond.successData(todoDto, 201);
     }
   );
 
   /**
    * PUT /api/todos/:id - Update a todo
+   * Enhanced version using message response
    */
-  updateTodo = asyncHandler(
-    async (req: Request, res: Response): Promise<void> => {
+  updateTodo = enhancedAsyncHandler(
+    async (req: EnhancedRequest) => {
       const { id } = req.params;
       const validatedData = this.validationSchemas.UpdateTodoCommandSchema
         ? this.validationSchemas.UpdateTodoCommandSchema.parse({
@@ -154,10 +154,7 @@ export class TodoController {
 
       await this.updateTodoUseCase.execute(validatedData);
 
-      res.json({
-        success: true,
-        message: 'Todo updated successfully',
-      });
+      return createResponse.message('Todo updated successfully');
     }
   );
 
@@ -182,9 +179,10 @@ export class TodoController {
 
   /**
    * DELETE /api/todos/:id - Delete a todo
+   * Enhanced version using helper method
    */
-  deleteTodo = asyncHandler(
-    async (req: Request, res: Response): Promise<void> => {
+  deleteTodo = enhancedAsyncHandler(
+    async (req: EnhancedRequest): Promise<void> => {
       const { id } = req.params;
       const validatedData = this.validationSchemas.DeleteTodoCommandSchema
         ? this.validationSchemas.DeleteTodoCommandSchema.parse({ id })
@@ -192,10 +190,7 @@ export class TodoController {
 
       await this.deleteTodoUseCase.execute(validatedData);
 
-      res.json({
-        success: true,
-        message: 'Todo deleted successfully',
-      });
+      req.respond.successMessage('Todo deleted successfully');
     }
   );
 }
