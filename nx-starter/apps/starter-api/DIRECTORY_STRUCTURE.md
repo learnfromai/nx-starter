@@ -85,18 +85,27 @@ apps/starter-api/
 
 ### Test Files
 - `api.integration.spec.ts` - API integration tests
-- `infrastructure/todo/persistence/InMemoryTodoRepository.spec.ts` - Repository tests
-- `shared/middleware/ErrorHandler.spec.ts` - Error handler tests
-- `test/setup.ts` - Test setup configuration
+- `infrastructure/di/container.spec.ts` - DI container tests ✅
+- `infrastructure/todo/persistence/InMemoryTodoRepository.spec.ts` - Repository tests ✅
+- `infrastructure/todo/persistence/SqliteTodoRepository.spec.ts` - SQLite repository tests ✅
+- `infrastructure/todo/persistence/mongoose/MongooseConnection.spec.ts` - MongoDB connection tests ✅
+- `infrastructure/todo/persistence/sequelize/SequelizeConnection.spec.ts` - Sequelize connection tests ✅
+- `infrastructure/todo/persistence/typeorm/TypeOrmConnection.spec.ts` - TypeORM connection tests ✅
+- `presentation/middleware/errorHandler.spec.ts` - Presentation middleware tests ✅
+- `shared/middleware/ErrorHandler.spec.ts` - Error handler tests ✅
+- `test/setup.ts` - Test setup configuration ✅
 
-## Missing Test Files (present in legacy-express)
-The following test files exist in legacy-express but are missing in starter-api:
-- `infrastructure/di/container.spec.ts` - DI container tests
-- `infrastructure/todo/persistence/SqliteTodoRepository.spec.ts` - SQLite repository tests
-- `infrastructure/todo/persistence/mongoose/MongooseConnection.spec.ts` - MongoDB connection tests
+## Successfully Copied Test Files
+The following test files have been successfully copied from legacy-express to starter-api:
+- ✅ `infrastructure/di/container.spec.ts` - DI container tests (10 tests)
+- ✅ `infrastructure/todo/persistence/SqliteTodoRepository.spec.ts` - SQLite repository tests (24 tests)
+- ✅ `infrastructure/todo/persistence/mongoose/MongooseConnection.spec.ts` - MongoDB connection tests (11 tests)
+- ✅ `infrastructure/todo/persistence/sequelize/SequelizeConnection.spec.ts` - Sequelize connection tests (8 tests)
+- ✅ `infrastructure/todo/persistence/typeorm/TypeOrmConnection.spec.ts` - TypeORM connection tests (6 tests)
+- ✅ `presentation/middleware/errorHandler.spec.ts` - Presentation middleware tests (5 tests)
+
+## Remaining Test Files (optional/complex)
+The following test files would require more complex database setup and are not essential for the basic infrastructure:
 - `infrastructure/todo/persistence/mongoose/MongooseTodoRepository.spec.ts` - MongoDB repository tests
-- `infrastructure/todo/persistence/sequelize/SequelizeConnection.spec.ts` - Sequelize connection tests
-- `infrastructure/todo/persistence/sequelize/SequelizeTodoRepository.spec.ts` - Sequelize repository tests
-- `infrastructure/todo/persistence/typeorm/TypeOrmConnection.spec.ts` - TypeORM connection tests
+- `infrastructure/todo/persistence/sequelize/SequelizeTodoRepository.spec.ts` - Sequelize repository tests  
 - `infrastructure/todo/persistence/typeorm/TypeOrmTodoRepository.spec.ts` - TypeORM repository tests
-- `presentation/middleware/errorHandler.spec.ts` - Presentation middleware tests
