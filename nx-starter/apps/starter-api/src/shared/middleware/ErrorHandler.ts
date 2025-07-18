@@ -97,3 +97,7 @@ export const errorMiddleware = (
 
   handleControllerError(error, req, res, next);
 };
+
+// Re-export enhanced async handler for convenience
+export { enhancedAsyncHandler, createResponse } from './EnhancedAsyncHandler';
+export type { EnhancedRequest, EnhancedAsyncHandler } from './EnhancedAsyncHandler';

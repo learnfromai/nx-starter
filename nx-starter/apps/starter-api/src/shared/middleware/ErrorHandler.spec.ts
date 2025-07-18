@@ -113,12 +113,9 @@ describe('Shared ErrorHandler', () => {
     });
 
     it('should handle ZodError validation errors', () => {
-      const zodError = {
-        name: 'ZodError',
-        errors: [
-          { path: ['title'], message: 'Required', code: 'invalid_type' },
-        ],
-      };
+      const zodError = new ZodError([
+        { path: ['title'], message: 'Required', code: 'invalid_type' },
+      ]);
 
       handleControllerError(
         zodError,
@@ -131,7 +128,7 @@ describe('Shared ErrorHandler', () => {
       expect(mockRes.json).toHaveBeenCalledWith({
         success: false,
         error: 'Validation failed',
-        details: zodError.errors,
+        details: zodError.issues,
       });
     });
 
