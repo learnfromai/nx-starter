@@ -144,19 +144,16 @@ describe('useTodoItemViewModel', () => {
 
       const { result } = renderHook(() => useTodoItemViewModel(mockTodo));
 
-      const toggleCall = result.current.toggleComplete();
-
+      let toggleCall: Promise<void>;
       await act(async () => {
+        toggleCall = result.current.toggleComplete();
         await new Promise((resolve) => setTimeout(resolve, 0));
       });
 
       expect(result.current.isUpdating).toBe(true);
 
-      act(() => {
-        resolvePromise!();
-      });
-
       await act(async () => {
+        resolvePromise!();
         await toggleCall;
       });
 
@@ -261,19 +258,16 @@ describe('useTodoItemViewModel', () => {
 
       const { result } = renderHook(() => useTodoItemViewModel(mockTodo));
 
-      const updateCall = result.current.updateTitle('New Title');
-
+      let updateCall: Promise<void>;
       await act(async () => {
+        updateCall = result.current.updateTitle('New Title');
         await new Promise((resolve) => setTimeout(resolve, 0));
       });
 
       expect(result.current.isUpdating).toBe(true);
 
-      act(() => {
-        resolvePromise!();
-      });
-
       await act(async () => {
+        resolvePromise!();
         await updateCall;
       });
 
@@ -335,19 +329,16 @@ describe('useTodoItemViewModel', () => {
 
       const { result } = renderHook(() => useTodoItemViewModel(mockTodo));
 
-      const deleteCall = result.current.deleteTodo();
-
+      let deleteCall: Promise<void>;
       await act(async () => {
+        deleteCall = result.current.deleteTodo();
         await new Promise((resolve) => setTimeout(resolve, 0));
       });
 
       expect(result.current.isUpdating).toBe(true);
 
-      act(() => {
-        resolvePromise!();
-      });
-
       await act(async () => {
+        resolvePromise!();
         await deleteCall;
       });
 
@@ -415,19 +406,16 @@ describe('useTodoItemViewModel', () => {
 
       const { result } = renderHook(() => useTodoItemViewModel(mockTodo));
 
-      const updateCall = result.current.updatePriority('high');
-
+      let updateCall: Promise<void>;
       await act(async () => {
+        updateCall = result.current.updatePriority('high');
         await new Promise((resolve) => setTimeout(resolve, 0));
       });
 
       expect(result.current.isUpdating).toBe(true);
 
-      act(() => {
-        resolvePromise!();
-      });
-
       await act(async () => {
+        resolvePromise!();
         await updateCall;
       });
 
