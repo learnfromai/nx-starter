@@ -8,3 +8,7 @@ export * from './Entity';
 
 // Domain entities
 export * from './Todo';
+
+// User entities
+export * from './User';
+export * from './RefreshToken';

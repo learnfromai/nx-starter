@@ -8,3 +8,9 @@ export * from './CreateTodoUseCase';
 export * from './UpdateTodoUseCase';
 export * from './DeleteTodoUseCase';
 export * from './ToggleTodoUseCase';
+
+// Authentication command use cases
+export * from './RegisterUserUseCase';
+export * from './LoginUseCase';
+export * from './RefreshTokenUseCase';
+export * from './LogoutUseCase';

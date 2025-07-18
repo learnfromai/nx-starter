@@ -1,5 +1,6 @@
 import { DataSource } from 'typeorm';
 import { TodoEntity } from './TodoEntity';
+import { UserEntity, RefreshTokenEntity } from '../../../auth/persistence/typeorm';
 
 /**
  * TypeORM DataSource configuration
@@ -8,7 +9,7 @@ import { TodoEntity } from './TodoEntity';
 export const createTypeOrmDataSource = (): DataSource => {
   // Base configuration
   const baseConfig = {
-    entities: [TodoEntity],
+    entities: [TodoEntity, UserEntity, RefreshTokenEntity],
     synchronize: process.env.NODE_ENV === 'development',
     logging: process.env.NODE_ENV === 'development',
   };

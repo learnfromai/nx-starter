@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { container } from '../../infrastructure/di/container';
 import { TodoController } from '../controllers/TodoController';
+import { JwtMiddleware } from '../middleware/JwtMiddleware';
 
 export const createTodoRoutes = (): Router => {
   const router = Router();
@@ -9,7 +10,10 @@ export const createTodoRoutes = (): Router => {
   // Bind controller methods to preserve 'this' context
   const bindMethod = (method: Function) => method.bind(todoController);
 
-  // Todo CRUD routes
+  // Apply JWT authentication to all todo routes
+  router.use(JwtMiddleware.authenticate);
+
+  // Todo CRUD routes (now protected)
   router.get('/', bindMethod(todoController.getAllTodos));
   router.get('/active', bindMethod(todoController.getActiveTodos));
   router.get('/completed', bindMethod(todoController.getCompletedTodos));

@@ -15,12 +15,33 @@ import {
   GetCompletedTodosQueryHandler,
   GetTodoByIdQueryHandler,
   GetTodoStatsQueryHandler,
+  RegisterUserUseCase,
+  LoginUseCase,
+  RefreshTokenUseCase,
+  LogoutUseCase,
+  GetUserProfileUseCase,
   TOKENS,
 } from '@nx-starter/shared-application';
-import type { ITodoRepository } from '@nx-starter/shared-domain';
+import type { 
+  ITodoRepository, 
+  IUserRepository, 
+  IRefreshTokenRepository 
+} from '@nx-starter/shared-domain';
+import type { 
+  IPasswordHashingService, 
+  IJwtService 
+} from '@nx-starter/shared-application';
 import { getTypeOrmDataSource } from '../todo/persistence/typeorm/TypeOrmConnection';
 import { connectMongoDB } from '../todo/persistence/mongoose/MongooseConnection';
 import { getSequelizeInstance } from '../todo/persistence/sequelize/SequelizeConnection';
+import { 
+  TypeOrmUserRepository, 
+  TypeOrmRefreshTokenRepository 
+} from '../auth/persistence/typeorm';
+import { 
+  PasswordHashingService, 
+  JwtService 
+} from '../auth/services';
 
 // Register dependencies following Clean Architecture layers
 export const configureDI = async () => {
@@ -58,11 +79,39 @@ export const configureDI = async () => {
     TOKENS.GetTodoStatsQueryHandler,
     GetTodoStatsQueryHandler
   );
+
+  // Authentication Infrastructure - Services
+  container.registerSingleton<IPasswordHashingService>(
+    TOKENS.PasswordHashingService,
+    PasswordHashingService
+  );
+  container.registerSingleton<IJwtService>(
+    TOKENS.JwtService,
+    JwtService
+  );
+
+  // Authentication Infrastructure - Repositories (using TypeORM for simplicity)
+  const dataSource = await getTypeOrmDataSource();
+  container.registerInstance<IUserRepository>(
+    TOKENS.UserRepository,
+    new TypeOrmUserRepository(dataSource)
+  );
+  container.registerInstance<IRefreshTokenRepository>(
+    TOKENS.RefreshTokenRepository,
+    new TypeOrmRefreshTokenRepository(dataSource)
+  );
+
+  // Authentication Application Layer - Use Cases
+  container.registerSingleton(TOKENS.RegisterUserUseCase, RegisterUserUseCase);
+  container.registerSingleton(TOKENS.LoginUseCase, LoginUseCase);
+  container.registerSingleton(TOKENS.RefreshTokenUseCase, RefreshTokenUseCase);
+  container.registerSingleton(TOKENS.LogoutUseCase, LogoutUseCase);
+  container.registerSingleton(TOKENS.GetUserProfileUseCase, GetUserProfileUseCase);
 };
 
 async function getRepositoryImplementation(): Promise<ITodoRepository> {
   const dbType = process.env.DB_TYPE || 'memory';
-  const ormType = process.env.ORM_TYPE || 'native';
+  const ormType = process.env.DB_ORM || process.env.ORM_TYPE || 'native';
 
   console.log(`📦 Using ${ormType} ORM with ${dbType} database`);
 

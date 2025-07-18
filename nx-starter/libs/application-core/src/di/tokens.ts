@@ -23,6 +23,24 @@ export const TOKENS = {
 
   // Domain Layer - Services
   TodoDomainService: 'TodoDomainService',
+
+  // Authentication Infrastructure Layer - Repositories
+  UserRepository: 'IUserRepository',
+  RefreshTokenRepository: 'IRefreshTokenRepository',
+
+  // Authentication Application Layer - Use Cases
+  RegisterUserUseCase: 'RegisterUserUseCase',
+  LoginUseCase: 'LoginUseCase',
+  RefreshTokenUseCase: 'RefreshTokenUseCase',
+  ChangePasswordUseCase: 'ChangePasswordUseCase',
+  UpdateUserProfileUseCase: 'UpdateUserProfileUseCase',
+  LogoutUseCase: 'LogoutUseCase',
+  GetUserProfileUseCase: 'GetUserProfileUseCase',
+
+  // Authentication Services
+  PasswordHashingService: 'IPasswordHashingService',
+  JwtService: 'IJwtService',
+  AuthenticationDomainService: 'AuthenticationDomainService',
 } as const;
 
 // Type-safe token keys

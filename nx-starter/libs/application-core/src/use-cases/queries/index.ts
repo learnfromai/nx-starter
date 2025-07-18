@@ -5,3 +5,6 @@
 
 // Export all query use cases
 export * from './TodoQueryHandlers';
+
+// Authentication query use cases
+export * from './GetUserProfileUseCase';
