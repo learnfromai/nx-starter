@@ -1,8 +1,0 @@
-onlyBuiltDependencies:
-  - '@parcel/watcher'
-  - '@swc/core'
-  - '@tailwindcss/oxide'
-  - better-sqlite3
-  - core-js-pure
-  - esbuild
-  - nx
