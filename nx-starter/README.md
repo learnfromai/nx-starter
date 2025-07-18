@@ -10,8 +10,7 @@ This workspace follows clean architecture principles with clear separation of co
 
 - **starter-api** - Express.js REST API backend
 - **starter-pwa** - React Progressive Web App frontend
-- **starter-api-e2e** - End-to-end tests for API
-- **starter-pwa-e2e** - End-to-end tests for PWA
+- **starter-pwa-e2e** - End-to-end tests for PWA (uses Playwright)
 
 ### Libraries
 
@@ -143,7 +142,6 @@ npx nx serve starter-api --configuration=production
 npx nx test <project-name>
 
 # Run e2e tests
-npx nx e2e starter-api-e2e
 npx nx e2e starter-pwa-e2e
 
 # Run tests with coverage
@@ -220,9 +218,8 @@ npx nx affected --target=test
 nx-starter/
 ├── apps/
 │   ├── starter-api/          # Express API application
-│   ├── starter-api-e2e/      # API end-to-end tests
 │   ├── starter-pwa/          # React PWA application
-│   └── starter-pwa-e2e/      # PWA end-to-end tests
+│   └── starter-pwa-e2e/      # PWA end-to-end tests (Playwright)
 ├── libs/
 │   ├── application-core/     # Application services & use cases
 │   ├── domain-core/          # Domain entities & business logic
@@ -266,10 +263,11 @@ Copy these to `.env` and customize for your environment.
 
 ### E2E Tests
 
-- **API E2E**: `apps/starter-api-e2e/`
 - **PWA E2E**: `apps/starter-pwa-e2e/`
 - **Framework**: Playwright
-- **Command**: `npx nx e2e <project-name>-e2e`
+- **Command**: `npx nx e2e starter-pwa-e2e`
+
+Note: API end-to-end testing is handled by integration tests in the `starter-api` project using Vitest and Supertest.
 
 ## 📚 Learning Resources
 
