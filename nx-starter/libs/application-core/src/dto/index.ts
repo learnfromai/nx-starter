@@ -7,3 +7,5 @@
 export * from './TodoCommands';
 export * from './TodoQueries';
 export * from './TodoDto';
+export * from './UserCommands';
+export * from './UserDto';

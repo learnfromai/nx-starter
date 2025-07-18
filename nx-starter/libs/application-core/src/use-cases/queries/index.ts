@@ -5,3 +5,4 @@
 
 // Export all query use cases
 export * from './TodoQueryHandlers';
+export * from './GetUserProfileUseCase';

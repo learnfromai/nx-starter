@@ -3,8 +3,11 @@ import { container } from 'tsyringe';
 import { InMemoryTodoRepository } from '../todo/persistence/InMemoryTodoRepository';
 import { SqliteTodoRepository } from '../todo/persistence/SqliteTodoRepository';
 import { TypeOrmTodoRepository } from '../todo/persistence/typeorm/TypeOrmTodoRepository';
+import { TypeOrmUserRepository } from '../user/persistence/typeorm/TypeOrmUserRepository';
 import { MongooseTodoRepository } from '../todo/persistence/mongoose/MongooseTodoRepository';
 import { SequelizeTodoRepository } from '../todo/persistence/sequelize/SequelizeTodoRepository';
+import { BcryptPasswordService } from '../services/BcryptPasswordService';
+import { JwtTokenService } from '../services/JwtTokenService';
 import {
   CreateTodoUseCase,
   UpdateTodoUseCase,
@@ -15,9 +18,13 @@ import {
   GetCompletedTodosQueryHandler,
   GetTodoByIdQueryHandler,
   GetTodoStatsQueryHandler,
+  RegisterUserUseCase,
+  LoginUseCase,
+  RefreshTokenUseCase,
+  GetUserProfileUseCase,
   TOKENS,
 } from '@nx-starter/shared-application';
-import type { ITodoRepository } from '@nx-starter/shared-domain';
+import type { ITodoRepository, IUserRepository, IPasswordService, ITokenService } from '@nx-starter/shared-domain';
 import { getTypeOrmDataSource } from '../todo/persistence/typeorm/TypeOrmConnection';
 import { connectMongoDB } from '../todo/persistence/mongoose/MongooseConnection';
 import { getSequelizeInstance } from '../todo/persistence/sequelize/SequelizeConnection';
@@ -31,11 +38,28 @@ export const configureDI = async () => {
     repositoryImplementation
   );
 
+  // Infrastructure Layer - User Repository (using TypeORM for simplicity)
+  const userRepository = await getUserRepositoryImplementation();
+  container.registerInstance<IUserRepository>(
+    TOKENS.UserRepository,
+    userRepository
+  );
+
+  // Infrastructure Layer - Services
+  container.registerSingleton<IPasswordService>(TOKENS.PasswordService, BcryptPasswordService);
+  container.registerSingleton<ITokenService>(TOKENS.TokenService, JwtTokenService);
+
   // Application Layer - Use Cases (Commands)
   container.registerSingleton(TOKENS.CreateTodoUseCase, CreateTodoUseCase);
   container.registerSingleton(TOKENS.UpdateTodoUseCase, UpdateTodoUseCase);
   container.registerSingleton(TOKENS.DeleteTodoUseCase, DeleteTodoUseCase);
   container.registerSingleton(TOKENS.ToggleTodoUseCase, ToggleTodoUseCase);
+
+  // Application Layer - User Use Cases
+  container.registerSingleton(TOKENS.RegisterUserUseCase, RegisterUserUseCase);
+  container.registerSingleton(TOKENS.LoginUseCase, LoginUseCase);
+  container.registerSingleton(TOKENS.RefreshTokenUseCase, RefreshTokenUseCase);
+  container.registerSingleton(TOKENS.GetUserProfileUseCase, GetUserProfileUseCase);
 
   // Application Layer - Use Cases (Queries)
   container.registerSingleton(
@@ -59,6 +83,13 @@ export const configureDI = async () => {
     GetTodoStatsQueryHandler
   );
 };
+
+async function getUserRepositoryImplementation(): Promise<IUserRepository> {
+  // For simplicity, always use TypeORM for user repository
+  const dataSource = await getTypeOrmDataSource();
+  console.log('📦 Using TypeORM repository for users');
+  return new TypeOrmUserRepository(dataSource);
+}
 
 async function getRepositoryImplementation(): Promise<ITodoRepository> {
   const dbType = process.env.DB_TYPE || 'memory';
