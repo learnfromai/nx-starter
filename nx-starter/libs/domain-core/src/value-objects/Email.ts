@@ -8,19 +8,18 @@ export class Email extends ValueObject<string> {
 
   constructor(value: string) {
     super(value);
-    this.validate();
   }
 
-  private validate(): void {
-    if (!this.value || typeof this.value !== 'string') {
+  protected validate(value: string): void {
+    if (!value || typeof value !== 'string') {
       throw new Error('Email must be a non-empty string');
     }
 
-    if (!Email.EMAIL_REGEX.test(this.value)) {
+    if (!Email.EMAIL_REGEX.test(value)) {
       throw new Error('Email must be a valid email address');
     }
 
-    if (this.value.length > 254) {
+    if (value.length > 254) {
       throw new Error('Email must be less than 254 characters');
     }
   }

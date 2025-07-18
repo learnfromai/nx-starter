@@ -9,15 +9,14 @@ export class HashedPassword extends ValueObject<string> {
 
   constructor(value: string) {
     super(value);
-    this.validate();
   }
 
-  private validate(): void {
-    if (!this.value || typeof this.value !== 'string') {
+  protected validate(value: string): void {
+    if (!value || typeof value !== 'string') {
       throw new Error('Hashed password must be a non-empty string');
     }
 
-    if (!HashedPassword.BCRYPT_REGEX.test(this.value)) {
+    if (!HashedPassword.BCRYPT_REGEX.test(value)) {
       throw new Error('Hashed password must be a valid bcrypt hash');
     }
   }

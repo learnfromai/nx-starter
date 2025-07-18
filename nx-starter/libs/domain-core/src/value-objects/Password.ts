@@ -10,24 +10,23 @@ export class Password extends ValueObject<string> {
 
   constructor(value: string) {
     super(value);
-    this.validate();
   }
 
-  private validate(): void {
-    if (!this.value || typeof this.value !== 'string') {
+  protected validate(value: string): void {
+    if (!value || typeof value !== 'string') {
       throw new Error('Password must be a non-empty string');
     }
 
-    if (this.value.length < Password.MIN_LENGTH) {
+    if (value.length < Password.MIN_LENGTH) {
       throw new Error(`Password must be at least ${Password.MIN_LENGTH} characters long`);
     }
 
-    if (this.value.length > Password.MAX_LENGTH) {
+    if (value.length > Password.MAX_LENGTH) {
       throw new Error(`Password must be less than ${Password.MAX_LENGTH} characters long`);
     }
 
     // Check for at least one uppercase, one lowercase, and one digit
-    if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(this.value)) {
+    if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(value)) {
       throw new Error('Password must contain at least one uppercase letter, one lowercase letter, and one digit');
     }
   }

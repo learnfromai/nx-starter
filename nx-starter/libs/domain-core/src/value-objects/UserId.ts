@@ -9,15 +9,14 @@ export class UserId extends ValueObject<string> {
 
   constructor(value: string) {
     super(value);
-    this.validate();
   }
 
-  private validate(): void {
-    if (!this.value || typeof this.value !== 'string') {
+  protected validate(value: string): void {
+    if (!value || typeof value !== 'string') {
       throw new Error('User ID must be a non-empty string');
     }
 
-    if (!UserId.UUID_REGEX.test(this.value)) {
+    if (!UserId.UUID_REGEX.test(value)) {
       throw new Error('User ID must be a valid UUID');
     }
   }
