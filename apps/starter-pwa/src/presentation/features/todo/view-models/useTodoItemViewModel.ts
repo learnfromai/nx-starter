@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useTodoStore } from '../../../../infrastructure/state/TodoStore';
 import { Todo } from '@nx-starter/domain-core';
+import { UpdateTodoCommandSchema } from '@nx-starter/application-core';
 import type { TodoItemViewModel } from './interfaces/TodoViewModels';
 
 /**
@@ -37,13 +38,23 @@ export const useTodoItemViewModel = (todo: Todo): TodoItemViewModel => {
   const updateTitle = useCallback(
     async (newTitle: string) => {
       if (!todo.stringId) return;
-      if (!newTitle.trim()) {
-        throw new Error('Title cannot be empty');
+
+      // Use Zod schema validation for consistency with backend
+      const validationResult = UpdateTodoCommandSchema.safeParse({
+        id: todo.stringId,
+        title: newTitle,
+      });
+
+      if (!validationResult.success) {
+        const errorMessage = validationResult.error.issues
+          .map((issue) => issue.message)
+          .join(', ');
+        throw new Error(`Validation failed: ${errorMessage}`);
       }
 
       setIsUpdating(true);
       try {
-        await store.updateTodo(todo.stringId, { title: newTitle.trim() });
+        await store.updateTodo(todo.stringId, { title: validationResult.data.title });
       } catch (error) {
         console.error('Failed to update todo title:', error);
         throw error;
@@ -82,10 +93,12 @@ export const useTodoItemViewModel = (todo: Todo): TodoItemViewModel => {
     if (!todo.stringId || !editTitle.trim()) return;
 
     try {
-      await updateTitle(editTitle.trim());
+      // This will now use Zod validation internally
+      await updateTitle(editTitle);
       setIsEditing(false);
     } catch (error) {
       console.error('Failed to save edit:', error);
+      // Don't throw to prevent UI breaking, but the error is logged
     }
   }, [todo.stringId, editTitle, updateTitle]);
 
