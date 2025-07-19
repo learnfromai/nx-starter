@@ -7,6 +7,9 @@ export * from './ValidationService';
 // Concrete validation service implementations
 export * from './TodoValidationService';
 
+// Validation tokens
+export * from './ValidationTokens';
+
 // Note: Custom decorators for routing-controllers were removed in favor of manual validation
 
 // Validation middleware
@@ -21,6 +24,3 @@ export {
   TodoIdSchema,
   TodoValidationSchemas,
 } from './TodoValidationSchemas';
-
-// Re-export validation service tokens
-export { VALIDATION_TOKENS } from './TodoValidationService';
