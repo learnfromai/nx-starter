@@ -15,6 +15,10 @@ import {
   GetCompletedTodosQueryHandler,
   GetTodoByIdQueryHandler,
   GetTodoStatsQueryHandler,
+  CreateTodoCommandValidationService,
+  UpdateTodoCommandValidationService,
+  DeleteTodoCommandValidationService,
+  ToggleTodoCommandValidationService,
   TOKENS,
 } from '@nx-starter/application-core';
 import type { ITodoRepository } from '@nx-starter/domain-core';
@@ -30,6 +34,24 @@ export const configureDI = async () => {
   container.registerInstance<ITodoRepository>(
     TOKENS.TodoRepository,
     repositoryImplementation
+  );
+
+  // Application Layer - Validation Services
+  container.registerSingleton(
+    TOKENS.CreateTodoCommandValidationService,
+    CreateTodoCommandValidationService
+  );
+  container.registerSingleton(
+    TOKENS.UpdateTodoCommandValidationService,
+    UpdateTodoCommandValidationService
+  );
+  container.registerSingleton(
+    TOKENS.DeleteTodoCommandValidationService,
+    DeleteTodoCommandValidationService
+  );
+  container.registerSingleton(
+    TOKENS.ToggleTodoCommandValidationService,
+    ToggleTodoCommandValidationService
   );
 
   // Application Layer - Use Cases (Commands)

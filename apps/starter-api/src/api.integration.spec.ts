@@ -91,8 +91,9 @@ describe('Todo API Integration Tests', () => {
 
         expect(response.body).toMatchObject({
           success: false,
-          error: 'Validation failed',
         });
+        expect(response.body.error).toContain('Validation failed');
+        expect(response.body.error).toContain('title');
       });
 
       it('should validate title length', async () => {
@@ -104,8 +105,10 @@ describe('Todo API Integration Tests', () => {
 
         expect(response.body).toMatchObject({
           success: false,
-          error: 'Validation failed',
         });
+        expect(response.body.error).toContain('Validation failed');
+        expect(response.body.error).toContain('title');
+        expect(response.body.error).toContain('at least 2 characters');
       });
     });
 

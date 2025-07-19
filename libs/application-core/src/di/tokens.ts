@@ -7,6 +7,12 @@ export const TOKENS = {
   TodoCommandService: 'ITodoCommandService',
   TodoQueryService: 'ITodoQueryService',
 
+  // Application Layer - Validation Services
+  CreateTodoCommandValidationService: 'CreateTodoCommandValidationService',
+  UpdateTodoCommandValidationService: 'UpdateTodoCommandValidationService',
+  DeleteTodoCommandValidationService: 'DeleteTodoCommandValidationService',
+  ToggleTodoCommandValidationService: 'ToggleTodoCommandValidationService',
+
   // Application Layer - Use Cases (Commands)
   CreateTodoUseCase: 'CreateTodoUseCase',
   UpdateTodoUseCase: 'UpdateTodoUseCase',
