@@ -38,7 +38,7 @@ export class TodoCommandService implements ITodoCommandService {
   async createTodo(data: CreateTodoData): Promise<Todo> {
     const command: CreateTodoCommand = {
       title: data.title,
-      priority: data.priority || 'medium',
+      priority: data.priority,
       dueDate: data.dueDate,
     };
     return await this.createTodoUseCase.execute(command);

@@ -20,10 +20,7 @@ export const CreateTodoCommandSchema = z.object({
     .datetime()
     .optional()
     .transform((val) => val ? new Date(val) : undefined),
-}).transform((data) => ({
-  ...data,
-  priority: data.priority || 'medium' as const,
-}));
+});
 
 export const UpdateTodoCommandSchema = z.object({
   id: z.string().min(1, 'ID cannot be empty'),

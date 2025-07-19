@@ -20,10 +20,15 @@ export {
 
 // Legacy function for backward compatibility - now returns required schemas
 export const createCommandValidationSchema = () => {
-  return {
-    CreateTodoCommandSchema: require('../validation/TodoValidationSchemas').CreateTodoCommandSchema,
-    UpdateTodoCommandSchema: require('../validation/TodoValidationSchemas').UpdateTodoCommandSchema,
-    DeleteTodoCommandSchema: require('../validation/TodoValidationSchemas').DeleteTodoCommandSchema,
-    ToggleTodoCommandSchema: require('../validation/TodoValidationSchemas').ToggleTodoCommandSchema,
-  };
+  try {
+    return {
+      CreateTodoCommandSchema: require('../validation/TodoValidationSchemas').CreateTodoCommandSchema,
+      UpdateTodoCommandSchema: require('../validation/TodoValidationSchemas').UpdateTodoCommandSchema,
+      DeleteTodoCommandSchema: require('../validation/TodoValidationSchemas').DeleteTodoCommandSchema,
+      ToggleTodoCommandSchema: require('../validation/TodoValidationSchemas').ToggleTodoCommandSchema,
+    };
+  } catch {
+    // Return empty object if module is not available
+    return {};
+  }
 };
