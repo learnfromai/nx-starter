@@ -10,7 +10,8 @@
     "e2e": {
       "executor": "@nx/playwright:playwright",
       "options": {
-        "config": "apps/starter-pwa-e2e/playwright.config.ts"
+        "config": "apps/starter-pwa-e2e/playwright.config.ts",
+        "skipInstall": true
       }
     }
   }

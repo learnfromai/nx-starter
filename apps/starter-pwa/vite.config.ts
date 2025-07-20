@@ -28,6 +28,10 @@ export default defineConfig(async () => {
         '@': '/src',
       },
     },
+    define: {
+      // Fix "global is not defined" error in browser environment
+      global: 'globalThis',
+    },
     // Uncomment this if you are using workers.
     // worker: {
     //  plugins: [ nxViteTsPaths() ],
