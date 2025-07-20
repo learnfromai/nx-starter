@@ -21,6 +21,8 @@ export default defineConfig({
     baseURL,
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+    /* Force headless mode since we don't have X server */
+    headless: true,
   },
   /* Run your local dev server before starting the tests */
   webServer: {
@@ -32,7 +34,11 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: { 
+        ...devices['Desktop Chrome'],
+        // Use system Chrome instead of downloading Playwright's Chromium
+        channel: 'chrome',
+      },
     },
 
     // Uncomment for other browsers
