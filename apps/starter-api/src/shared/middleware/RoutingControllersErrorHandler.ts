@@ -34,11 +34,7 @@ export class RoutingControllersErrorHandler implements ExpressErrorMiddlewareInt
         success: false,
         error: 'Validation failed',
         code: 'VALIDATION_ERROR',
-        details: {
-          message: error.message,
-          issues: error.issues,
-          fieldErrors: error.getIssuesByField(),
-        },
+        details: error.issues,
       });
       return;
     }
