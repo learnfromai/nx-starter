@@ -1,8 +1,10 @@
 import 'reflect-metadata';
+
+import type { Application } from 'express';
 import supertest from 'supertest';
+
 import { createApp } from './config/app';
 import { configureDI } from './infrastructure/di/container';
-import type { Application } from 'express';
 
 describe('Todo API Integration Tests', () => {
   let app: Application;

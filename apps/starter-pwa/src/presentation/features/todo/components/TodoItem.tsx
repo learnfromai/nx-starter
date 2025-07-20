@@ -1,11 +1,12 @@
-import React from 'react';
 import { Todo } from '@nx-starter/shared-domain';
+import { Edit, Save, Trash2, X } from 'lucide-react';
+import React from 'react';
+
+import { cn } from '../../../../lib/utils';
 import { Button } from '../../../components/ui/button';
-import { Input } from '../../../components/ui/input';
 import { Card, CardContent } from '../../../components/ui/card';
 import { Checkbox } from '../../../components/ui/checkbox';
-import { cn } from '../../../../lib/utils';
-import { Edit, Trash2, Save, X } from 'lucide-react';
+import { Input } from '../../../components/ui/input';
 import { useTodoItemViewModel } from '../view-models/useTodoItemViewModel';
 
 interface TodoItemProps {

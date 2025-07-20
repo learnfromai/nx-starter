@@ -1,12 +1,13 @@
-import { injectable } from 'tsyringe';
 import {
+  ITodoRepository,
+  Specification,
   Todo,
   TodoPriorityLevel,
-  Specification,
-  ITodoRepository,
 } from '@nx-starter/domain-core';
-import { db, type TodoRecord } from './TodoDB';
 import { generateUUID } from '@nx-starter/utils-core';
+import { injectable } from 'tsyringe';
+
+import { db, type TodoRecord } from './TodoDB';
 
 @injectable()
 export class TodoRepository implements ITodoRepository {

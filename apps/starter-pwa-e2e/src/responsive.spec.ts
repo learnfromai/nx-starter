@@ -1,4 +1,5 @@
-import { test, expect } from '@playwright/test';
+import { expect,test } from '@playwright/test';
+
 import { TodoPage } from './pages/TodoPage';
 
 test.describe('Responsive Design', () => {

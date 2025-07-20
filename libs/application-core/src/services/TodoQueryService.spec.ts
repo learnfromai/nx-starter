@@ -1,15 +1,16 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { TodoQueryService } from './TodoQueryService';
 import { Todo } from '@nx-starter/domain-core';
-import {
-  GetAllTodosQueryHandler,
-  GetFilteredTodosQueryHandler,
-  GetActiveTodosQueryHandler,
-  GetCompletedTodosQueryHandler,
-  GetTodoStatsQueryHandler,
-  GetTodoByIdQueryHandler,
-} from '../use-cases/queries/TodoQueryHandlers';
 import { TEST_UUIDS } from '@nx-starter/utils-core';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import {
+  GetActiveTodosQueryHandler,
+  GetAllTodosQueryHandler,
+  GetCompletedTodosQueryHandler,
+  GetFilteredTodosQueryHandler,
+  GetTodoByIdQueryHandler,
+  GetTodoStatsQueryHandler,
+} from '../use-cases/queries/TodoQueryHandlers';
+import { TodoQueryService } from './TodoQueryService';
 
 describe('TodoQueryService', () => {
   let service: TodoQueryService;

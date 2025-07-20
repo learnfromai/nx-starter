@@ -1,36 +1,31 @@
-import { Response } from 'express';
-import { injectable, inject } from 'tsyringe';
-import {
-  Controller,
-  Get,
-  Post,
-  Put,
-  Patch,
-  Delete,
-  Param,
-  Body,
-  HttpCode,
-} from 'routing-controllers';
 import {
   CreateTodoUseCase,
-  UpdateTodoUseCase,
   DeleteTodoUseCase,
-  ToggleTodoUseCase,
-  GetAllTodosQueryHandler,
   GetActiveTodosQueryHandler,
+  GetAllTodosQueryHandler,
   GetCompletedTodosQueryHandler,
   GetTodoByIdQueryHandler,
   GetTodoStatsQueryHandler,
-  TodoMapper,
-  TOKENS,
-  TodoValidationService,
-  VALIDATION_TOKENS,
-  CreateTodoCommandSchema,
-  UpdateTodoCommandSchema,
-  DeleteTodoCommandSchema,
-  ToggleTodoCommandSchema,
   TodoIdSchema,
+  TodoMapper,
+  TodoValidationService,
+  ToggleTodoUseCase,
+  TOKENS,
+  UpdateTodoUseCase,
+  VALIDATION_TOKENS,
 } from '@nx-starter/application-core';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Patch,
+  Post,
+  Put,
+} from 'routing-controllers';
+import { inject,injectable } from 'tsyringe';
 
 /**
  * REST API Controller for Todo operations

@@ -1,8 +1,8 @@
-import { Request, Response, NextFunction } from 'express';
-import { Middleware, ExpressErrorMiddlewareInterface } from 'routing-controllers';
-import { DomainException } from '@nx-starter/domain-core';
-import { ZodError } from 'zod';
 import { ValidationError } from '@nx-starter/application-core';
+import { DomainException } from '@nx-starter/domain-core';
+import { NextFunction,Request, Response } from 'express';
+import { ExpressErrorMiddlewareInterface,Middleware } from 'routing-controllers';
+import { ZodError } from 'zod';
 
 /**
  * Custom error handler for routing-controllers

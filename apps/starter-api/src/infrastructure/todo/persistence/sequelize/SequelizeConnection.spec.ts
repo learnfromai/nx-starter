@@ -1,5 +1,6 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { Sequelize } from 'sequelize';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { config } from '../../../../config/config';
 
 vi.mock('sequelize', () => ({

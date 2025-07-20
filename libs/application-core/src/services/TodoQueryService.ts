@@ -1,19 +1,20 @@
-import { injectable, inject } from 'tsyringe';
 import type { Todo } from '@nx-starter/domain-core';
-import type { ITodoQueryService } from '../interfaces/ITodoService';
+import { inject,injectable } from 'tsyringe';
+
+import { TOKENS } from '../di/tokens';
 import type {
   GetFilteredTodosQuery,
   GetTodoByIdQuery,
 } from '../dto/TodoQueries';
+import type { ITodoQueryService } from '../interfaces/ITodoService';
 import {
-  GetAllTodosQueryHandler,
-  GetFilteredTodosQueryHandler,
   GetActiveTodosQueryHandler,
+  GetAllTodosQueryHandler,
   GetCompletedTodosQueryHandler,
-  GetTodoStatsQueryHandler,
+  GetFilteredTodosQueryHandler,
   GetTodoByIdQueryHandler,
+  GetTodoStatsQueryHandler,
 } from '../use-cases/queries/TodoQueryHandlers';
-import { TOKENS } from '../di/tokens';
 
 /**
  * Query Service implementing Query Responsibility Segregation

@@ -1,15 +1,16 @@
-import { injectable, inject } from 'tsyringe';
-import { ValidationService, IValidationService } from './ValidationService';
+import { inject,injectable } from 'tsyringe';
+
 import {
-  CreateTodoCommandSchema,
-  UpdateTodoCommandSchema,
-  DeleteTodoCommandSchema,
-  ToggleTodoCommandSchema,
   CreateTodoCommand,
-  UpdateTodoCommand,
+  CreateTodoCommandSchema,
   DeleteTodoCommand,
+  DeleteTodoCommandSchema,
   ToggleTodoCommand,
+  ToggleTodoCommandSchema,
+  UpdateTodoCommand,
+  UpdateTodoCommandSchema,
 } from './TodoValidationSchemas';
+import { IValidationService,ValidationService } from './ValidationService';
 
 /**
  * Validation service for CreateTodoCommand

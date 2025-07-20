@@ -1,8 +1,9 @@
-import { injectable, inject } from 'tsyringe';
-import { Todo, TodoTitle } from '@nx-starter/domain-core';
 import type { ITodoRepository } from '@nx-starter/domain-core';
-import type { CreateTodoCommand } from '../../dto/TodoCommands';
+import { Todo, TodoTitle } from '@nx-starter/domain-core';
+import { inject,injectable } from 'tsyringe';
+
 import { TOKENS } from '../../di/tokens';
+import type { CreateTodoCommand } from '../../dto/TodoCommands';
 
 /**
  * Use case for creating a new todo

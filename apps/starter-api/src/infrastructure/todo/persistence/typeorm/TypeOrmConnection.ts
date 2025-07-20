@@ -1,6 +1,7 @@
 import { DataSource } from 'typeorm';
-import { TodoEntity } from './TodoEntity';
+
 import { config } from '../../../../config/config';
+import { TodoEntity } from './TodoEntity';
 
 /**
  * TypeORM DataSource configuration

@@ -81,7 +81,21 @@
     "covweb": "pnpm test:coverage:web",
     "covdomain": "pnpm test:coverage:domain",
     "covapplication": "pnpm test:coverage:application",
-    "covutils": "pnpm test:coverage:utils"
+    "covutils": "pnpm test:coverage:utils",
+    
+    "security:audit": "audit-ci --config .auditci.json",
+    "security:fix": "pnpm audit --fix",
+    "security:check": "pnpm security:audit",
+    
+    "analyze:bundle": "webpack-bundle-analyzer dist/stats.json",
+    "analyze:api": "echo 'Bundle analysis for API will be available after build'",
+    "analyze:web": "echo 'Bundle analysis for PWA will be available after build'",
+    
+    "spell:check": "cspell \"**/*.{ts,tsx,md,json}\"",
+    "spell:check:changed": "cspell --files-from-stdin < <(git diff --name-only HEAD~1)",
+    
+    "quality:check": "pnpm lint && pnpm typecheck && pnpm spell:check && pnpm security:audit",
+    "quality:fix": "pnpm lint:fix && pnpm format"
   },
   "private": true,
   "dependencies": {
@@ -168,9 +182,16 @@
     "@vitest/coverage-v8": "^3.0.5",
     "@vitest/ui": "^3.2.4",
     "ajv": "^8.17.1",
+    "audit-ci": "^7.1.0",
     "autoprefixer": "^10.4.21",
+    "cspell": "^9.2.0",
     "eslint": "^9.8.0",
     "eslint-config-prettier": "^10.0.0",
+    "eslint-import-resolver-typescript": "^4.4.4",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-security": "^3.0.1",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "eslint-plugin-unused-imports": "^4.1.4",
     "husky": "^9.1.7",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^30.0.4",
@@ -193,6 +214,7 @@
     "typescript-eslint": "^8.29.0",
     "vite": "^6.0.0",
     "vitest": "^3.2.4",
+    "webpack-bundle-analyzer": "^4.10.2",
     "webpack-cli": "^5.1.4"
   }
 }

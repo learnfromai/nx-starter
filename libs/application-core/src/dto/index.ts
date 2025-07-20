@@ -5,5 +5,5 @@
 
 // Export all DTOs
 export * from './TodoCommands';
-export * from './TodoQueries';
 export * from './TodoDto';
+export * from './TodoQueries';

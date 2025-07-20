@@ -8,5 +8,5 @@ export * from './ValueObject';
 
 // Value objects
 export * from './TodoId';
-export * from './TodoTitle';
 export * from './TodoPriority';
+export * from './TodoTitle';

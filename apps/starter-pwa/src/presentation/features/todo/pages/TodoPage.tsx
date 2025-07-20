@@ -1,9 +1,10 @@
 import React from 'react';
+
+import { ErrorBanner } from '../../../components/common/ErrorBanner';
 import { MainLayout } from '../../../layouts/MainLayout';
 import { TodoForm } from '../components/TodoForm';
 import { TodoList } from '../components/TodoList';
 import { TodoStats } from '../components/TodoStats';
-import { ErrorBanner } from '../../../components/common/ErrorBanner';
 import { useTodoViewModel } from '../view-models/useTodoViewModel';
 
 export const TodoPage: React.FC = () => {

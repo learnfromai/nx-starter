@@ -1,8 +1,10 @@
 import 'reflect-metadata';
+
 import dotenv from 'dotenv';
+
 import { createApp } from './config/app';
-import { configureDI } from './infrastructure/di/container';
 import { config } from './config/config';
+import { configureDI } from './infrastructure/di/container';
 
 // Load environment variables
 dotenv.config();

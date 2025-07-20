@@ -1,27 +1,29 @@
 import 'reflect-metadata';
-import { container } from 'tsyringe';
-import { TodoRepository } from '../persistence/TodoRepository';
-import { ApiTodoRepository } from '../api/ApiTodoRepository';
-import {
-  TodoCommandService,
-  TodoQueryService,
-  CreateTodoUseCase,
-  UpdateTodoUseCase,
-  DeleteTodoUseCase,
-  ToggleTodoUseCase,
-  GetAllTodosQueryHandler,
-  GetFilteredTodosQueryHandler,
-  GetActiveTodosQueryHandler,
-  GetCompletedTodosQueryHandler,
-  GetTodoStatsQueryHandler,
-  GetTodoByIdQueryHandler,
-  TOKENS,
-} from '@nx-starter/application-core';
-import type { ITodoRepository } from '@nx-starter/domain-core';
+
 import type {
   ITodoCommandService,
   ITodoQueryService,
 } from '@nx-starter/application-core';
+import {
+  CreateTodoUseCase,
+  DeleteTodoUseCase,
+  GetActiveTodosQueryHandler,
+  GetAllTodosQueryHandler,
+  GetCompletedTodosQueryHandler,
+  GetFilteredTodosQueryHandler,
+  GetTodoByIdQueryHandler,
+  GetTodoStatsQueryHandler,
+  TodoCommandService,
+  TodoQueryService,
+  ToggleTodoUseCase,
+  TOKENS,
+  UpdateTodoUseCase,
+} from '@nx-starter/application-core';
+import type { ITodoRepository } from '@nx-starter/domain-core';
+import { container } from 'tsyringe';
+
+import { ApiTodoRepository } from '../api/ApiTodoRepository';
+import { TodoRepository } from '../persistence/TodoRepository';
 
 // Check environment variable to determine data source
 const useApiBackend = import.meta.env.VITE_USE_API_BACKEND === 'true';

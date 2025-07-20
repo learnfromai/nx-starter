@@ -1,21 +1,22 @@
-import { injectable, inject } from 'tsyringe';
 import type { Todo } from '@nx-starter/domain-core';
-import type {
-  ITodoCommandService,
-  CreateTodoData,
-  UpdateTodoData,
-} from '../interfaces/ITodoService';
+import { inject,injectable } from 'tsyringe';
+
+import { TOKENS } from '../di/tokens';
 import type {
   CreateTodoCommand,
-  UpdateTodoCommand,
   DeleteTodoCommand,
   ToggleTodoCommand,
+  UpdateTodoCommand,
 } from '../dto/TodoCommands';
+import type {
+  CreateTodoData,
+  ITodoCommandService,
+  UpdateTodoData,
+} from '../interfaces/ITodoService';
 import { CreateTodoUseCase } from '../use-cases/commands/CreateTodoUseCase';
-import { UpdateTodoUseCase } from '../use-cases/commands/UpdateTodoUseCase';
 import { DeleteTodoUseCase } from '../use-cases/commands/DeleteTodoUseCase';
 import { ToggleTodoUseCase } from '../use-cases/commands/ToggleTodoUseCase';
-import { TOKENS } from '../di/tokens';
+import { UpdateTodoUseCase } from '../use-cases/commands/UpdateTodoUseCase';
 
 /**
  * Command Service implementing Command Responsibility Segregation

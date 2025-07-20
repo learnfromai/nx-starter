@@ -1,19 +1,20 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import {
-  GetAllTodosQueryHandler,
-  GetFilteredTodosQueryHandler,
-  GetActiveTodosQueryHandler,
-  GetCompletedTodosQueryHandler,
-  GetTodoByIdQueryHandler,
-  GetTodoStatsQueryHandler,
-} from './TodoQueryHandlers';
-import { Todo, TodoTitle, TodoDomainService } from '@nx-starter/domain-core';
 import type { ITodoRepository } from '@nx-starter/domain-core';
+import { Todo, TodoDomainService,TodoTitle } from '@nx-starter/domain-core';
+import { TEST_UUIDS } from '@nx-starter/utils-core';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
 import type {
   GetFilteredTodosQuery,
   GetTodoByIdQuery,
 } from '../../dto/TodoQueries';
-import { TEST_UUIDS } from '@nx-starter/utils-core';
+import {
+  GetActiveTodosQueryHandler,
+  GetAllTodosQueryHandler,
+  GetCompletedTodosQueryHandler,
+  GetFilteredTodosQueryHandler,
+  GetTodoByIdQueryHandler,
+  GetTodoStatsQueryHandler,
+} from './TodoQueryHandlers';
 
 describe('TodoQueryHandlers', () => {
   let mockRepository: ITodoRepository;

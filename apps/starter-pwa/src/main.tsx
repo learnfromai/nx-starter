@@ -1,6 +1,8 @@
 import 'reflect-metadata';
+
 import { StrictMode } from 'react';
 import * as ReactDOM from 'react-dom/client';
+
 import App from './app/app';
 import { configureDI } from './infrastructure/di/container';
 

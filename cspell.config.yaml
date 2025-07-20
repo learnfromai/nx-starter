@@ -1,0 +1,61 @@
+version: "0.2"
+language: "en"
+words:
+  - tsyringe
+  - typeorm
+  - zustand
+  - pnpm
+  - eslint
+  - vite
+  - tailwindcss
+  - lucide
+  - radix
+  - commitlint
+  - vitest
+  - playwright
+  - webapi
+  - uuidv4
+  - mongodb
+  - postgres
+  - todos
+  - todo
+  - dto
+  - api
+  - pwa
+  - nx
+  - monorepo
+  - testdb
+  - testhost
+  - testuser
+  - testpass
+  - maxlength
+  - émojis
+ignorePaths:
+  - node_modules
+  - dist
+  - coverage
+  - "**/*.log"
+  - pnpm-lock.yaml
+  - ".nx"
+files:
+  - "**/*.{ts,tsx,js,jsx,md,json}"
+  - "!node_modules/**"
+  - "!dist/**"
+  - "!coverage/**"
+  - "!.nx/**"
+overrides:
+  - filename: "**/*.{ts,tsx,js,jsx}"
+    words:
+      - readonly
+      - typeof
+      - keyof
+      - const
+      - enum
+      - params
+      - impl
+      - deps
+      - ctx
+      - middleware
+      - middlewares
+      - uuid
+      - uuids

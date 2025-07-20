@@ -1,10 +1,11 @@
-import express from 'express';
 import cors from 'cors';
-import { useExpressServer, useContainer } from 'routing-controllers';
+import express from 'express';
+import { useContainer,useExpressServer } from 'routing-controllers';
+
 import { container } from '../infrastructure/di/container';
 import { TodoController } from '../presentation/controllers/TodoController';
-import { RoutingControllersErrorHandler } from '../shared/middleware/RoutingControllersErrorHandler';
 import { requestLogger } from '../presentation/middleware/errorHandler';
+import { RoutingControllersErrorHandler } from '../shared/middleware/RoutingControllersErrorHandler';
 import { config } from './config';
 
 /**

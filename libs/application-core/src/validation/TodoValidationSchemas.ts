@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import type { TodoPriorityLevel } from '@nx-starter/domain-core';
 
 /**
  * Zod schemas for Todo command validation

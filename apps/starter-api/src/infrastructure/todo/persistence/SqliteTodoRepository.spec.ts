@@ -1,7 +1,9 @@
 import 'reflect-metadata';
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { SqliteTodoRepository } from './SqliteTodoRepository';
+
 import { Todo } from '@nx-starter/domain-core';
+import { afterEach,beforeEach, describe, expect, it } from 'vitest';
+
+import { SqliteTodoRepository } from './SqliteTodoRepository';
 
 describe('SqliteTodoRepository', () => {
   let repository: SqliteTodoRepository;

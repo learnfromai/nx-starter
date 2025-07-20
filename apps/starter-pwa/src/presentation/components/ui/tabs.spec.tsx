@@ -1,7 +1,8 @@
-import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/react';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from './tabs';
-import { Settings, User, Bell } from 'lucide-react';
+import { Bell,Settings, User } from 'lucide-react';
+import { describe, expect,it } from 'vitest';
+
+import { Tabs, TabsContent,TabsList, TabsTrigger } from './tabs';
 
 describe('Tabs Component Snapshots', () => {
   describe('Tabs root', () => {

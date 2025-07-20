@@ -1,9 +1,11 @@
 import 'reflect-metadata';
-import { describe, it, expect, beforeEach, afterEach, afterAll } from 'vitest';
-import { Sequelize } from 'sequelize';
-import { SequelizeTodoRepository } from './SequelizeTodoRepository';
-import { TodoSequelizeModel, initTodoModel } from './TodoModel';
+
 import { Todo } from '@nx-starter/domain-core';
+import { Sequelize } from 'sequelize';
+import { afterAll,afterEach, beforeEach, describe, expect, it } from 'vitest';
+
+import { SequelizeTodoRepository } from './SequelizeTodoRepository';
+import { initTodoModel,TodoSequelizeModel } from './TodoModel';
 
 describe('SequelizeTodoRepository', () => {
   let sequelize: Sequelize;

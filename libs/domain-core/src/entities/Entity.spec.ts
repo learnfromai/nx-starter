@@ -1,5 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import { Entity, AggregateRoot, DomainEvent } from './Entity';
+import { describe, expect,it } from 'vitest';
+
+import { AggregateRoot, DomainEvent,Entity } from './Entity';
 
 // Test implementation of Entity
 class TestEntity extends Entity<string> {

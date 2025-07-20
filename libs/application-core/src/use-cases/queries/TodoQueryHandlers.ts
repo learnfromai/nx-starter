@@ -1,20 +1,21 @@
-import { injectable, inject } from 'tsyringe';
+import type { ITodoRepository } from '@nx-starter/domain-core';
 import {
-  Todo,
-  TodoDomainService,
   ActiveTodoSpecification,
   CompletedTodoSpecification,
-  OverdueTodoSpecification,
   HighPriorityTodoSpecification,
+  OverdueTodoSpecification,
+  Todo,
+  TodoDomainService,
   TodoNotFoundException,
 } from '@nx-starter/domain-core';
-import type { ITodoRepository } from '@nx-starter/domain-core';
+import { inject,injectable } from 'tsyringe';
+
+import { TOKENS } from '../../di/tokens';
 import type {
   GetFilteredTodosQuery,
   GetTodoByIdQuery,
   TodoStatsQueryResult,
 } from '../../dto/TodoQueries';
-import { TOKENS } from '../../di/tokens';
 
 /**
  * Query handler for getting all todos

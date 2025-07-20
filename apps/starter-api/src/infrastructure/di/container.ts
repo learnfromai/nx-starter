@@ -1,33 +1,35 @@
 import 'reflect-metadata';
-import { container } from 'tsyringe';
-import { InMemoryTodoRepository } from '../todo/persistence/InMemoryTodoRepository';
-import { SqliteTodoRepository } from '../todo/persistence/SqliteTodoRepository';
-import { TypeOrmTodoRepository } from '../todo/persistence/typeorm/TypeOrmTodoRepository';
-import { MongooseTodoRepository } from '../todo/persistence/mongoose/MongooseTodoRepository';
-import { SequelizeTodoRepository } from '../todo/persistence/sequelize/SequelizeTodoRepository';
+
 import {
   CreateTodoUseCase,
-  UpdateTodoUseCase,
+  CreateTodoValidationService,
   DeleteTodoUseCase,
-  ToggleTodoUseCase,
-  GetAllTodosQueryHandler,
+  DeleteTodoValidationService,
   GetActiveTodosQueryHandler,
+  GetAllTodosQueryHandler,
   GetCompletedTodosQueryHandler,
   GetTodoByIdQueryHandler,
   GetTodoStatsQueryHandler,
-  TOKENS,
   TodoValidationService,
-  CreateTodoValidationService,
-  UpdateTodoValidationService,
-  DeleteTodoValidationService,
+  ToggleTodoUseCase,
   ToggleTodoValidationService,
+  TOKENS,
+  UpdateTodoUseCase,
+  UpdateTodoValidationService,
   VALIDATION_TOKENS,
 } from '@nx-starter/application-core';
 import type { ITodoRepository } from '@nx-starter/domain-core';
-import { getTypeOrmDataSource } from '../todo/persistence/typeorm/TypeOrmConnection';
-import { connectMongoDB } from '../todo/persistence/mongoose/MongooseConnection';
-import { getSequelizeInstance } from '../todo/persistence/sequelize/SequelizeConnection';
+import { container } from 'tsyringe';
+
 import { config } from '../../config/config';
+import { InMemoryTodoRepository } from '../todo/persistence/InMemoryTodoRepository';
+import { connectMongoDB } from '../todo/persistence/mongoose/MongooseConnection';
+import { MongooseTodoRepository } from '../todo/persistence/mongoose/MongooseTodoRepository';
+import { getSequelizeInstance } from '../todo/persistence/sequelize/SequelizeConnection';
+import { SequelizeTodoRepository } from '../todo/persistence/sequelize/SequelizeTodoRepository';
+import { SqliteTodoRepository } from '../todo/persistence/SqliteTodoRepository';
+import { getTypeOrmDataSource } from '../todo/persistence/typeorm/TypeOrmConnection';
+import { TypeOrmTodoRepository } from '../todo/persistence/typeorm/TypeOrmTodoRepository';
 
 // Register dependencies following Clean Architecture layers
 export const configureDI = async () => {

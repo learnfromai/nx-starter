@@ -1,24 +1,24 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { container } from 'tsyringe';
-import {
-  CreateTodoValidationService,
-  UpdateTodoValidationService,
-  DeleteTodoValidationService,
-  ToggleTodoValidationService,
-  TodoValidationService,
-  VALIDATION_TOKENS,
-  type ICreateTodoValidationService,
-  type IUpdateTodoValidationService,
-  type IDeleteTodoValidationService,
-  type IToggleTodoValidationService,
-} from './TodoValidationService';
-import { ValidationError, ValidationResult } from './ValidationService';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
 import type {
   CreateTodoCommand,
-  UpdateTodoCommand,
   DeleteTodoCommand,
   ToggleTodoCommand,
+  UpdateTodoCommand,
 } from './TodoValidationSchemas';
+import {
+  CreateTodoValidationService,
+  DeleteTodoValidationService,
+  type ICreateTodoValidationService,
+  type IDeleteTodoValidationService,
+  type IToggleTodoValidationService,
+  type IUpdateTodoValidationService,
+  TodoValidationService,
+  ToggleTodoValidationService,
+  UpdateTodoValidationService,
+  VALIDATION_TOKENS,
+} from './TodoValidationService';
+import { ValidationError, ValidationResult } from './ValidationService';
 
 describe('Individual Validation Services', () => {
   describe('CreateTodoValidationService', () => {

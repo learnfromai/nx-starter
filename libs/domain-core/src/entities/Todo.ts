@@ -1,10 +1,10 @@
-import { TodoTitle } from '../value-objects/TodoTitle';
+import { TodoAlreadyCompletedException } from '../exceptions/DomainExceptions';
+import { TodoId } from '../value-objects/TodoId';
 import {
   TodoPriority,
   type TodoPriorityLevel,
 } from '../value-objects/TodoPriority';
-import { TodoId } from '../value-objects/TodoId';
-import { TodoAlreadyCompletedException } from '../exceptions/DomainExceptions';
+import { TodoTitle } from '../value-objects/TodoTitle';
 
 interface ITodo {
   id?: TodoId;

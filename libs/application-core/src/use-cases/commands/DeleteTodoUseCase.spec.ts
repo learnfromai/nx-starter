@@ -1,13 +1,14 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { DeleteTodoUseCase } from './DeleteTodoUseCase';
+import type { ITodoRepository } from '@nx-starter/domain-core';
 import {
   Todo,
   TodoNotFoundException,
   TodoTitle,
 } from '@nx-starter/domain-core';
-import type { ITodoRepository } from '@nx-starter/domain-core';
-import type { DeleteTodoCommand } from '../../dto/TodoCommands';
 import { TEST_UUIDS } from '@nx-starter/utils-core';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import type { DeleteTodoCommand } from '../../dto/TodoCommands';
+import { DeleteTodoUseCase } from './DeleteTodoUseCase';
 
 describe('DeleteTodoUseCase', () => {
   let useCase: DeleteTodoUseCase;

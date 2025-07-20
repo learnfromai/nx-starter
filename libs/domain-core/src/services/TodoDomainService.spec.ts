@@ -1,6 +1,7 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { TodoDomainService } from './TodoDomainService';
+import { beforeEach,describe, expect, it } from 'vitest';
+
 import { Todo } from '../entities/Todo';
+import { TodoDomainService } from './TodoDomainService';
 
 // Local test constants (replaces test-helpers dependency)
 const TEST_UUIDS = {

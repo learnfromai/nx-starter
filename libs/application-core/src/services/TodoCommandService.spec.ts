@@ -1,12 +1,13 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { TodoCommandService } from './TodoCommandService';
 import { Todo } from '@nx-starter/domain-core';
+import { TEST_UUIDS } from '@nx-starter/utils-core';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import type { CreateTodoData, UpdateTodoData } from '../interfaces/ITodoService';
 import { CreateTodoUseCase } from '../use-cases/commands/CreateTodoUseCase';
-import { UpdateTodoUseCase } from '../use-cases/commands/UpdateTodoUseCase';
 import { DeleteTodoUseCase } from '../use-cases/commands/DeleteTodoUseCase';
 import { ToggleTodoUseCase } from '../use-cases/commands/ToggleTodoUseCase';
-import type { CreateTodoData, UpdateTodoData } from '../interfaces/ITodoService';
-import { TEST_UUIDS } from '@nx-starter/utils-core';
+import { UpdateTodoUseCase } from '../use-cases/commands/UpdateTodoUseCase';
+import { TodoCommandService } from './TodoCommandService';
 
 describe('TodoCommandService', () => {
   let service: TodoCommandService;

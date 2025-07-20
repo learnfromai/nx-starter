@@ -1,3 +1,3 @@
 export * from './controllers';
-export * from './routes';
 export * from './middleware/errorHandler';
+export * from './routes';

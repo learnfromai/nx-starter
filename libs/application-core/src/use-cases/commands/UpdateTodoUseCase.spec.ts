@@ -1,14 +1,15 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { UpdateTodoUseCase } from './UpdateTodoUseCase';
+import type { ITodoRepository } from '@nx-starter/domain-core';
 import {
   Todo,
   TodoNotFoundException,
-  TodoTitle,
   TodoPriority,
+  TodoTitle,
 } from '@nx-starter/domain-core';
-import type { ITodoRepository } from '@nx-starter/domain-core';
-import type { UpdateTodoCommand } from '../../dto/TodoCommands';
 import { TEST_UUIDS } from '@nx-starter/utils-core';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import type { UpdateTodoCommand } from '../../dto/TodoCommands';
+import { UpdateTodoUseCase } from './UpdateTodoUseCase';
 
 describe('UpdateTodoUseCase', () => {
   let useCase: UpdateTodoUseCase;

@@ -1,10 +1,10 @@
-import { injectable } from 'tsyringe';
 import {
+  ITodoRepository,
+  Specification,
   Todo,
   TodoPriorityLevel,
-  Specification,
-  ITodoRepository,
 } from '@nx-starter/domain-core';
+import { injectable } from 'tsyringe';
 
 /**
  * API-based TodoRepository implementation
