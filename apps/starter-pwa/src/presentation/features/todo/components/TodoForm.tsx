@@ -35,10 +35,17 @@ export const TodoForm: React.FC = () => {
               {...register('title', {
                 required: 'Title is required',
                 validate: (value) => {
-                  viewModel.validateTitle(value);
-                  return viewModel.validationErrors.title
-                    ? viewModel.validationErrors.title
-                    : true;
+                  const trimmedValue = value?.trim();
+                  if (!value) {
+                    return 'Title is required';
+                  } else if (!trimmedValue) {
+                    return 'Title cannot be empty';
+                  } else if (trimmedValue.length < 2) {
+                    return 'Title must be at least 2 characters long';
+                  } else if (trimmedValue.length > 255) {
+                    return 'Title cannot exceed 255 characters';
+                  }
+                  return true;
                 },
               })}
               placeholder="What needs to be done?"
