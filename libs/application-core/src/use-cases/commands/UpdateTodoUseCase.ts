@@ -1,8 +1,9 @@
-import { injectable, inject } from 'tsyringe';
-import { Todo, TodoNotFoundException } from '@nx-starter/domain-core';
 import type { ITodoRepository } from '@nx-starter/domain-core';
-import type { UpdateTodoCommand } from '../../dto/TodoCommands';
+import { Todo, TodoNotFoundException } from '@nx-starter/domain-core';
+import { inject,injectable } from 'tsyringe';
+
 import { TOKENS } from '../../di/tokens';
+import type { UpdateTodoCommand } from '../../dto/TodoCommands';
 
 /**
  * Use case for updating an existing todo

@@ -1,7 +1,8 @@
 import React from 'react';
-import { TodoItem } from './TodoItem';
+
 import { Card, CardContent } from '../../../components/ui/card';
 import { useTodoListViewModel } from '../view-models/useTodoListViewModel';
+import { TodoItem } from './TodoItem';
 
 export const TodoList: React.FC = () => {
   const viewModel = useTodoListViewModel();

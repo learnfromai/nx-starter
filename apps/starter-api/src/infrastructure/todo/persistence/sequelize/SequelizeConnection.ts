@@ -1,6 +1,7 @@
 import { Sequelize } from 'sequelize';
-import { initTodoModel } from './TodoModel';
+
 import { config } from '../../../../config/config';
+import { initTodoModel } from './TodoModel';
 
 /**
  * Sequelize connection management

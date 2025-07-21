@@ -1,11 +1,12 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import {
-  CompletedTodoSpecification,
-  ActiveTodoSpecification,
-  OverdueTodoSpecification,
-  HighPriorityTodoSpecification,
-} from './TodoSpecifications';
+import { beforeEach,describe, expect, it } from 'vitest';
+
 import { Todo } from '../entities/Todo';
+import {
+  ActiveTodoSpecification,
+  CompletedTodoSpecification,
+  HighPriorityTodoSpecification,
+  OverdueTodoSpecification,
+} from './TodoSpecifications';
 
 // Local test constants (replaces test-helpers dependency)
 const TEST_UUIDS = {

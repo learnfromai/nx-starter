@@ -1,13 +1,14 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { ToggleTodoUseCase } from './ToggleTodoUseCase';
+import type { ITodoRepository } from '@nx-starter/domain-core';
 import {
   Todo,
   TodoNotFoundException,
   TodoTitle,
 } from '@nx-starter/domain-core';
-import type { ITodoRepository } from '@nx-starter/domain-core';
-import type { ToggleTodoCommand } from '../../dto/TodoCommands';
 import { TEST_UUIDS } from '@nx-starter/utils-core';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import type { ToggleTodoCommand } from '../../dto/TodoCommands';
+import { ToggleTodoUseCase } from './ToggleTodoUseCase';
 
 describe('ToggleTodoUseCase', () => {
   let useCase: ToggleTodoUseCase;

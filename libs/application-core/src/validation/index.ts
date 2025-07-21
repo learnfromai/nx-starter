@@ -15,11 +15,11 @@ export * from './middleware/ValidationMiddleware';
 // Re-export commonly used validation schemas for convenience
 export {
   CreateTodoCommandSchema,
-  UpdateTodoCommandSchema,
   DeleteTodoCommandSchema,
-  ToggleTodoCommandSchema,
   TodoIdSchema,
   TodoValidationSchemas,
+  ToggleTodoCommandSchema,
+  UpdateTodoCommandSchema,
 } from './TodoValidationSchemas';
 
 // Re-export validation service tokens

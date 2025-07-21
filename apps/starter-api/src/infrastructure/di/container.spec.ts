@@ -1,8 +1,10 @@
 import 'reflect-metadata';
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { container } from 'tsyringe';
-import { configureDI, TOKENS } from './container';
+
 import type { ITodoRepository } from '@nx-starter/domain-core';
+import { container } from 'tsyringe';
+import { afterEach,beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { configureDI, TOKENS } from './container';
 
 // Mock the config module
 vi.mock('../../config/config', () => ({

@@ -1,10 +1,12 @@
 import 'reflect-metadata';
-import { describe, it, expect, beforeEach, afterEach, afterAll } from 'vitest';
-import mongoose from 'mongoose';
+
+import { Todo } from '@nx-starter/domain-core';
 import { MongoMemoryServer } from 'mongodb-memory-server';
+import mongoose from 'mongoose';
+import { afterAll,afterEach, beforeEach, describe, expect, it } from 'vitest';
+
 import { MongooseTodoRepository } from './MongooseTodoRepository';
 import { TodoModel } from './TodoSchema';
-import { Todo } from '@nx-starter/domain-core';
 
 describe('MongooseTodoRepository', () => {
   let repository: MongooseTodoRepository;

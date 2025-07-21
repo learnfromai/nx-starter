@@ -1,6 +1,7 @@
-import { describe, it, expect } from 'vitest';
-import { TodoTitle } from './TodoTitle';
+import { describe, expect,it } from 'vitest';
+
 import { InvalidTodoTitleException } from '../exceptions/DomainExceptions';
+import { TodoTitle } from './TodoTitle';
 
 describe('TodoTitle Value Object', () => {
   describe('constructor', () => {

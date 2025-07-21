@@ -1,19 +1,19 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect,it } from 'vitest';
 import { ZodError } from 'zod';
-import {
-  TodoPrioritySchema,
-  CreateTodoCommandSchema,
-  UpdateTodoCommandSchema,
-  DeleteTodoCommandSchema,
-  ToggleTodoCommandSchema,
-  TodoIdSchema,
-  TodoValidationSchemas,
-  type CreateTodoCommand,
-  type UpdateTodoCommand,
-  type DeleteTodoCommand,
-  type ToggleTodoCommand,
-} from './TodoValidationSchemas';
 
+import {
+  type CreateTodoCommand,
+  CreateTodoCommandSchema,
+  type DeleteTodoCommand,
+  DeleteTodoCommandSchema,
+  TodoIdSchema,
+  TodoPrioritySchema,
+  TodoValidationSchemas,
+  type ToggleTodoCommand,
+  ToggleTodoCommandSchema,
+  type UpdateTodoCommand,
+  UpdateTodoCommandSchema,
+} from './TodoValidationSchemas';
 // Import the actual module to ensure coverage
 import * as TodoValidationSchemasModule from './TodoValidationSchemas';
 

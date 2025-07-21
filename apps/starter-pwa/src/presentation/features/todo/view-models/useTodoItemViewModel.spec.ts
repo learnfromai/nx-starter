@@ -1,9 +1,10 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { renderHook, act } from '@testing-library/react';
-import { useTodoItemViewModel } from './useTodoItemViewModel';
-import { useTodoStore } from '../../../../infrastructure/state/TodoStore';
 import { Todo } from '@nx-starter/domain-core';
+import { act,renderHook } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { useTodoStore } from '../../../../infrastructure/state/TodoStore';
 import { TEST_UUIDS } from '../../../../test/test-helpers';
+import { useTodoItemViewModel } from './useTodoItemViewModel';
 
 // Mock the store
 vi.mock('../../../../infrastructure/state/TodoStore');

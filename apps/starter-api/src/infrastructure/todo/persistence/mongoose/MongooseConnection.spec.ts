@@ -1,5 +1,6 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import mongoose from 'mongoose';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { config } from '../../../../config/config';
 
 vi.mock('mongoose', () => ({

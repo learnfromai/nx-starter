@@ -6,6 +6,15 @@
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
   "dependencies": {
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "@nx-starter/domain-core": "0.0.1",
+    "tsyringe": "^4.10.0",
+    "zod": "^4.0.5",
+    "express": "^4.21.2",
+    "routing-controllers": "^0.11.2",
+    "vitest": "^3.2.4"
+  },
+  "devDependencies": {
+    "vitest": "^3.2.4"
   }
 }

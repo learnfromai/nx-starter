@@ -4,12 +4,12 @@
  */
 
 // TODO: Add date utility functions here
-export const formatDate = (date: Date): string => {
+export const formatDate = (_date: Date): string => {
   // TODO: Implement date formatting
   return '';
 };
 
-export const isValidDate = (date: Date): boolean => {
+export const isValidDate = (_date: Date): boolean => {
   // TODO: Implement date validation
   return false;
 };

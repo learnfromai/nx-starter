@@ -1,5 +1,6 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction,Request, Response } from 'express';
+import { afterEach,beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { errorHandler, notFoundHandler, requestLogger } from './errorHandler';
 
 describe('ErrorHandler Middleware', () => {

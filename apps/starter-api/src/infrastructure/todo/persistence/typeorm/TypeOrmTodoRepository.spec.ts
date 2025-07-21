@@ -1,8 +1,9 @@
-import { describe, it, expect, beforeEach, afterEach, afterAll } from 'vitest';
-import { DataSource } from 'typeorm';
-import { TypeOrmTodoRepository } from './TypeOrmTodoRepository';
-import { TodoEntity } from './TodoEntity';
 import { Todo } from '@nx-starter/domain-core';
+import { DataSource } from 'typeorm';
+import { afterAll,afterEach, beforeEach, describe, expect, it } from 'vitest';
+
+import { TodoEntity } from './TodoEntity';
+import { TypeOrmTodoRepository } from './TypeOrmTodoRepository';
 
 describe('TypeOrmTodoRepository', () => {
   let dataSource: DataSource;

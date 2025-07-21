@@ -1,8 +1,9 @@
-import { describe, it, expect } from 'vitest';
-import { TodoMapper } from './TodoMapper';
 import { Todo, TodoTitle } from '@nx-starter/domain-core';
-import type { TodoDto, CreateTodoDto } from '../dto/TodoDto';
 import { TEST_UUIDS } from '@nx-starter/utils-core';
+import { describe, expect,it } from 'vitest';
+
+import type { CreateTodoDto,TodoDto } from '../dto/TodoDto';
+import { TodoMapper } from './TodoMapper';
 
 describe('TodoMapper', () => {
   const sampleTodo = new Todo(

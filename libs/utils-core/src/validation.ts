@@ -4,15 +4,15 @@
  */
 
 // TODO: Add validation helper functions here
-export const validateEmail = (email: string): boolean => {
+export const validateEmail = (_email: string): boolean => {
   // TODO: Implement email validation
   return false;
 };
 
 export const validateString = (
-  value: string,
-  minLength: number,
-  maxLength: number
+  _value: string,
+  _minLength: number,
+  _maxLength: number
 ): boolean => {
   // TODO: Implement string validation
   return false;

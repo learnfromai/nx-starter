@@ -1,5 +1,6 @@
-import { TodoPage } from '../presentation/features/todo';
 import '../styles.css';
+
+import { TodoPage } from '../presentation/features/todo';
 
 function App() {
   return <TodoPage />;

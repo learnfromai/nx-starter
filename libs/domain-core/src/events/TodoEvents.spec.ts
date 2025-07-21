@@ -1,13 +1,14 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import {
-  TodoCreatedEvent,
-  TodoCompletedEvent,
-  TodoUncompletedEvent,
-  TodoUpdatedEvent,
-  TodoDeletedEvent,
-} from './TodoEvents';
+import { beforeEach,describe, expect, it } from 'vitest';
+
 import { TodoId } from '../value-objects/TodoId';
 import { TodoTitle } from '../value-objects/TodoTitle';
+import {
+  TodoCompletedEvent,
+  TodoCreatedEvent,
+  TodoDeletedEvent,
+  TodoUncompletedEvent,
+  TodoUpdatedEvent,
+} from './TodoEvents';
 
 describe('TodoEvents', () => {
   let todoId: TodoId;

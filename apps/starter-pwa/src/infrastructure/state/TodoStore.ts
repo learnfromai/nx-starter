@@ -1,16 +1,17 @@
-import { create } from 'zustand';
-import { devtools } from 'zustand/middleware';
-import { immer } from 'zustand/middleware/immer';
-import { subscribeWithSelector } from 'zustand/middleware';
-import { container, TOKENS } from '../di/container';
-import { Todo } from '@nx-starter/domain-core';
-import type { TodoStore } from './TodoStoreInterface';
 import type {
+  CreateTodoData,
   ITodoCommandService,
   ITodoQueryService,
-  CreateTodoData,
   UpdateTodoData,
 } from '@nx-starter/application-core';
+import { Todo } from '@nx-starter/domain-core';
+import { create } from 'zustand';
+import { devtools } from 'zustand/middleware';
+import { subscribeWithSelector } from 'zustand/middleware';
+import { immer } from 'zustand/middleware/immer';
+
+import { container, TOKENS } from '../di/container';
+import type { TodoStore } from './TodoStoreInterface';
 
 export const useTodoStore = create<TodoStore>()(
   subscribeWithSelector(

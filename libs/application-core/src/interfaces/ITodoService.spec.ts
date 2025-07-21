@@ -1,13 +1,13 @@
-import { describe, it, expect } from 'vitest';
 import type { Todo } from '@nx-starter/domain-core';
+import { describe, expect,it } from 'vitest';
+
 import type {
   CreateTodoData,
-  UpdateTodoData,
   ITodoCommandService,
   ITodoQueryService,
   ITodoService,
+  UpdateTodoData,
 } from './ITodoService';
-
 // Import the actual module to ensure coverage
 import * as ITodoServiceModule from './ITodoService';
 

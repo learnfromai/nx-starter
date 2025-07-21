@@ -1,12 +1,12 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect,it } from 'vitest';
+
 import type {
   GetAllTodosQuery,
   GetFilteredTodosQuery,
-  GetTodoStatsQuery,
   GetTodoByIdQuery,
+  GetTodoStatsQuery,
   TodoStatsQueryResult,
 } from './TodoQueries';
-
 // Import the actual module to ensure coverage
 import * as TodoQueriesModule from './TodoQueries';
 

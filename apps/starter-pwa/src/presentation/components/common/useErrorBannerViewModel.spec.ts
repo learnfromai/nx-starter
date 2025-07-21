@@ -1,7 +1,8 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { renderHook, act } from '@testing-library/react';
-import { useErrorBannerViewModel } from './useErrorBannerViewModel';
+import { act,renderHook } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { useTodoStore } from '../../../infrastructure/store/TodoStore';
+import { useErrorBannerViewModel } from './useErrorBannerViewModel';
 
 // Mock the store
 vi.mock('../../../infrastructure/store/TodoStore');
