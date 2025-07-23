@@ -9,12 +9,12 @@ const mockStore = {
   getFilteredTodos: vi.fn(),
   filter: 'all' as 'all' | 'active' | 'completed',
   getIsLoading: vi.fn(),
-  error: null as Error | null,
+  error: null as string | null,
   setFilter: vi.fn(),
   loadTodos: vi.fn(),
 };
 
-vi.mock('../../../infrastructure/state/TodoStore', () => ({
+vi.mock('../../../../infrastructure/state/TodoStore', () => ({
   useTodoStore: () => mockStore,
 }));
 
@@ -68,7 +68,7 @@ describe('useTodoListViewModel', () => {
 
   it('should return error from store', () => {
     // Arrange
-    const error = new Error('Failed to load todos');
+    const error = 'Failed to load todos';
     mockStore.error = error;
 
     // Act
@@ -184,7 +184,7 @@ describe('useTodoListViewModel', () => {
     expect(result.current.error).toBeNull();
 
     // Act - simulate error state change
-    const error = new Error('Network error');
+    const error = 'Network error';
     mockStore.error = error;
     rerender();
 

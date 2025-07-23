@@ -163,7 +163,7 @@ describe('useTodoItemViewModel', () => {
       expect(result.current.isUpdating).toBe(false);
     });
 
-    it('should not toggle when todo has no numericId', async () => {
+    it('should not toggle when todo has no stringId', async () => {
       const todoWithoutId = new Todo(
         'Test Todo',
         false,
@@ -280,7 +280,7 @@ describe('useTodoItemViewModel', () => {
       expect(result.current.isUpdating).toBe(false);
     });
 
-    it('should not update when todo has no numericId', async () => {
+    it('should not update when todo has no stringId', async () => {
       const todoWithoutId = new Todo(
         'Test Todo',
         false,
@@ -354,7 +354,7 @@ describe('useTodoItemViewModel', () => {
       expect(result.current.isUpdating).toBe(false);
     });
 
-    it('should not delete when todo has no numericId', async () => {
+    it('should not delete when todo has no stringId', async () => {
       const todoWithoutId = new Todo(
         'Test Todo',
         false,
@@ -434,7 +434,7 @@ describe('useTodoItemViewModel', () => {
       expect(result.current.isUpdating).toBe(false);
     });
 
-    it('should not update priority when todo has no numericId', async () => {
+    it('should not update priority when todo has no stringId', async () => {
       const todoWithoutId = new Todo(
         'Test Todo',
         false,
@@ -529,7 +529,7 @@ describe('useTodoItemViewModel', () => {
       expect(result.current.isEditing).toBe(true); // Should remain in edit mode
     });
 
-    it('should not save edit when todo has no numericId', async () => {
+    it('should not save edit when todo has no stringId', async () => {
       const todoWithoutId = new Todo(
         'Test Todo',
         false,
