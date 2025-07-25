@@ -124,7 +124,7 @@ export const configureDI = async () => {
   );
 
   // Domain Layer - Domain Services
-  // UserDomainService is instantiated manually in use cases (Clean Architecture best practice)
+  // Domain services are instantiated manually in use cases (Clean Architecture best practice)
 };
 
 async function getTodoRepositoryImplementation(): Promise<ITodoRepository> {
