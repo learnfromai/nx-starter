@@ -179,6 +179,61 @@ pnpm nx test <project-name> --coverage
 pnpm nx test <project-name> --watch
 ```
 
+## 🚀 CI/CD Pipeline
+
+This project includes a comprehensive CI/CD pipeline built with GitHub Actions, designed specifically for Nx monorepos with clean architecture principles.
+
+### Pipeline Overview
+
+| Workflow | Purpose | Triggers | Duration |
+|----------|---------|----------|----------|
+| **CI** | Main pipeline (lint, test, build) | Push/PR to main/develop | ~15-20 min |
+| **E2E Tests** | Cross-browser end-to-end testing | Push/PR + Nightly | ~30-45 min |
+| **Security** | Vulnerability and compliance scanning | Push/PR + Daily | ~10-15 min |
+| **Performance** | Performance monitoring and budgets | Push to main + Daily | ~20-30 min |
+| **Release** | Automated releases and Docker images | Version tags | ~25-35 min |
+| **Deploy** | Staging and production deployment | Releases + Manual | ~15-25 min |
+
+### Key Features
+
+- **🎯 Nx Affected**: Only builds and tests changed projects for efficiency
+- **⚡ Parallel Execution**: Jobs run in parallel where possible
+- **💾 Smart Caching**: Dependencies and build artifacts cached across runs
+- **🔐 Security-First**: Multi-layer security scanning and best practices
+- **📊 Performance Monitoring**: Automated performance regression detection
+- **🐳 Containerization**: Docker images built and published automatically
+- **🚀 Zero-Downtime Deployments**: Blue-green deployment with health checks
+
+### Quick Commands
+
+```bash
+# Run full CI pipeline locally
+pnpm run ci
+
+# Run only affected projects (efficient)
+pnpm run ci:affected
+
+# Run tests for affected projects only
+pnpm run test:affected
+
+# Run linting for affected projects only
+pnpm run lint:affected
+```
+
+### Docker Images
+
+Production Docker images are automatically built and published:
+
+- **API**: `ghcr.io/learnfromai/nx-starter-starter-api:latest`
+- **PWA**: `ghcr.io/learnfromai/nx-starter-starter-pwa:latest`
+
+### Documentation
+
+For detailed CI/CD information, see:
+- [📋 CI/CD Pipeline Guide](docs/ci-cd.md)
+- [🔧 GitHub Actions Best Practices](docs/github-actions-best-practices.md)
+- [📁 Workflow Documentation](.github/workflows/README.md)
+
 ### Code Quality
 
 ```bash

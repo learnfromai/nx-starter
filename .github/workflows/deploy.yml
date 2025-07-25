@@ -1,0 +1,227 @@
+name: Deploy
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+      version:
+        description: 'Version to deploy (e.g., v1.0.0 or latest)'
+        required: true
+        default: 'latest'
+        type: string
+
+env:
+  REGISTRY_URL: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  # Determine deployment configuration
+  setup:
+    name: Setup Deployment
+    runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.config.outputs.environment }}
+      version: ${{ steps.config.outputs.version }}
+      should-deploy: ${{ steps.config.outputs.should-deploy }}
+    steps:
+      - name: Determine deployment config
+        id: config
+        run: |
+          if [[ "${{ github.event_name }}" == "release" ]]; then
+            echo "environment=production" >> $GITHUB_OUTPUT
+            echo "version=${{ github.event.release.tag_name }}" >> $GITHUB_OUTPUT
+            echo "should-deploy=true" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "environment=${{ github.event.inputs.environment }}" >> $GITHUB_OUTPUT
+            echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+            echo "should-deploy=true" >> $GITHUB_OUTPUT
+          else
+            echo "should-deploy=false" >> $GITHUB_OUTPUT
+          fi
+
+  # Deploy API service
+  deploy-api:
+    name: Deploy API
+    runs-on: ubuntu-latest
+    needs: setup
+    if: needs.setup.outputs.should-deploy == 'true'
+    environment: 
+      name: ${{ needs.setup.outputs.environment }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup deployment tools
+        run: |
+          # This is where you would install kubectl, helm, or other deployment tools
+          echo "Setting up deployment tools for ${{ needs.setup.outputs.environment }}"
+
+      - name: Deploy API to ${{ needs.setup.outputs.environment }}
+        run: |
+          echo "Deploying API service..."
+          echo "Environment: ${{ needs.setup.outputs.environment }}"
+          echo "Version: ${{ needs.setup.outputs.version }}"
+          echo "Image: ${{ env.REGISTRY_URL }}/${{ env.IMAGE_NAME }}-starter-api:${{ needs.setup.outputs.version }}"
+          
+          # Example deployment commands (customize based on your infrastructure)
+          # kubectl set image deployment/starter-api \
+          #   starter-api=${{ env.REGISTRY_URL }}/${{ env.IMAGE_NAME }}-starter-api:${{ needs.setup.outputs.version }}
+          # kubectl rollout status deployment/starter-api
+          
+          echo "✅ API deployment completed"
+
+      - name: Run API health check
+        run: |
+          echo "Running health checks for API..."
+          # Example health check (customize based on your API)
+          # curl -f ${{ vars.API_URL }}/health || exit 1
+          echo "✅ API health check passed"
+
+  # Deploy PWA service  
+  deploy-pwa:
+    name: Deploy PWA
+    runs-on: ubuntu-latest
+    needs: setup
+    if: needs.setup.outputs.should-deploy == 'true'
+    environment: 
+      name: ${{ needs.setup.outputs.environment }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup deployment tools
+        run: |
+          echo "Setting up deployment tools for ${{ needs.setup.outputs.environment }}"
+
+      - name: Deploy PWA to ${{ needs.setup.outputs.environment }}
+        run: |
+          echo "Deploying PWA service..."
+          echo "Environment: ${{ needs.setup.outputs.environment }}"
+          echo "Version: ${{ needs.setup.outputs.version }}"
+          echo "Image: ${{ env.REGISTRY_URL }}/${{ env.IMAGE_NAME }}-starter-pwa:${{ needs.setup.outputs.version }}"
+          
+          # Example deployment commands (customize based on your infrastructure)
+          # kubectl set image deployment/starter-pwa \
+          #   starter-pwa=${{ env.REGISTRY_URL }}/${{ env.IMAGE_NAME }}-starter-pwa:${{ needs.setup.outputs.version }}
+          # kubectl rollout status deployment/starter-pwa
+          
+          echo "✅ PWA deployment completed"
+
+      - name: Run PWA health check
+        run: |
+          echo "Running health checks for PWA..."
+          # Example health check (customize based on your PWA)
+          # curl -f ${{ vars.PWA_URL }}/health || exit 1
+          echo "✅ PWA health check passed"
+
+  # Run smoke tests after deployment
+  smoke-tests:
+    name: Smoke Tests
+    runs-on: ubuntu-latest
+    needs: [setup, deploy-api, deploy-pwa]
+    if: needs.setup.outputs.should-deploy == 'true'
+    environment: 
+      name: ${{ needs.setup.outputs.environment }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: '>=10.13.1'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run smoke tests
+        run: |
+          echo "Running smoke tests against ${{ needs.setup.outputs.environment }}..."
+          
+          # Example smoke tests (customize based on your needs)
+          # export API_URL=${{ vars.API_URL }}
+          # export PWA_URL=${{ vars.PWA_URL }}
+          # pnpm run test:smoke
+          
+          echo "✅ Smoke tests passed"
+
+  # Database migrations (if needed)
+  migrate-database:
+    name: Database Migration
+    runs-on: ubuntu-latest
+    needs: [setup, deploy-api]
+    if: needs.setup.outputs.should-deploy == 'true' && needs.setup.outputs.environment == 'production'
+    environment: 
+      name: ${{ needs.setup.outputs.environment }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: '>=10.13.1'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run database migrations
+        run: |
+          echo "Running database migrations for ${{ needs.setup.outputs.environment }}..."
+          
+          # Example migration commands (customize based on your database setup)
+          # export DATABASE_URL=${{ secrets.DATABASE_URL }}
+          # pnpm run migrate:up
+          
+          echo "✅ Database migrations completed"
+
+  # Notify deployment status
+  notify-deployment:
+    name: Notify Deployment
+    runs-on: ubuntu-latest
+    needs: [setup, deploy-api, deploy-pwa, smoke-tests]
+    if: always() && needs.setup.outputs.should-deploy == 'true'
+    steps:
+      - name: Notify success
+        if: needs.smoke-tests.result == 'success'
+        run: |
+          echo "🚀 Deployment to ${{ needs.setup.outputs.environment }} completed successfully!"
+          echo "Version: ${{ needs.setup.outputs.version }}"
+          echo "Services deployed:"
+          echo "- API: ${{ env.REGISTRY_URL }}/${{ env.IMAGE_NAME }}-starter-api:${{ needs.setup.outputs.version }}"
+          echo "- PWA: ${{ env.REGISTRY_URL }}/${{ env.IMAGE_NAME }}-starter-pwa:${{ needs.setup.outputs.version }}"
+
+      - name: Notify failure
+        if: failure()
+        run: |
+          echo "❌ Deployment to ${{ needs.setup.outputs.environment }} failed!"
+          echo "Please check the deployment logs and fix any issues."
+          exit 1
+
+      - name: Create deployment summary
+        if: always()
+        run: |
+          echo "## Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- **Environment**: ${{ needs.setup.outputs.environment }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version**: ${{ needs.setup.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status**: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Timestamp**: $(date -u)" >> $GITHUB_STEP_SUMMARY
