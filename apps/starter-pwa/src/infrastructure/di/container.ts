@@ -2,6 +2,8 @@ import 'reflect-metadata';
 import { container } from 'tsyringe';
 import { TodoRepository } from '../persistence/TodoRepository';
 import { ApiTodoRepository } from '../api/ApiTodoRepository';
+import { IHttpClient } from '../api/http/IHttpClient';
+import { AxiosHttpClient } from '../api/http/AxiosHttpClient';
 import {
   TodoCommandService,
   TodoQueryService,
@@ -28,6 +30,9 @@ const useApiBackend = import.meta.env.VITE_USE_API_BACKEND === 'true';
 
 // Register dependencies following Clean Architecture layers
 export const configureDI = () => {
+  // Infrastructure Layer - HTTP Client (always register for API operations)
+  container.registerSingleton<IHttpClient>('IHttpClient', AxiosHttpClient);
+
   // Infrastructure Layer - Repository (conditionally based on environment)
   if (useApiBackend) {
     console.log('📡 Using API backend for data storage');

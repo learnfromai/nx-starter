@@ -1,4 +1,4 @@
-import { injectable } from 'tsyringe';
+import { injectable, inject } from 'tsyringe';
 import {
   Todo,
   TodoPriorityLevel,
@@ -8,164 +8,160 @@ import {
 import {
   TodoListResponse,
   TodoResponse,
-  TodoStatsResponse,
+  TodoDto,
   CreateTodoRequestDto,
   UpdateTodoRequestDto,
 } from '@nx-starter/application-core';
+import { IHttpClient } from './http/IHttpClient';
+import { ApiError } from './errors/ApiError';
+import { getApiConfig } from './config/ApiConfig';
 
 /**
  * API-based TodoRepository implementation
- * Communicates with the Express server's /api/todos endpoints
+ * Follows Clean Architecture and SOLID principles
+ * Uses dependency injection for HTTP client abstraction
  */
 @injectable()
 export class ApiTodoRepository implements ITodoRepository {
-  private readonly baseUrl: string;
+  private readonly apiConfig = getApiConfig();
 
-  constructor() {
-    // Get API base URL from environment variable or default to localhost
-    this.baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
-  }
+  constructor(@inject('IHttpClient') private readonly httpClient: IHttpClient) {}
 
   async getAll(): Promise<Todo[]> {
-    const response = await this.fetchWithErrorHandling(
-      `${this.baseUrl}/api/todos`
-    );
-    const data: TodoListResponse = await response.json();
+    try {
+      const response = await this.httpClient.get<TodoListResponse>(
+        this.apiConfig.endpoints.todos.all
+      );
 
-    if (!data.success) {
-      throw new Error('Failed to fetch todos');
+      if (!response.data.success) {
+        throw new ApiError('Failed to fetch todos', response.status);
+      }
+
+      return response.data.data.map((dto) => this.mapDtoToTodo(dto));
+    } catch (error) {
+      this.handleError(error, 'Failed to fetch todos');
+      throw error; // Re-throw after handling
     }
-
-    return data.data.map((dto) => this.mapDtoToTodo(dto));
   }
 
   async create(todo: Todo): Promise<string> {
-    const todoData: CreateTodoRequestDto = {
-      title: todo.titleValue,
-      priority: todo.priority.level,
-      dueDate: todo.dueDate?.toISOString(),
-    };
+    try {
+      const todoData: CreateTodoRequestDto = {
+        title: todo.titleValue,
+        priority: todo.priority.level,
+        dueDate: todo.dueDate?.toISOString(),
+      };
 
-    const response = await this.fetchWithErrorHandling(
-      `${this.baseUrl}/api/todos`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(todoData),
+      const response = await this.httpClient.post<TodoResponse>(
+        this.apiConfig.endpoints.todos.base,
+        todoData
+      );
+
+      if (!response.data.success) {
+        throw new ApiError('Failed to create todo', response.status);
       }
-    );
 
-    const data: TodoResponse = await response.json();
-
-    if (!data.success) {
-      throw new Error('Failed to create todo');
+      return response.data.data.id;
+    } catch (error) {
+      this.handleError(error, 'Failed to create todo');
+      throw error;
     }
-
-    return data.data.id;
   }
 
   async update(id: string, changes: Partial<Todo>): Promise<void> {
-    const updateData: UpdateTodoRequestDto = {};
+    try {
+      const updateData: UpdateTodoRequestDto = {};
 
-    if (changes.title) {
-      updateData.title =
-        changes.title instanceof Object && 'value' in changes.title
-          ? changes.title.value
-          : changes.title;
-    }
-    if (changes.completed !== undefined) {
-      updateData.completed = changes.completed;
-    }
-    if (changes.priority) {
-      updateData.priority =
-        changes.priority instanceof Object && 'level' in changes.priority
-          ? changes.priority.level
-          : changes.priority;
-    }
-    if ('dueDate' in changes) {
-      updateData.dueDate = changes.dueDate?.toISOString();
-    }
-
-    const response = await this.fetchWithErrorHandling(
-      `${this.baseUrl}/api/todos/${id}`,
-      {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updateData),
+      if (changes.title) {
+        updateData.title =
+          changes.title instanceof Object && 'value' in changes.title
+            ? changes.title.value
+            : changes.title;
       }
-    );
+      if (changes.completed !== undefined) {
+        updateData.completed = changes.completed;
+      }
+      if (changes.priority) {
+        updateData.priority =
+          changes.priority instanceof Object && 'level' in changes.priority
+            ? changes.priority.level
+            : changes.priority;
+      }
+      if ('dueDate' in changes) {
+        updateData.dueDate = changes.dueDate?.toISOString();
+      }
 
-    if (!response.ok) {
-      throw new Error('Failed to update todo');
+      await this.httpClient.put(
+        this.apiConfig.endpoints.todos.byId(id),
+        updateData
+      );
+    } catch (error) {
+      this.handleError(error, 'Failed to update todo');
+      throw error;
     }
   }
 
   async delete(id: string): Promise<void> {
-    const response = await this.fetchWithErrorHandling(
-      `${this.baseUrl}/api/todos/${id}`,
-      {
-        method: 'DELETE',
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error('Failed to delete todo');
+    try {
+      await this.httpClient.delete(this.apiConfig.endpoints.todos.byId(id));
+    } catch (error) {
+      this.handleError(error, 'Failed to delete todo');
+      throw error;
     }
   }
 
   async getById(id: string): Promise<Todo | undefined> {
     try {
-      const response = await this.fetchWithErrorHandling(
-        `${this.baseUrl}/api/todos/${id}`
+      const response = await this.httpClient.get<TodoResponse>(
+        this.apiConfig.endpoints.todos.byId(id)
       );
 
-      if (response.status === 404) {
-        return undefined;
+      if (!response.data.success) {
+        throw new ApiError('Failed to fetch todo', response.status);
       }
 
-      const data: TodoResponse = await response.json();
-
-      if (!data.success) {
-        throw new Error('Failed to fetch todo');
-      }
-
-      return this.mapDtoToTodo(data.data);
+      return this.mapDtoToTodo(response.data.data);
     } catch (error) {
-      if (error instanceof Error && error.message.includes('404')) {
+      if (error instanceof ApiError && error.isNotFound) {
         return undefined;
       }
+      this.handleError(error, 'Failed to fetch todo');
       throw error;
     }
   }
 
   async getActive(): Promise<Todo[]> {
-    const response = await this.fetchWithErrorHandling(
-      `${this.baseUrl}/api/todos/active`
-    );
-    const data: TodoListResponse = await response.json();
+    try {
+      const response = await this.httpClient.get<TodoListResponse>(
+        this.apiConfig.endpoints.todos.active
+      );
 
-    if (!data.success) {
-      throw new Error('Failed to fetch active todos');
+      if (!response.data.success) {
+        throw new ApiError('Failed to fetch active todos', response.status);
+      }
+
+      return response.data.data.map((dto) => this.mapDtoToTodo(dto));
+    } catch (error) {
+      this.handleError(error, 'Failed to fetch active todos');
+      throw error;
     }
-
-    return data.data.map((dto) => this.mapDtoToTodo(dto));
   }
 
   async getCompleted(): Promise<Todo[]> {
-    const response = await this.fetchWithErrorHandling(
-      `${this.baseUrl}/api/todos/completed`
-    );
-    const data: TodoListResponse = await response.json();
+    try {
+      const response = await this.httpClient.get<TodoListResponse>(
+        this.apiConfig.endpoints.todos.completed
+      );
 
-    if (!data.success) {
-      throw new Error('Failed to fetch completed todos');
+      if (!response.data.success) {
+        throw new ApiError('Failed to fetch completed todos', response.status);
+      }
+
+      return response.data.data.map((dto: TodoDto) => this.mapDtoToTodo(dto));
+    } catch (error) {
+      this.handleError(error, 'Failed to fetch completed todos');
+      throw error;
     }
-
-    return data.data.map((dto: any) => this.mapDtoToTodo(dto));
   }
 
   async findBySpecification(
@@ -180,7 +176,7 @@ export class ApiTodoRepository implements ITodoRepository {
   /**
    * Maps a DTO from the API to a Todo entity
    */
-  private mapDtoToTodo(dto: any): Todo {
+  private mapDtoToTodo(dto: TodoDto): Todo {
     return new Todo(
       dto.title,
       dto.completed,
@@ -192,29 +188,21 @@ export class ApiTodoRepository implements ITodoRepository {
   }
 
   /**
-   * Wrapper around fetch with error handling
+   * Centralized error handling for API operations
+   * Provides consistent logging and error transformation
    */
-  private async fetchWithErrorHandling(
-    url: string,
-    options?: RequestInit
-  ): Promise<Response> {
-    try {
-      const response = await fetch(url, options);
+  private handleError(error: unknown, context: string): void {
+    // Log error for debugging (could be replaced with proper logging service)
+    console.error(`${context}:`, error);
 
-      // Don't throw for 404 in GET requests - let caller handle it
-      if (
-        !response.ok &&
-        !(response.status === 404 && options?.method === undefined)
-      ) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-
-      return response;
-    } catch (error) {
-      if (error instanceof TypeError && error.message.includes('fetch')) {
-        throw new Error('Network error: Unable to connect to the API server');
-      }
-      throw error;
+    // Convert non-ApiError instances to ApiError for consistency
+    if (!(error instanceof ApiError)) {
+      const message = error instanceof Error ? error.message : context;
+      throw new ApiError(
+        message,
+        0,
+        { originalError: error }
+      );
     }
   }
 }
