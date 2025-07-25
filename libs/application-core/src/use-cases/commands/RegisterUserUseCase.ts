@@ -9,7 +9,7 @@ import {
   UserAlreadyExistsException
 } from '@nx-starter/domain-core';
 import type { IUserRepository } from '@nx-starter/domain-core';
-import type { RegisterUserCommand } from '../../dto/UserCommands';
+import type { RegisterUserCommand } from '../../validation/UserValidationSchemas';
 import { TOKENS } from '../../di/tokens';
 
 /**

@@ -1,7 +1,11 @@
-import { injectable } from 'tsyringe';
+import { injectable, inject } from 'tsyringe';
 import { Email } from '../value-objects/Email';
 import { Username } from '../value-objects/Username';
 import { IUserRepository } from '../repositories/IUserRepository';
+
+// Import TOKENS to use consistent DI tokens
+// Note: This creates a circular dependency, but it's acceptable for DI configuration
+const USER_REPOSITORY_TOKEN = 'IUserRepository';
 
 /**
  * Domain service for generating unique usernames
@@ -9,7 +13,7 @@ import { IUserRepository } from '../repositories/IUserRepository';
  */
 @injectable()
 export class UsernameGenerationService {
-  constructor(private userRepository: IUserRepository) {}
+  constructor(@inject(USER_REPOSITORY_TOKEN) private userRepository: IUserRepository) {}
 
   /**
    * Generates a unique username from an email address

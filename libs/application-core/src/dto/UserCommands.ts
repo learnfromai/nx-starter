@@ -3,14 +3,6 @@
  * Commands represent user intents to modify state
  */
 
-// Register User Command
-export interface RegisterUserCommand {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-}
-
 /**
  * Request DTOs for API endpoints
  */

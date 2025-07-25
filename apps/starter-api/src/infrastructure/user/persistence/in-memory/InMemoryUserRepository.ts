@@ -1,7 +1,7 @@
 import { injectable } from 'tsyringe';
+import { v4 as uuidv4 } from 'uuid';
 import { User } from '@nx-starter/domain-core';
 import type { IUserRepository } from '@nx-starter/domain-core';
-import { generateId } from '@nx-starter/utils-core';
 
 /**
  * In-memory implementation of IUserRepository
@@ -12,7 +12,7 @@ export class InMemoryUserRepository implements IUserRepository {
   private users: Map<string, User> = new Map();
 
   async create(user: User): Promise<string> {
-    const id = generateId();
+    const id = uuidv4();
     const userWithId = new User(
       user.firstName,
       user.lastName,
