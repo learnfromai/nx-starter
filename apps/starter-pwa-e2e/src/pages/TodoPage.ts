@@ -44,8 +44,12 @@ export class TodoPage {
           ) as HTMLInputElement;
           return input && input.value === '';
         },
-        { timeout: 5000 }
+        { timeout: 10000 } // Increased timeout for API calls
       );
+      
+      // Additional wait for API-based operations
+      // This helps ensure the todo is fully persisted before continuing
+      await this.page.waitForTimeout(200);
     }
   }
 
@@ -183,6 +187,9 @@ export class TodoItem {
     } else {
       await expect(checkbox).toBeChecked();
     }
+    
+    // Additional wait for API-based operations to ensure state consistency
+    await this.locator.page().waitForTimeout(200);
   }
 
   async delete() {
@@ -200,8 +207,11 @@ export class TodoItem {
         return currentCount === expectedCount;
       },
       initialCount - 1,
-      { timeout: 5000 }
+      { timeout: 10000 } // Increased timeout for API calls
     );
+    
+    // Additional wait for API-based operations
+    await this.locator.page().waitForTimeout(200);
   }
 
   async edit() {
@@ -224,6 +234,9 @@ export class TodoItem {
     await expect(
       this.locator.locator('[data-testid="todo-edit-input"]')
     ).not.toBeVisible();
+    
+    // Additional wait for API-based operations
+    await this.locator.page().waitForTimeout(200);
   }
 
   async cancelEdit() {
