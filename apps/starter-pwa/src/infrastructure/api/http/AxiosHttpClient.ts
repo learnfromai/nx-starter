@@ -30,30 +30,30 @@ export class AxiosHttpClient implements IHttpClient {
     );
   }
 
-  async get<T = any>(url: string, config?: HttpRequestConfig): Promise<HttpResponse<T>> {
+  async get<T = unknown>(url: string, config?: HttpRequestConfig): Promise<HttpResponse<T>> {
     const response = await this.axiosInstance.get<T>(url, this.toAxiosConfig(config));
     return this.toHttpResponse(response);
   }
 
-  async post<T = any>(
+  async post<T = unknown>(
     url: string,
-    data?: any,
+    data?: unknown,
     config?: HttpRequestConfig
   ): Promise<HttpResponse<T>> {
     const response = await this.axiosInstance.post<T>(url, data, this.toAxiosConfig(config));
     return this.toHttpResponse(response);
   }
 
-  async put<T = any>(
+  async put<T = unknown>(
     url: string,
-    data?: any,
+    data?: unknown,
     config?: HttpRequestConfig
   ): Promise<HttpResponse<T>> {
     const response = await this.axiosInstance.put<T>(url, data, this.toAxiosConfig(config));
     return this.toHttpResponse(response);
   }
 
-  async delete<T = any>(
+  async delete<T = unknown>(
     url: string,
     config?: HttpRequestConfig
   ): Promise<HttpResponse<T>> {
@@ -89,27 +89,29 @@ export class AxiosHttpClient implements IHttpClient {
   /**
    * Handle Axios errors and convert to ApiError
    */
-  private handleAxiosError(error: any): ApiError {
-    if (error.response) {
+  private handleAxiosError(error: unknown): ApiError {
+    if (error && typeof error === 'object' && 'response' in error) {
+      const axiosError = error as { response: { status: number; statusText: string; data: unknown } };
       // Server responded with error status
       return new ApiError(
-        `HTTP ${error.response.status}: ${error.response.statusText}`,
-        error.response.status,
-        error.response.data
+        `HTTP ${axiosError.response.status}: ${axiosError.response.statusText}`,
+        axiosError.response.status,
+        axiosError.response.data
       );
-    } else if (error.request) {
+    } else if (error && typeof error === 'object' && 'request' in error) {
       // Network error - no response received
       return new ApiError(
         'Network error: Unable to connect to the API server',
         0,
-        { originalError: error.message }
+        { originalError: error instanceof Error ? error.message : 'Unknown error' }
       );
     } else {
       // Other error
+      const message = error instanceof Error ? error.message : 'An unexpected error occurred';
       return new ApiError(
-        error.message || 'An unexpected error occurred',
+        message,
         0,
-        { originalError: error.message }
+        { originalError: error instanceof Error ? error.message : 'Unknown error' }
       );
     }
   }

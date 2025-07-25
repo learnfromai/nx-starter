@@ -8,7 +8,7 @@ import {
 import {
   TodoListResponse,
   TodoResponse,
-  TodoStatsResponse,
+  TodoDto,
   CreateTodoRequestDto,
   UpdateTodoRequestDto,
 } from '@nx-starter/application-core';
@@ -157,7 +157,7 @@ export class ApiTodoRepository implements ITodoRepository {
         throw new ApiError('Failed to fetch completed todos', response.status);
       }
 
-      return response.data.data.map((dto: any) => this.mapDtoToTodo(dto));
+      return response.data.data.map((dto: TodoDto) => this.mapDtoToTodo(dto));
     } catch (error) {
       this.handleError(error, 'Failed to fetch completed todos');
       throw error;
@@ -176,7 +176,7 @@ export class ApiTodoRepository implements ITodoRepository {
   /**
    * Maps a DTO from the API to a Todo entity
    */
-  private mapDtoToTodo(dto: any): Todo {
+  private mapDtoToTodo(dto: TodoDto): Todo {
     return new Todo(
       dto.title,
       dto.completed,
@@ -191,14 +191,15 @@ export class ApiTodoRepository implements ITodoRepository {
    * Centralized error handling for API operations
    * Provides consistent logging and error transformation
    */
-  private handleError(error: any, context: string): void {
+  private handleError(error: unknown, context: string): void {
     // Log error for debugging (could be replaced with proper logging service)
     console.error(`${context}:`, error);
 
     // Convert non-ApiError instances to ApiError for consistency
     if (!(error instanceof ApiError)) {
+      const message = error instanceof Error ? error.message : context;
       throw new ApiError(
-        error.message || context,
+        message,
         0,
         { originalError: error }
       );

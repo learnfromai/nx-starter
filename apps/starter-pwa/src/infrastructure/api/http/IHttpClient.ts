@@ -4,7 +4,7 @@
  * Allows easy mocking for tests and future HTTP library changes
  */
 
-export interface HttpResponse<T = any> {
+export interface HttpResponse<T = unknown> {
   data: T;
   status: number;
   statusText: string;
@@ -14,37 +14,37 @@ export interface HttpResponse<T = any> {
 export interface HttpRequestConfig {
   headers?: Record<string, string>;
   timeout?: number;
-  params?: Record<string, any>;
+  params?: Record<string, unknown>;
 }
 
 export interface IHttpClient {
   /**
    * Perform GET request
    */
-  get<T = any>(url: string, config?: HttpRequestConfig): Promise<HttpResponse<T>>;
+  get<T = unknown>(url: string, config?: HttpRequestConfig): Promise<HttpResponse<T>>;
 
   /**
    * Perform POST request
    */
-  post<T = any>(
+  post<T = unknown>(
     url: string,
-    data?: any,
+    data?: unknown,
     config?: HttpRequestConfig
   ): Promise<HttpResponse<T>>;
 
   /**
    * Perform PUT request
    */
-  put<T = any>(
+  put<T = unknown>(
     url: string,
-    data?: any,
+    data?: unknown,
     config?: HttpRequestConfig
   ): Promise<HttpResponse<T>>;
 
   /**
    * Perform DELETE request
    */
-  delete<T = any>(
+  delete<T = unknown>(
     url: string,
     config?: HttpRequestConfig
   ): Promise<HttpResponse<T>>;

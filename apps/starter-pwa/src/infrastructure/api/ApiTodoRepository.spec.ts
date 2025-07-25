@@ -118,7 +118,7 @@ describe('ApiTodoRepository', () => {
 
   describe('update', () => {
     it('should update todo successfully', async () => {
-      const mockResponse: HttpResponse<any> = {
+      const mockResponse: HttpResponse<unknown> = {
         data: {},
         status: 200,
         statusText: 'OK',
@@ -137,7 +137,7 @@ describe('ApiTodoRepository', () => {
 
   describe('delete', () => {
     it('should delete todo successfully', async () => {
-      const mockResponse: HttpResponse<any> = {
+      const mockResponse: HttpResponse<unknown> = {
         data: {},
         status: 200,
         statusText: 'OK',

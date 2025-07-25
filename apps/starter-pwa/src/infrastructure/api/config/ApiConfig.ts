@@ -12,12 +12,13 @@ export interface ApiEndpoints {
     active: string;
     completed: string;
   };
-  // Future endpoints can be easily added here
-  // auth: {
-  //   login: string;
-  //   logout: string;
-  //   refresh: string;
-  // };
+  // Example: Auth endpoints easily added for future integration
+  auth?: {
+    login: string;
+    logout: string;
+    refresh: string;
+    me: string;
+  };
 }
 
 export interface ApiConfig {
@@ -40,6 +41,13 @@ export const defaultApiConfig: ApiConfig = {
       byId: (id: string) => `/api/todos/${id}`,
       active: '/api/todos/active',
       completed: '/api/todos/completed',
+    },
+    // Example: Auth endpoints configuration for future use
+    auth: {
+      login: '/api/auth/login',
+      logout: '/api/auth/logout',
+      refresh: '/api/auth/refresh',
+      me: '/api/auth/me',
     },
   },
 };

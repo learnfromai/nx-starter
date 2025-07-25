@@ -5,10 +5,10 @@
  */
 export class ApiError extends Error {
   public readonly status: number;
-  public readonly data?: any;
+  public readonly data?: unknown;
   public readonly isApiError = true;
 
-  constructor(message: string, status: number = 0, data?: any) {
+  constructor(message: string, status = 0, data?: unknown) {
     super(message);
     this.name = 'ApiError';
     this.status = status;
