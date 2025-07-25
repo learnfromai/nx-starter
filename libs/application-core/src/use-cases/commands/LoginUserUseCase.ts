@@ -98,11 +98,5 @@ export class LoginUserUseCase {
     return undefined;
   }
 
-  /**
-   * Basic email validation
-   */
-  private isValidEmail(email: string): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  }
+// Removed the isValidEmail method as it is no longer needed.
 }
