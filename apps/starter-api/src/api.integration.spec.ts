@@ -314,4 +314,163 @@ describe('Todo API Integration Tests', () => {
       // Express handles malformed JSON before our middleware
     });
   });
+
+  describe('User Registration API', () => {
+    describe('POST /api/auth/register', () => {
+      it('should register a new user successfully', async () => {
+        const registerData = {
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'john.doe@example.com',
+          password: 'Password123',
+        };
+
+        const response = await request
+          .post('/api/auth/register')
+          .send(registerData)
+          .expect('Content-Type', /json/)
+          .expect(201);
+
+        expect(response.body).toMatchObject({
+          success: true,
+          data: {
+            id: expect.any(String),
+            firstName: 'John',
+            lastName: 'Doe',
+            email: 'john.doe@example.com',
+            username: 'john.doe',
+            fullName: 'John Doe',
+            createdAt: expect.any(String),
+          },
+        });
+
+        // Verify the ID is a valid UUID
+        expect(response.body.data.id).toMatch(
+          /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+        );
+      });
+
+      it('should generate unique usernames when email prefix conflicts', async () => {
+        const firstUser = {
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'test@example.com',
+          password: 'Password123',
+        };
+
+        const secondUser = {
+          firstName: 'Jane',
+          lastName: 'Smith',
+          email: 'test@different.com',
+          password: 'Password456',
+        };
+
+        // Register first user
+        const response1 = await request
+          .post('/api/auth/register')
+          .send(firstUser)
+          .expect(201);
+
+        expect(response1.body.data.username).toBe('test');
+
+        // Register second user with same username prefix
+        const response2 = await request
+          .post('/api/auth/register')
+          .send(secondUser)
+          .expect(201);
+
+        expect(response2.body.data.username).toBe('test1');
+      });
+
+      it('should return 409 when email already exists', async () => {
+        const userData = {
+          firstName: 'Jane',
+          lastName: 'Smith',
+          email: 'jane.smith@example.com',
+          password: 'Password123',
+        };
+
+        // Register user first time
+        await request
+          .post('/api/auth/register')
+          .send(userData)
+          .expect(201);
+
+        // Try to register with same email
+        const response = await request
+          .post('/api/auth/register')
+          .send(userData)
+          .expect(409);
+
+        expect(response.body).toMatchObject({
+          success: false,
+          error: 'Email address already registered',
+        });
+      });
+
+      it('should validate required fields', async () => {
+        const invalidData = {
+          firstName: '',
+          lastName: 'Doe',
+          email: 'invalid-email',
+          password: '123', // Too short
+        };
+
+        const response = await request
+          .post('/api/auth/register')
+          .send(invalidData)
+          .expect(400);
+
+        expect(response.body.success).toBe(false);
+      });
+
+      it('should validate password strength', async () => {
+        const weakPassword = {
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'weak@example.com',
+          password: 'weak', // Missing uppercase, number
+        };
+
+        const response = await request
+          .post('/api/auth/register')
+          .send(weakPassword)
+          .expect(400);
+
+        expect(response.body.success).toBe(false);
+      });
+
+      it('should validate email format', async () => {
+        const invalidEmail = {
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'not-an-email',
+          password: 'Password123',
+        };
+
+        const response = await request
+          .post('/api/auth/register')
+          .send(invalidEmail)
+          .expect(400);
+
+        expect(response.body.success).toBe(false);
+      });
+
+      it('should validate name format', async () => {
+        const invalidName = {
+          firstName: 'John123', // Numbers not allowed
+          lastName: 'Doe',
+          email: 'john@example.com',
+          password: 'Password123',
+        };
+
+        const response = await request
+          .post('/api/auth/register')
+          .send(invalidName)
+          .expect(400);
+
+        expect(response.body.success).toBe(false);
+      });
+    });
+  });
 });
