@@ -30,7 +30,11 @@ export class JwtTokenService implements IJwtTokenService {
   private readonly expiresIn: string;
 
   constructor() {
-    this.secret = process.env['JWT_SECRET'] || 'your-secret-key-change-in-production';
+    const envSecret = process.env['JWT_SECRET'];
+    if (!envSecret && process.env['NODE_ENV'] === 'production') {
+      throw new Error('JWT_SECRET must be set in production environments');
+    }
+    this.secret = envSecret || 'your-secret-key-change-in-development';
     this.expiresIn = '24h'; // 24-hour expiration as required
   }
 
@@ -45,10 +49,10 @@ export class JwtTokenService implements IJwtTokenService {
         username: payload.username,
         role: payload.role || 'user',
         // Add exp manually for 24 hours
-        exp: Math.floor(Date.now() / 1000) + (24 * 60 * 60), // 24 hours
+        exp: Math.floor(Date.now() / 1000) + JwtTokenService.TOKEN_EXPIRATION_SECONDS, // 24 hours
       };
 
-      return jwt.sign(tokenPayload, this.secret);
+      return jwt.sign(tokenPayload, this.secret, { algorithm: 'HS256' });
     } catch (error) {
       throw new Error('Failed to generate JWT token');
     }
