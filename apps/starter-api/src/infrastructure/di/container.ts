@@ -5,6 +5,7 @@ import { SqliteTodoRepository } from '../todo/persistence/sqlite/SqliteTodoRepos
 import { TypeOrmTodoRepository } from '../todo/persistence/typeorm/TypeOrmTodoRepository';
 import { MongooseTodoRepository } from '../todo/persistence/mongoose/MongooseTodoRepository';
 import { SequelizeTodoRepository } from '../todo/persistence/sequelize/SequelizeTodoRepository';
+import { InMemoryUserRepository } from '../user/persistence/in-memory/InMemoryUserRepository';
 import {
   CreateTodoUseCase,
   UpdateTodoUseCase,
@@ -15,6 +16,7 @@ import {
   GetCompletedTodosQueryHandler,
   GetTodoByIdQueryHandler,
   GetTodoStatsQueryHandler,
+  RegisterUserUseCase,
   TOKENS,
   TodoValidationService,
   CreateTodoValidationService,
@@ -22,8 +24,12 @@ import {
   DeleteTodoValidationService,
   ToggleTodoValidationService,
   VALIDATION_TOKENS,
+  UserValidationService,
+  RegisterUserValidationService,
+  USER_VALIDATION_TOKENS,
 } from '@nx-starter/application-core';
-import type { ITodoRepository } from '@nx-starter/domain-core';
+import type { ITodoRepository, IUserRepository } from '@nx-starter/domain-core';
+import { UsernameGenerationService } from '@nx-starter/domain-core';
 import { getTypeOrmDataSource } from '../todo/persistence/typeorm/TypeOrmConnection';
 import { connectMongoDB } from '../todo/persistence/mongoose/MongooseConnection';
 import { getSequelizeInstance } from '../todo/persistence/sequelize/SequelizeConnection';
@@ -38,11 +44,24 @@ export const configureDI = async () => {
     repositoryImplementation
   );
 
+  // Infrastructure Layer - User Repository (in-memory for now)
+  container.registerSingleton<IUserRepository>(
+    TOKENS.UserRepository,
+    InMemoryUserRepository
+  );
+
+  // Domain Layer - Services
+  container.registerSingleton(
+    TOKENS.UsernameGenerationService,
+    UsernameGenerationService
+  );
+
   // Application Layer - Use Cases (Commands)
   container.registerSingleton(TOKENS.CreateTodoUseCase, CreateTodoUseCase);
   container.registerSingleton(TOKENS.UpdateTodoUseCase, UpdateTodoUseCase);
   container.registerSingleton(TOKENS.DeleteTodoUseCase, DeleteTodoUseCase);
   container.registerSingleton(TOKENS.ToggleTodoUseCase, ToggleTodoUseCase);
+  container.registerSingleton(TOKENS.RegisterUserUseCase, RegisterUserUseCase);
 
   // Application Layer - Use Cases (Queries)
   container.registerSingleton(
@@ -86,6 +105,16 @@ export const configureDI = async () => {
   container.registerSingleton(
     VALIDATION_TOKENS.TodoValidationService,
     TodoValidationService
+  );
+
+  // User Validation Services
+  container.registerSingleton(
+    USER_VALIDATION_TOKENS.RegisterUserValidationService,
+    RegisterUserValidationService
+  );
+  container.registerSingleton(
+    USER_VALIDATION_TOKENS.UserValidationService,
+    UserValidationService
   );
 };
 
