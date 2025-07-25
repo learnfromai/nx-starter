@@ -14,7 +14,10 @@ export const USER_VALIDATION_ERRORS = {
   REG_INVALID_EMAIL: 'Please provide a valid email address',
   REG_WEAK_PASSWORD: 'Password must be at least 8 characters long with at least one uppercase letter, one lowercase letter, and one number',
   REG_EMAIL_EXISTS: 'Email address already registered',
-  REG_INVALID_NAME: 'Names can only contain letters, spaces, and hyphens'
+  REG_INVALID_NAME: 'Names can only contain letters, spaces, and hyphens',
+  AUTH_MISSING_IDENTIFIER: 'Email or username is required',
+  AUTH_MISSING_PASSWORD: 'Password is required',
+  AUTH_INVALID_EMAIL: 'Please provide a valid email address'
 } as const;
 
 // Name validation schema (for firstName and lastName)
@@ -62,12 +65,78 @@ export const RegisterUserCommandSchema = z.object({
   password: PasswordSchema,
 });
 
+// Username validation schema (for login)
+export const UsernameSchema = z
+  .string()
+  .min(1, 'Username is required')
+  .max(50, 'Username cannot exceed 50 characters');
+
+// Login identifier validation (email or username)
+export const LoginIdentifierSchema = z
+  .string()
+  .min(1, USER_VALIDATION_ERRORS.AUTH_MISSING_IDENTIFIER)
+  .refine(
+    (value) => {
+      // Check if it's a valid email or a valid username
+      const isEmail = z.string().email().safeParse(value).success;
+      const isUsername = z.string().min(1).max(50).safeParse(value).success;
+      return isEmail || isUsername;
+    },
+    {
+      message: USER_VALIDATION_ERRORS.AUTH_INVALID_EMAIL,
+    }
+  );
+
+// Login password validation (no complexity requirements for login)
+export const LoginPasswordSchema = z
+  .string()
+  .min(1, USER_VALIDATION_ERRORS.AUTH_MISSING_PASSWORD);
+
+// Login user request validation schema (from API request)
+export const LoginUserRequestSchema = z
+  .object({
+    email: z.string().optional(),
+    username: z.string().optional(),
+    password: LoginPasswordSchema,
+  })
+  .refine(
+    (data) => data.email || data.username,
+    {
+      message: USER_VALIDATION_ERRORS.AUTH_MISSING_IDENTIFIER,
+      path: ['email'], // Show error on email field
+    }
+  )
+  .refine(
+    (data) => {
+      if (data.email) {
+        // If email is provided, validate email format
+        return z.string().email().safeParse(data.email).success;
+      }
+      return true;
+    },
+    {
+      message: USER_VALIDATION_ERRORS.AUTH_INVALID_EMAIL,
+      path: ['email'],
+    }
+  );
+
+// Login user command validation schema (processed internally)
+export const LoginUserCommandSchema = z.object({
+  identifier: LoginIdentifierSchema,
+  password: LoginPasswordSchema,
+});
+
 // Export all schemas for easy access
 export const UserValidationSchemas = {
   RegisterUserCommand: RegisterUserCommandSchema,
+  LoginUserRequest: LoginUserRequestSchema,
+  LoginUserCommand: LoginUserCommandSchema,
   FirstName: FirstNameSchema,
   LastName: LastNameSchema,
   Email: EmailSchema,
   Password: PasswordSchema,
+  LoginPassword: LoginPasswordSchema,
+  LoginIdentifier: LoginIdentifierSchema,
+  Username: UsernameSchema,
   Name: NameSchema,
 } as const;

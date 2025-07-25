@@ -16,6 +16,7 @@ import {
   GetTodoByIdQueryHandler,
   GetTodoStatsQueryHandler,
   RegisterUserUseCase,
+  LoginUserUseCase,
   TOKENS,
   TodoValidationService,
   CreateTodoValidationService,
@@ -24,10 +25,12 @@ import {
   ToggleTodoValidationService,
   UserValidationService,
   RegisterUserValidationService,
+  LoginUserRequestValidationService,
+  LoginUserValidationService,
   BcryptPasswordHashingService,
+  JwtTokenService,
 } from '@nx-starter/application-core';
 import type { ITodoRepository, IUserRepository } from '@nx-starter/domain-core';
-import { UserDomainService } from '@nx-starter/domain-core';
 import { getTypeOrmDataSource } from '../database/connections/TypeOrmConnection';
 import { connectMongoDB } from '../database/connections/MongooseConnection';
 import { config } from '../../config/config';
@@ -52,6 +55,10 @@ export const configureDI = async () => {
     TOKENS.PasswordHashingService,
     BcryptPasswordHashingService
   );
+  container.registerSingleton(
+    TOKENS.JwtTokenService,
+    JwtTokenService
+  );
 
   // Application Layer - Use Cases (Commands)
   container.registerSingleton(TOKENS.CreateTodoUseCase, CreateTodoUseCase);
@@ -59,6 +66,7 @@ export const configureDI = async () => {
   container.registerSingleton(TOKENS.DeleteTodoUseCase, DeleteTodoUseCase);
   container.registerSingleton(TOKENS.ToggleTodoUseCase, ToggleTodoUseCase);
   container.registerSingleton(TOKENS.RegisterUserUseCase, RegisterUserUseCase);
+  container.registerSingleton(TOKENS.LoginUserUseCase, LoginUserUseCase);
 
   // Application Layer - Use Cases (Queries)
   container.registerSingleton(
@@ -106,6 +114,14 @@ export const configureDI = async () => {
   container.registerSingleton(
     TOKENS.RegisterUserValidationService,
     RegisterUserValidationService
+  );
+  container.registerSingleton(
+    TOKENS.LoginUserRequestValidationService,
+    LoginUserRequestValidationService
+  );
+  container.registerSingleton(
+    TOKENS.LoginUserValidationService,
+    LoginUserValidationService
   );
   container.registerSingleton(
     TOKENS.UserValidationService,
