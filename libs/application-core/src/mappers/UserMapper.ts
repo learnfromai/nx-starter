@@ -1,5 +1,5 @@
 import { User } from '@nx-starter/domain-core';
-import { UserDto, RegisterUserResponseDto } from '../dto/UserDto';
+import { UserDto, RegisterUserResponseDto, LoginUserResponseDto } from '../dto/UserDto';
 
 /**
  * User Mapper
@@ -32,6 +32,22 @@ export class UserMapper {
       email: user.email.value,
       username: user.username.value,
       createdAt: user.createdAt,
+    };
+  }
+
+  /**
+   * Maps User entity and JWT token to LoginUserResponseDto
+   */
+  static toLoginResponseDto(user: User, token: string): LoginUserResponseDto {
+    return {
+      token,
+      user: {
+        id: user.id,
+        firstName: user.firstName.value,
+        lastName: user.lastName.value,
+        email: user.email.value,
+        username: user.username.value,
+      },
     };
   }
 

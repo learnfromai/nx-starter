@@ -1,7 +1,8 @@
 import { injectable, inject } from 'tsyringe';
 import { ValidationService, IValidationService } from './ValidationService';
-import { RegisterUserCommandSchema } from './UserValidationSchemas';
-import { RegisterUserCommand } from '../dto/UserCommands';
+import { RegisterUserCommandSchema, LoginUserRequestSchema, LoginUserCommandSchema } from './UserValidationSchemas';
+import { RegisterUserCommand, LoginUserCommand } from '../dto/UserCommands';
+import { LoginUserRequestDto } from '../dto/UserRequestDtos';
 import { TOKENS } from '../di/tokens';
 
 /**
@@ -13,6 +14,24 @@ export class RegisterUserValidationService extends ValidationService<unknown, Re
   protected schema = RegisterUserCommandSchema;
 }
 
+/**
+ * Validation service for LoginUserRequestDto (from API)
+ * Validates and transforms login request data from API to command
+ */
+@injectable()
+export class LoginUserRequestValidationService extends ValidationService<unknown, LoginUserRequestDto> {
+  protected schema = LoginUserRequestSchema;
+}
+
+/**
+ * Validation service for LoginUserCommand
+ * Encapsulates validation logic for user login commands
+ */
+@injectable()
+export class LoginUserValidationService extends ValidationService<unknown, LoginUserCommand> {
+  protected schema = LoginUserCommandSchema;
+}
+
 
 /**
  * Composite validation service that provides all User validation operations
@@ -22,7 +41,11 @@ export class RegisterUserValidationService extends ValidationService<unknown, Re
 export class UserValidationService {
   constructor(
     @inject(TOKENS.RegisterUserValidationService)
-    private registerValidator: RegisterUserValidationService
+    private registerValidator: RegisterUserValidationService,
+    @inject(TOKENS.LoginUserRequestValidationService)
+    private loginRequestValidator: LoginUserRequestValidationService,
+    @inject(TOKENS.LoginUserValidationService)
+    private loginValidator: LoginUserValidationService
   ) {}
 
   /**
@@ -33,13 +56,49 @@ export class UserValidationService {
   }
 
   /**
+   * Validates login request data from API and transforms it to command
+   */
+  validateLoginRequest(data: unknown): LoginUserCommand {
+    // First validate the request data
+    const validatedRequest = this.loginRequestValidator.validate(data);
+    
+    // Transform to command format
+    const identifier = validatedRequest.email || validatedRequest.username;
+    if (!identifier) {
+      throw new Error('Email or username is required');
+    }
+    
+    return {
+      identifier,
+      password: validatedRequest.password,
+    };
+  }
+
+  /**
+   * Validates login command data  
+   */
+  validateLoginCommand(data: unknown): LoginUserCommand {
+    return this.loginValidator.validate(data);
+  }
+
+  /**
    * Safe validation methods that don't throw exceptions
    */
   safeValidateRegisterCommand(data: unknown) {
     return this.registerValidator.safeParse(data);
   }
+
+  safeValidateLoginRequest(data: unknown) {
+    return this.loginRequestValidator.safeParse(data);
+  }
+
+  safeValidateLoginCommand(data: unknown) {
+    return this.loginValidator.safeParse(data);
+  }
 }
 
 // Export interfaces for dependency injection
 export type IRegisterUserValidationService = IValidationService<unknown, RegisterUserCommand>;
+export type ILoginUserRequestValidationService = IValidationService<unknown, LoginUserRequestDto>;
+export type ILoginUserValidationService = IValidationService<unknown, LoginUserCommand>;
 
