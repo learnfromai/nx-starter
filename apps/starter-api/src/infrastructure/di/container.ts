@@ -30,7 +30,6 @@ import {
   JwtTokenService,
 } from '@nx-starter/application-core';
 import type { ITodoRepository, IUserRepository } from '@nx-starter/domain-core';
-import { UserDomainService } from '@nx-starter/domain-core';
 import { getTypeOrmDataSource } from '../database/connections/TypeOrmConnection';
 import { connectMongoDB } from '../database/connections/MongooseConnection';
 import { config } from '../../config/config';
@@ -125,7 +124,7 @@ export const configureDI = async () => {
   );
 
   // Domain Layer - Domain Services
-  // UserDomainService is instantiated manually in use cases (Clean Architecture best practice)
+  // Domain services are instantiated manually in use cases (Clean Architecture best practice)
 };
 
 async function getTodoRepositoryImplementation(): Promise<ITodoRepository> {
