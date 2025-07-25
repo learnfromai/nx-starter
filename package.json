@@ -75,6 +75,7 @@
     "prepare:prod": "pnpm run clean && pnpm install && pnpm run ci && pnpm run build:prod",
     "setup": "pnpm install && pnpm run build:libs && pnpm run prepare && pnpm run setup:git-template",
     "setup:dev": "pnpm install && pnpm run build:libs && pnpm run prepare && pnpm run setup:git-template && pnpm run dev:all",
+    "setup:e2e": "./scripts/setup-e2e-env.sh",
     "commit-lint": "commitlint --edit",
     "commit-lint:check": "commitlint --from HEAD~1 --to HEAD --verbose",
     "prepare": "husky || echo 'Husky setup failed - this is normal if git is not initialized'",

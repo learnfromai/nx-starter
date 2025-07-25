@@ -9,6 +9,19 @@ The E2E tests can run in two modes:
 1. **Local Storage Mode** (default): Uses Dexie.js for local IndexedDB storage
 2. **API Backend Mode**: Uses the Express API server with in-memory database
 
+## Setup
+
+First, set up the required environment files:
+
+```bash
+# Create .env files from templates
+./scripts/setup-e2e-env.sh
+
+# Or manually copy the template files
+cp apps/starter-pwa-e2e/.env.local.example apps/starter-pwa-e2e/.env.local
+cp apps/starter-pwa-e2e/.env.api.example apps/starter-pwa-e2e/.env.api
+```
+
 ## Quick Start
 
 ### Running with Local Storage (Default)
@@ -49,8 +62,10 @@ pnpm e2e:web:api
 
 ### Environment Files
 
-- `.env.local` - Configuration for local storage mode
-- `.env.api` - Configuration for API backend mode
+- `.env.local.example` → `.env.local` - Template for local storage mode
+- `.env.api.example` → `.env.api` - Template for API backend mode
+
+**Note**: The actual `.env.local` and `.env.api` files are gitignored for security. Use the setup script or copy from templates.
 
 ### Playwright Configuration
 
