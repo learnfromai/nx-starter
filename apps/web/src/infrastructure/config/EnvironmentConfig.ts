@@ -39,6 +39,7 @@ export function getEnvironmentConfig(): AppConfig {
           register: '/api/auth/register',
           logout: '/api/auth/logout',
           refresh: '/api/auth/refresh',
+          validate: '/api/auth/validate',
           me: '/api/auth/me',
         },
       },
