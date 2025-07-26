@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { Sequelize } from 'sequelize';
-import { config } from '../../../../config/config';
+import { getDatabaseConfig, getServerConfig } from '../../../../config';
 
 vi.mock('sequelize', () => ({
   Sequelize: vi.fn().mockImplementation(() => ({
@@ -12,19 +12,19 @@ vi.mock('sequelize', () => ({
   })),
 }));
 
-vi.mock('../../../../config/config', () => ({
-  config: {
-    nodeEnv: 'test',
-    database: {
-      type: 'sqlite',
-      url: undefined,
-      host: 'localhost',
-      port: undefined,
-      username: undefined,
-      password: undefined,
-      database: 'task_app',
-    },
-  },
+vi.mock('../../../../config', () => ({
+  getDatabaseConfig: vi.fn(() => ({
+    type: 'sqlite',
+    url: undefined,
+    host: 'localhost',
+    port: undefined,
+    username: undefined,
+    password: undefined,
+    database: 'task_app',
+  })),
+  getServerConfig: vi.fn(() => ({
+    environment: 'test',
+  })),
 }));
 
 vi.mock('./TodoModel', () => ({

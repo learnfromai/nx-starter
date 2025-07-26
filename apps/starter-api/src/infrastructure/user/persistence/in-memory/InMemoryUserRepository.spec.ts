@@ -33,8 +33,8 @@ describe('InMemoryUserRepository', () => {
       const retrievedUser = await repository.getById(testUser.id);
       expect(retrievedUser).toBeDefined();
       expect(retrievedUser?.id).toBe(testUser.id);
-      expect(retrievedUser?.firstName).toBe('John');
-      expect(retrievedUser?.lastName).toBe('Doe');
+      expect(retrievedUser?.firstName.value).toBe('John');
+      expect(retrievedUser?.lastName.value).toBe('Doe');
     });
   });
 
@@ -46,7 +46,7 @@ describe('InMemoryUserRepository', () => {
       
       expect(result).toBeDefined();
       expect(result?.id).toBe(testUser.id);
-      expect(result?.firstName).toBe('John');
+      expect(result?.firstName.value).toBe('John');
     });
 
     it('should return undefined when user does not exist', async () => {
@@ -170,8 +170,8 @@ describe('InMemoryUserRepository', () => {
       const allUsers = await repository.getAll();
       
       expect(allUsers).toHaveLength(2);
-      expect(allUsers[0].firstName).toBe('John');
-      expect(allUsers[1].firstName).toBe('Jane');
+      expect(allUsers[0].firstName.value).toBe('John');
+      expect(allUsers[1].firstName.value).toBe('Jane');
     });
 
     it('should return empty array when no users exist', async () => {
@@ -196,8 +196,8 @@ describe('InMemoryUserRepository', () => {
       await repository.create(specialUser);
       
       const retrieved = await repository.getById(specialUser.id);
-      expect(retrieved?.firstName).toBe("John-Paul O'Connor");
-      expect(retrieved?.lastName).toBe('Smith-Wilson');
+      expect(retrieved?.firstName.value).toBe("John-Paul O'Connor");
+      expect(retrieved?.lastName.value).toBe('Smith-Wilson');
     });
 
     it('should handle unicode characters', async () => {
@@ -213,8 +213,8 @@ describe('InMemoryUserRepository', () => {
       await repository.create(unicodeUser);
       
       const retrieved = await repository.getById(unicodeUser.id);
-      expect(retrieved?.firstName).toBe('José');
-      expect(retrieved?.lastName).toBe('Müller');
+      expect(retrieved?.firstName.value).toBe('José');
+      expect(retrieved?.lastName.value).toBe('Müller');
     });
 
     it('should handle users with same names but different emails', async () => {
@@ -244,8 +244,8 @@ describe('InMemoryUserRepository', () => {
 
       expect(byEmail1?.id).toBe(user1.id);
       expect(byEmail2?.id).toBe(user2.id);
-      expect(byEmail1?.firstName).toBe('John');
-      expect(byEmail2?.firstName).toBe('John');
+      expect(byEmail1?.firstName.value).toBe('John');
+      expect(byEmail2?.firstName.value).toBe('John');
     });
   });
 });
