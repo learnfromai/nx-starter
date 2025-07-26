@@ -20,3 +20,16 @@ export interface RegisterUserResponseDto {
   username: string;
   createdAt: Date;
 }
+
+export interface LoginUserResponseDto {
+  token: string;
+  user: UserProfileDto;
+}
+
+export interface UserProfileDto {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  username: string;
+}

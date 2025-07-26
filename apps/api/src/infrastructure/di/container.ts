@@ -54,6 +54,10 @@ export const configureDI = async () => {
     TOKENS.PasswordHashingService,
     BcryptPasswordHashingService
   );
+  container.registerSingleton(
+    TOKENS.JwtTokenService,
+    JwtTokenService
+  );
 
   // Application Layer - Use Cases (Commands)
   container.registerSingleton(TOKENS.CreateTodoUseCase, CreateTodoUseCase);
@@ -61,6 +65,7 @@ export const configureDI = async () => {
   container.registerSingleton(TOKENS.DeleteTodoUseCase, DeleteTodoUseCase);
   container.registerSingleton(TOKENS.ToggleTodoUseCase, ToggleTodoUseCase);
   container.registerSingleton(TOKENS.RegisterUserUseCase, RegisterUserUseCase);
+  container.registerSingleton(TOKENS.LoginUserUseCase, LoginUserUseCase);
 
   // Application Layer - Use Cases (Queries)
   container.registerSingleton(
@@ -110,12 +115,16 @@ export const configureDI = async () => {
     RegisterUserValidationService
   );
   container.registerSingleton(
+    TOKENS.LoginUserValidationService,
+    LoginUserValidationService
+  );
+  container.registerSingleton(
     TOKENS.UserValidationService,
     UserValidationService
   );
 
   // Domain Layer - Domain Services
-  // UserDomainService is instantiated manually in use cases (Clean Architecture best practice)
+  // Domain services are instantiated manually in use cases (Clean Architecture best practice)
 };
 
 async function getTodoRepositoryImplementation(): Promise<ITodoRepository> {

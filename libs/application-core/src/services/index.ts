@@ -7,3 +7,4 @@
 export * from './TodoCommandService';
 export * from './TodoQueryService';
 export * from './PasswordHashingService';
+export * from './JwtTokenService';

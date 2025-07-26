@@ -14,7 +14,13 @@ export const USER_VALIDATION_ERRORS = {
   REG_INVALID_EMAIL: 'Please provide a valid email address',
   REG_WEAK_PASSWORD: 'Password must be at least 8 characters long with at least one uppercase letter, one lowercase letter, and one number',
   REG_EMAIL_EXISTS: 'This email address is already registered',
-  REG_INVALID_NAME: 'Names can only contain letters, spaces, and hyphens'
+  REG_INVALID_NAME: 'Names can only contain letters, spaces, and hyphens',
+  
+  // Login validation errors
+  AUTH_MISSING_IDENTIFIER: 'Email or username is required',
+  AUTH_MISSING_PASSWORD: 'Password is required',
+  AUTH_INVALID_EMAIL: 'Please provide a valid email address',
+  AUTH_INVALID_CREDENTIALS: 'Invalid email/username or password'
 } as const;
 
 // Name validation schema (for firstName and lastName)
@@ -62,9 +68,23 @@ export const RegisterUserCommandSchema = z.object({
   password: PasswordSchema,
 });
 
+// Login user command validation schema
+export const LoginUserCommandSchema = z.object({
+  email: z.string().email(USER_VALIDATION_ERRORS.AUTH_INVALID_EMAIL).optional(),
+  username: z.string().min(1).optional(),
+  password: z.string().min(1, USER_VALIDATION_ERRORS.AUTH_MISSING_PASSWORD)
+}).refine(
+  (data) => data.email || data.username,
+  {
+    message: USER_VALIDATION_ERRORS.AUTH_MISSING_IDENTIFIER,
+    path: ['email'] // Error will be associated with email field
+  }
+);
+
 // Export all schemas for easy access
 export const UserValidationSchemas = {
   RegisterUserCommand: RegisterUserCommandSchema,
+  LoginUserCommand: LoginUserCommandSchema,
   FirstName: FirstNameSchema,
   LastName: LastNameSchema,
   Email: EmailSchema,
