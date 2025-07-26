@@ -32,7 +32,7 @@ export interface ILoginFormViewModel {
   error: string | null;
   
   // Form actions
-  handleFormSubmit(identifier: string, password: string): Promise<boolean>;
+  handleFormSubmit(identifier: string, password: string, rememberMe?: boolean): Promise<boolean>;
   clearError(): void;
   
   // Validation helpers

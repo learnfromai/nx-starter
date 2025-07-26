@@ -16,7 +16,7 @@ export interface AuthStore {
   getAuthHeaders(): Record<string, string>;
   
   // Actions
-  login(credentials: { identifier: string; password: string }): Promise<void>;
+  login(credentials: { identifier: string; password: string }, rememberMe?: boolean): Promise<void>;
   logout(): void;
   clearError(): void;
   setToken(token: string): void;

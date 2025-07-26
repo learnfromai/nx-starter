@@ -24,13 +24,13 @@ export const useAuthStore = create<AuthStore>()(
           error: null,
 
           // Computed values as functions
-          getAuthHeaders() {
+          getAuthHeaders(): Record<string, string> {
             const { token } = get();
             return token ? { Authorization: `Bearer ${token}` } : {};
           },
 
           // Actions
-          async login(credentials: { identifier: string; password: string }) {
+          async login(credentials: { identifier: string; password: string }, rememberMe = false) {
             set((state) => {
               state.loginStatus = 'loading';
               state.error = null;
@@ -52,15 +52,15 @@ export const useAuthStore = create<AuthStore>()(
                 state.error = null;
               });
 
-              // Store token in localStorage for persistence
-              if (typeof window !== 'undefined') {
+              // Store token in localStorage only if rememberMe is true
+              if (rememberMe && typeof window !== 'undefined') {
                 localStorage.setItem('auth_token', response.token);
                 localStorage.setItem('auth_user', JSON.stringify(response.user));
               }
             } catch (error: any) {
               set((state) => {
                 state.loginStatus = 'error';
-                state.error = error.message || 'Login failed. Please check your credentials.';
+                state.error = error.message || 'Invalid email/username or password';
                 state.isAuthenticated = false;
                 state.user = null;
                 state.token = null;

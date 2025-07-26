@@ -11,9 +11,9 @@ export const useLoginFormViewModel = (): ILoginFormViewModel => {
   const store = useAuthStore();
 
   // Handle form submission
-  const handleFormSubmit = useCallback(async (identifier: string, password: string): Promise<boolean> => {
+  const handleFormSubmit = useCallback(async (identifier: string, password: string, rememberMe?: boolean): Promise<boolean> => {
     try {
-      await store.login({ identifier, password });
+      await store.login({ identifier, password }, rememberMe);
       return true;
     } catch (error) {
       return false;

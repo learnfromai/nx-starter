@@ -84,7 +84,10 @@ export const environmentOverrides = {
       logLevel: 'debug' as const,
     },
     features: {
+      useApiBackend: true,
       enableAuth: false,
+      enableOfflineMode: true,
+      enablePWA: true,
       enableAnalytics: false,
     },
   },
@@ -94,7 +97,10 @@ export const environmentOverrides = {
       logLevel: 'warn' as const,
     },
     features: {
+      useApiBackend: true,
       enableAuth: true,
+      enableOfflineMode: true,
+      enablePWA: true,
       enableAnalytics: true,
     },
   },
@@ -104,7 +110,10 @@ export const environmentOverrides = {
       logLevel: 'error' as const,
     },
     features: {
+      useApiBackend: true,
       enableAuth: true,
+      enableOfflineMode: true,
+      enablePWA: true,
       enableAnalytics: true,
     },
     api: {
@@ -119,8 +128,9 @@ export const environmentOverrides = {
     features: {
       useApiBackend: false,
       enableAuth: false,
-      enableAnalytics: false,
       enableOfflineMode: false,
+      enablePWA: false,
+      enableAnalytics: false,
     },
     api: {
       timeout: 5000, // Shorter timeout for tests

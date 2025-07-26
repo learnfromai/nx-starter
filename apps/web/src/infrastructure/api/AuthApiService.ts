@@ -17,6 +17,10 @@ export class AuthApiService implements IAuthApiService {
   ) {}
 
   async login(command: LoginUserCommand): Promise<LoginUserResponseDto> {
+    if (!this.apiConfig.endpoints.auth) {
+      throw new Error('Authentication endpoints not configured');
+    }
+    
     const response = await this.httpClient.post<LoginUserResponseDto>(
       this.apiConfig.endpoints.auth.login,
       command
@@ -30,6 +34,10 @@ export class AuthApiService implements IAuthApiService {
   }
 
   async validateToken(token: string): Promise<{ valid: boolean; user?: any }> {
+    if (!this.apiConfig.endpoints.auth) {
+      throw new Error('Authentication endpoints not configured');
+    }
+    
     try {
       const response = await this.httpClient.get<{ valid: boolean; user?: any }>(
         this.apiConfig.endpoints.auth.validate,
@@ -47,6 +55,10 @@ export class AuthApiService implements IAuthApiService {
   }
 
   async refreshToken(refreshToken: string): Promise<{ token: string }> {
+    if (!this.apiConfig.endpoints.auth) {
+      throw new Error('Authentication endpoints not configured');
+    }
+    
     const response = await this.httpClient.post<{ token: string }>(
       this.apiConfig.endpoints.auth.refresh,
       { refreshToken }

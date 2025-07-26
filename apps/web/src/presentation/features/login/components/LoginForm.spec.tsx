@@ -84,20 +84,28 @@ describe('LoginForm', () => {
     const passwordInput = screen.getByTestId('login-password-input');
     const submitButton = screen.getByTestId('login-submit-button');
 
+    // Initially button should be disabled
+    expect(submitButton).toBeDisabled();
+
     await user.type(identifierInput, 'test@example.com');
     await user.type(passwordInput, 'password123');
     
-    // Ensure form is ready
+    // Wait for form state to update
     await waitFor(() => {
       expect(identifierInput).toHaveValue('test@example.com');
       expect(passwordInput).toHaveValue('password123');
+    });
+
+    // Wait for button to be enabled
+    await waitFor(() => {
+      expect(submitButton).not.toBeDisabled();
     });
     
     await user.click(submitButton);
 
     // Give some time for the form submission
     await waitFor(() => {
-      expect(mockViewModel.handleFormSubmit).toHaveBeenCalled();
+      expect(mockViewModel.handleFormSubmit).toHaveBeenCalledWith('test@example.com', 'password123', false);
     }, { timeout: 3000 });
   });
 
@@ -132,9 +140,45 @@ describe('LoginForm', () => {
 
     const identifierInput = screen.getByTestId('login-identifier-input');
     const passwordInput = screen.getByTestId('login-password-input');
+    const submitButton = screen.getByTestId('login-submit-button');
+    const rememberMeCheckbox = screen.getByTestId('login-remember-me-checkbox');
 
+    expect(identifierInput).toHaveAttribute('type', 'text');
     expect(identifierInput).toHaveAttribute('placeholder', 'Username or Email');
-    expect(passwordInput).toHaveAttribute('placeholder', 'Password');
+    
     expect(passwordInput).toHaveAttribute('type', 'password');
+    expect(passwordInput).toHaveAttribute('placeholder', 'Password');
+    
+    expect(submitButton).toHaveAttribute('type', 'submit');
+    expect(rememberMeCheckbox).toHaveAttribute('role', 'checkbox');
+  });
+
+  it('should disable submit button when fields are empty', () => {
+    renderWithRouter(<LoginForm />);
+
+    const submitButton = screen.getByTestId('login-submit-button');
+    
+    // Button should be disabled initially when fields are empty
+    expect(submitButton).toBeDisabled();
+  });
+
+  it('should enable submit button when fields have valid data', async () => {
+    const user = userEvent.setup();
+    renderWithRouter(<LoginForm />);
+
+    const identifierInput = screen.getByTestId('login-identifier-input');
+    const passwordInput = screen.getByTestId('login-password-input');
+    const submitButton = screen.getByTestId('login-submit-button');
+
+    // Initially disabled
+    expect(submitButton).toBeDisabled();
+
+    await user.type(identifierInput, 'test@example.com');
+    await user.type(passwordInput, 'password123');
+
+    // Wait for form state to update and button to be enabled
+    await waitFor(() => {
+      expect(submitButton).not.toBeDisabled();
+    });
   });
 });

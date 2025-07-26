@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { LoginUserCommandSchema } from '@nx-starter/application-shared';
+import { LoginFormSchema } from '@nx-starter/application-shared';
 import { Button } from '../../../components/ui/button';
 import { Input } from '../../../components/ui/input';
 import { Card, CardContent } from '../../../components/ui/card';
+import { Checkbox } from '../../../components/ui/checkbox';
 import { User, Lock, LogIn } from 'lucide-react';
 import { useLoginFormViewModel } from '../view-models/useLoginFormViewModel';
 import type { LoginFormData } from '../types';
@@ -14,13 +15,25 @@ export const LoginForm: React.FC = () => {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    watch,
+    formState: { errors, isValid, isDirty },
     setFocus,
   } = useForm<LoginFormData>({
-    resolver: zodResolver(LoginUserCommandSchema),
+    resolver: zodResolver(LoginFormSchema),
+    mode: 'onChange', // Enable real-time validation
+    defaultValues: {
+      identifier: '',
+      password: '',
+      rememberMe: false,
+    },
   });
   
   const viewModel = useLoginFormViewModel();
+  
+  // Watch form values to determine if submit button should be disabled
+  const identifier = watch('identifier');
+  const password = watch('password');
+  const isFormEmpty = !identifier?.trim() || !password?.trim();
 
   // Set focus on identifier field when component mounts
   useEffect(() => {
@@ -28,11 +41,19 @@ export const LoginForm: React.FC = () => {
   }, [setFocus]);
 
   const onSubmit = handleSubmit(async (data: LoginFormData) => {
-    const success = await viewModel.handleFormSubmit(data.identifier, data.password);
+    const success = await viewModel.handleFormSubmit(data.identifier, data.password, data.rememberMe);
     if (success) {
       reset();
     }
   });
+
+  // Handle keyboard events (Enter key)
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter' && !isFormEmpty && !viewModel.isSubmitting) {
+      event.preventDefault();
+      onSubmit();
+    }
+  };
 
   // Clear error when user starts typing
   const handleInputChange = () => {
@@ -59,7 +80,7 @@ export const LoginForm: React.FC = () => {
             </div>
           )}
 
-          <form onSubmit={onSubmit} className="space-y-4">
+          <form onSubmit={onSubmit} onKeyDown={handleKeyDown} className="space-y-4">
             {/* Username/Email Field */}
             <div className="relative">
               <div 
@@ -118,11 +139,28 @@ export const LoginForm: React.FC = () => {
               )}
             </div>
 
+            {/* Remember Me Checkbox */}
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                {...register('rememberMe')}
+                id="rememberMe"
+                disabled={viewModel.isSubmitting}
+                className="data-[state=checked]:bg-[#4db6ac] data-[state=checked]:border-[#4db6ac]"
+                data-testid="login-remember-me-checkbox"
+              />
+              <label
+                htmlFor="rememberMe"
+                className="text-sm text-gray-700 cursor-pointer select-none"
+              >
+                Remember Me
+              </label>
+            </div>
+
             {/* Submit Button */}
             <Button
               type="submit"
-              disabled={viewModel.isSubmitting}
-              className="w-full h-12 bg-[#4db6ac] hover:bg-[#3ba69c] active:bg-[#b2dfdb] active:text-[#004d40] text-white font-bold text-base rounded-lg transition-all duration-300 border-0 mt-4"
+              disabled={isFormEmpty || viewModel.isSubmitting}
+              className="w-full h-12 bg-[#4db6ac] hover:bg-[#3ba69c] active:bg-[#b2dfdb] active:text-[#004d40] text-white font-bold text-base rounded-lg transition-all duration-300 border-0 mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
               data-testid="login-submit-button"
             >
               <LogIn className="h-5 w-5 mr-2" />
@@ -132,7 +170,7 @@ export const LoginForm: React.FC = () => {
                   Logging in...
                 </>
               ) : (
-                'Login'
+                'Log In'
               )}
             </Button>
           </form>
