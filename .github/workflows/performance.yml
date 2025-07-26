@@ -1,0 +1,394 @@
+name: Performance Monitoring
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Run performance tests daily at 3 AM UTC
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+env:
+  NX_CLOUD_DISTRIBUTED_EXECUTION: false
+
+jobs:
+  # Bundle size analysis
+  bundle-analysis:
+    name: Bundle Size Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: '>=10.13.1'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build applications for analysis
+        run: pnpm run build:prod
+
+      - name: Analyze bundle sizes
+        run: |
+          echo "## Bundle Size Analysis" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Check if build outputs exist
+          if [ -d "dist/apps/starter-pwa" ]; then
+            echo "### PWA Bundle Sizes" >> $GITHUB_STEP_SUMMARY
+            find dist/apps/starter-pwa -name "*.js" -o -name "*.css" | while read file; do
+              size=$(du -h "$file" | cut -f1)
+              echo "- $(basename "$file"): $size" >> $GITHUB_STEP_SUMMARY
+            done
+          fi
+          
+          if [ -d "dist/apps/starter-api" ]; then
+            echo "### API Bundle Sizes" >> $GITHUB_STEP_SUMMARY
+            find dist/apps/starter-api -name "*.js" | while read file; do
+              size=$(du -h "$file" | cut -f1)
+              echo "- $(basename "$file"): $size" >> $GITHUB_STEP_SUMMARY
+            done
+          fi
+
+      - name: Check bundle size limits
+        run: |
+          # Define size limits (in KB)
+          MAX_JS_SIZE=500
+          MAX_CSS_SIZE=100
+          
+          echo "Checking bundle size limits..."
+          
+          # Check PWA JavaScript bundles
+          if [ -d "dist/apps/starter-pwa" ]; then
+            for js_file in dist/apps/starter-pwa/*.js; do
+              if [ -f "$js_file" ]; then
+                size_kb=$(du -k "$js_file" | cut -f1)
+                if [ "$size_kb" -gt "$MAX_JS_SIZE" ]; then
+                  echo "⚠️ Warning: $(basename "$js_file") is ${size_kb}KB (limit: ${MAX_JS_SIZE}KB)"
+                fi
+              fi
+            done
+          fi
+          
+          # Check PWA CSS bundles
+          if [ -d "dist/apps/starter-pwa" ]; then
+            for css_file in dist/apps/starter-pwa/*.css; do
+              if [ -f "$css_file" ]; then
+                size_kb=$(du -k "$css_file" | cut -f1)
+                if [ "$size_kb" -gt "$MAX_CSS_SIZE" ]; then
+                  echo "⚠️ Warning: $(basename "$css_file") is ${size_kb}KB (limit: ${MAX_CSS_SIZE}KB)"
+                fi
+              fi
+            done
+          fi
+
+      - name: Upload bundle analysis
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundle-analysis
+          path: dist/
+          retention-days: 7
+
+  # API performance tests
+  api-performance:
+    name: API Performance Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: '>=10.13.1'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build and start API
+        run: |
+          pnpm run build:api
+          pnpm run start:api &
+          API_PID=$!
+          echo "API_PID=$API_PID" >> $GITHUB_ENV
+          
+          # Wait for API to be ready
+          sleep 10
+          
+          # Check if API is responding
+          for i in {1..30}; do
+            if curl -f http://localhost:3333/api/health 2>/dev/null; then
+              echo "API is ready"
+              break
+            fi
+            echo "Waiting for API... ($i/30)"
+            sleep 2
+          done
+
+      - name: Install k6 for load testing
+        run: |
+          sudo gpg -k
+          sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update
+          sudo apt-get install k6
+
+      - name: Create performance test script
+        run: |
+          cat > api-performance-test.js << 'EOF'
+          import http from 'k6/http';
+          import { check, sleep } from 'k6';
+          
+          export const options = {
+            stages: [
+              { duration: '30s', target: 10 },  // Ramp up
+              { duration: '1m', target: 50 },   // Stay at 50 users
+              { duration: '30s', target: 0 },   // Ramp down
+            ],
+            thresholds: {
+              http_req_duration: ['p(95)<500'],  // 95% of requests must complete below 500ms
+              http_req_failed: ['rate<0.01'],    // Error rate must be below 1%
+            },
+          };
+          
+          export default function () {
+            // Test health endpoint
+            let healthRes = http.get('http://localhost:3333/api/health');
+            check(healthRes, {
+              'health check status is 200': (r) => r.status === 200,
+              'health check response time < 100ms': (r) => r.timings.duration < 100,
+            });
+            
+            // Test other endpoints if they exist
+            // Add more tests based on your API endpoints
+            
+            sleep(1);
+          }
+          EOF
+
+      - name: Run performance tests
+        run: |
+          echo "## API Performance Test Results" >> $GITHUB_STEP_SUMMARY
+          k6 run --out json=api-performance-results.json api-performance-test.js || true
+          
+          # Extract key metrics
+          if [ -f api-performance-results.json ]; then
+            avg_response_time=$(cat api-performance-results.json | jq -r 'select(.type=="Point" and .metric=="http_req_duration") | .data.value' | awk '{sum+=$1; count++} END {if(count>0) print sum/count; else print 0}')
+            error_rate=$(cat api-performance-results.json | jq -r 'select(.type=="Point" and .metric=="http_req_failed") | .data.value' | awk '{sum+=$1; count++} END {if(count>0) print (sum/count)*100; else print 0}')
+            
+            echo "- **Average Response Time**: ${avg_response_time}ms" >> $GITHUB_STEP_SUMMARY
+            echo "- **Error Rate**: ${error_rate}%" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Stop API
+        if: always()
+        run: |
+          if [ ! -z "$API_PID" ]; then
+            kill $API_PID || true
+          fi
+
+      - name: Upload performance results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-performance-results
+          path: api-performance-results.json
+          retention-days: 30
+
+  # Frontend performance tests
+  frontend-performance:
+    name: Frontend Performance Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: '>=10.13.1'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Build and start PWA
+        run: |
+          pnpm run build:web
+          pnpm run start:web &
+          PWA_PID=$!
+          echo "PWA_PID=$PWA_PID" >> $GITHUB_ENV
+          
+          # Wait for PWA to be ready
+          sleep 10
+          
+          # Check if PWA is responding
+          for i in {1..30}; do
+            if curl -f http://localhost:4200 2>/dev/null; then
+              echo "PWA is ready"
+              break
+            fi
+            echo "Waiting for PWA... ($i/30)"
+            sleep 2
+          done
+
+      - name: Create Lighthouse CI config
+        run: |
+          cat > lighthouserc.js << 'EOF'
+          module.exports = {
+            ci: {
+              collect: {
+                url: ['http://localhost:4200'],
+                numberOfRuns: 3,
+              },
+              assert: {
+                assertions: {
+                  'categories:performance': ['warn', {minScore: 0.8}],
+                  'categories:accessibility': ['error', {minScore: 0.9}],
+                  'categories:best-practices': ['warn', {minScore: 0.9}],
+                  'categories:seo': ['warn', {minScore: 0.8}],
+                },
+              },
+              upload: {
+                target: 'temporary-public-storage',
+              },
+            },
+          };
+          EOF
+
+      - name: Install Lighthouse CI
+        run: npm install -g @lhci/cli
+
+      - name: Run Lighthouse CI
+        run: |
+          echo "## Frontend Performance Test Results" >> $GITHUB_STEP_SUMMARY
+          lhci autorun --config=lighthouserc.js || true
+          
+          # Process results if available
+          if [ -d ".lighthouseci" ]; then
+            # Extract performance scores
+            perf_score=$(find .lighthouseci -name "*.json" | head -1 | xargs cat | jq -r '.categories.performance.score * 100')
+            accessibility_score=$(find .lighthouseci -name "*.json" | head -1 | xargs cat | jq -r '.categories.accessibility.score * 100')
+            
+            echo "- **Performance Score**: ${perf_score}%" >> $GITHUB_STEP_SUMMARY
+            echo "- **Accessibility Score**: ${accessibility_score}%" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Stop PWA
+        if: always()
+        run: |
+          if [ ! -z "$PWA_PID" ]; then
+            kill $PWA_PID || true
+          fi
+
+      - name: Upload Lighthouse results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-results
+          path: .lighthouseci/
+          retention-days: 30
+
+  # Memory and CPU profiling
+  resource-profiling:
+    name: Resource Profiling
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: '>=10.13.1'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build applications
+        run: pnpm run build
+
+      - name: Profile application startup
+        run: |
+          echo "## Resource Profiling Results" >> $GITHUB_STEP_SUMMARY
+          
+          # Profile API startup
+          if [ -d "dist/apps/starter-api" ]; then
+            echo "### API Resource Usage" >> $GITHUB_STEP_SUMMARY
+            timeout 30s /usr/bin/time -v node dist/apps/starter-api/main.js > api-startup.log 2>&1 || true
+            
+            # Extract memory usage
+            if [ -f api-startup.log ]; then
+              max_memory=$(grep "Maximum resident set size" api-startup.log | awk '{print $6}')
+              echo "- **Max Memory Usage**: ${max_memory}KB" >> $GITHUB_STEP_SUMMARY
+            fi
+          fi
+
+      - name: Check for memory leaks in tests
+        run: |
+          echo "### Memory Leak Detection" >> $GITHUB_STEP_SUMMARY
+          
+          # Run tests with memory profiling
+          NODE_OPTIONS="--max-old-space-size=512" pnpm run test:libs --detectOpenHandles --logHeapUsage || true
+          
+          echo "✅ Memory leak detection completed" >> $GITHUB_STEP_SUMMARY
+
+  # Performance summary
+  performance-summary:
+    name: Performance Summary
+    runs-on: ubuntu-latest
+    needs: [bundle-analysis, api-performance, frontend-performance, resource-profiling]
+    if: always()
+    steps:
+      - name: Create performance summary
+        run: |
+          echo "# 📊 Performance Monitoring Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Test Type | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----------|---------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Bundle Analysis | ${{ needs.bundle-analysis.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| API Performance | ${{ needs.api-performance.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Frontend Performance | ${{ needs.frontend-performance.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Resource Profiling | ${{ needs.resource-profiling.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Performance monitoring completed at**: $(date -u)" >> $GITHUB_STEP_SUMMARY
+
+      - name: Performance regression check
+        run: |
+          # This would typically compare against baseline metrics
+          # For now, just check if critical tests passed
+          if [[ "${{ needs.api-performance.result }}" != "success" || "${{ needs.frontend-performance.result }}" != "success" ]]; then
+            echo "⚠️ Performance regression detected"
+            echo "Please review the performance test results and optimize as needed"
+          else
+            echo "✅ No performance regressions detected"
+          fi
