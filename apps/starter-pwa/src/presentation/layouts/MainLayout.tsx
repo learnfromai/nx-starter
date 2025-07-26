@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card, CardHeader, CardTitle } from '../components/ui/card';
+import { Navigation } from '../components/navigation';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -20,6 +21,8 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
             </p>
           </CardHeader>
         </Card>
+
+        <Navigation />
 
         {children}
       </div>
