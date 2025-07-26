@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LoginFormSchema } from '@nx-starter/application-shared';
@@ -30,10 +30,18 @@ export const LoginForm: React.FC = () => {
   
   const viewModel = useLoginFormViewModel();
   
-  // Watch form values to determine if submit button should be disabled
+  // Track field values for button state - using state for better test compatibility
+  const [fieldValues, setFieldValues] = useState({ identifier: '', password: '' });
+  
+  // Watch form values and update state
   const identifier = watch('identifier');
   const password = watch('password');
-  const isFormEmpty = !identifier?.trim() || !password?.trim();
+  
+  useEffect(() => {
+    setFieldValues({ identifier: identifier || '', password: password || '' });
+  }, [identifier, password]);
+  
+  const isFormEmpty = !fieldValues.identifier.trim() || !fieldValues.password.trim();
 
   // Set focus on identifier field when component mounts
   useEffect(() => {
@@ -49,7 +57,7 @@ export const LoginForm: React.FC = () => {
 
   // Handle keyboard events (Enter key)
   const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === 'Enter' && !isFormEmpty && !viewModel.isSubmitting) {
+    if (event.key === 'Enter' && !viewModel.isSubmitting) {
       event.preventDefault();
       onSubmit();
     }
