@@ -6,6 +6,9 @@ import { IHttpClient } from '../http/IHttpClient';
 import { AxiosHttpClient } from '../http/AxiosHttpClient';
 import { ITodoApiService } from '../api/ITodoApiService';
 import { TodoApiService } from '../api/TodoApiService';
+import { IAuthApiService } from '../api/IAuthApiService';
+import { AuthApiService } from '../api/AuthApiService';
+import { AuthCommandService } from '../api/AuthCommandService';
 import { getFeatureFlags, configProvider } from '../config';
 import {
   TodoCommandService,
@@ -26,6 +29,7 @@ import type { ITodoRepository } from '@nx-starter/domain';
 import type {
   ITodoCommandService,
   ITodoQueryService,
+  IAuthCommandService,
 } from '@nx-starter/application-shared';
 
 // Initialize configuration before using it
@@ -43,6 +47,7 @@ export const configureDI = () => {
   
   // Infrastructure Layer - API Services (always register for potential future use)
   container.registerSingleton<ITodoApiService>(TOKENS.TodoApiService, TodoApiService);
+  container.registerSingleton<IAuthApiService>(TOKENS.AuthApiService, AuthApiService);
 
   // Infrastructure Layer - Repository (conditionally based on environment)
   if (useApiBackend) {
@@ -99,6 +104,10 @@ export const configureDI = () => {
   container.registerSingleton<ITodoQueryService>(
     TOKENS.TodoQueryService,
     TodoQueryService
+  );
+  container.registerSingleton<IAuthCommandService>(
+    TOKENS.AuthCommandService,
+    AuthCommandService
   );
 };
 
