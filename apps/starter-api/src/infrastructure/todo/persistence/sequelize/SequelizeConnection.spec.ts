@@ -108,9 +108,18 @@ describe('SequelizeConnection', () => {
 
     it('should create Sequelize instance with URL for PostgreSQL in production', async () => {
       const testUrl = 'postgresql://user:pass@localhost:5432/testdb';
-      vi.mocked(config).database.url = testUrl;
-      vi.mocked(config).database.type = 'postgresql';
-      vi.mocked(config).nodeEnv = 'production';
+      vi.mocked(getDatabaseConfig).mockReturnValue({
+        type: 'postgresql',
+        url: testUrl,
+        host: 'localhost',
+        port: undefined,
+        username: undefined,
+        password: undefined,
+        database: 'task_app',
+      });
+      vi.mocked(getServerConfig).mockReturnValue({
+        environment: 'production'
+      });
 
       const { createSequelizeInstance } = await import('./SequelizeConnection');
       createSequelizeInstance();
@@ -129,9 +138,18 @@ describe('SequelizeConnection', () => {
 
     it('should create Sequelize instance with URL for MySQL in production', async () => {
       const testUrl = 'mysql://user:pass@localhost:3306/testdb';
-      vi.mocked(config).database.url = testUrl;
-      vi.mocked(config).database.type = 'mysql';
-      vi.mocked(config).nodeEnv = 'production';
+      vi.mocked(getDatabaseConfig).mockReturnValue({
+        type: 'mysql',
+        url: testUrl,
+        host: 'localhost',
+        port: undefined,
+        username: undefined,
+        password: undefined,
+        database: 'task_app',
+      });
+      vi.mocked(getServerConfig).mockReturnValue({
+        environment: 'production'
+      });
 
       const { createSequelizeInstance } = await import('./SequelizeConnection');
       createSequelizeInstance();
@@ -148,9 +166,18 @@ describe('SequelizeConnection', () => {
     });
 
     it('should create SQLite instance with individual parameters', async () => {
-      vi.mocked(config).database.url = undefined;
-      vi.mocked(config).database.type = 'sqlite';
-      vi.mocked(config).nodeEnv = 'development';
+      vi.mocked(getDatabaseConfig).mockReturnValue({
+        type: 'sqlite',
+        url: undefined,
+        host: 'localhost',
+        port: undefined,
+        username: undefined,
+        password: undefined,
+        database: 'task_app',
+      });
+      vi.mocked(getServerConfig).mockReturnValue({
+        environment: 'development'
+      });
 
       const { createSequelizeInstance } = await import('./SequelizeConnection');
       createSequelizeInstance();
@@ -163,14 +190,68 @@ describe('SequelizeConnection', () => {
     });
 
     it('should create PostgreSQL instance with individual parameters', async () => {
-      vi.mocked(config).database.url = undefined;
-      vi.mocked(config).database.type = 'postgresql';
-      vi.mocked(config).database.host = 'testhost';
-      vi.mocked(config).database.port = 5433;
-      vi.mocked(config).database.username = 'testuser';
-      vi.mocked(config).database.password = 'testpass';
-      vi.mocked(config).database.database = 'testdb';
-      vi.mocked(config).nodeEnv = 'development';
+      vi.mocked(getDatabaseConfig).mockReturnValue({
+        type: 'postgresql',
+        url: undefined,
+        host: 'localhost',
+        port: undefined,
+        username: undefined,
+        password: undefined,
+        database: 'task_app',
+      });
+      vi.mocked(getDatabaseConfig).mockReturnValue({
+        type: 'sqlite',
+        url: undefined,
+        host: 'localhost',
+        port: undefined,
+        username: undefined,
+        password: undefined,
+        database: 'task_app',
+        host: 'testhost'
+      });
+      vi.mocked(getDatabaseConfig).mockReturnValue({
+        type: 'sqlite',
+        url: undefined,
+        host: 'localhost',
+        port: undefined,
+        username: undefined,
+        password: undefined,
+        database: 'task_app',
+        port: 5433
+      });
+      vi.mocked(getDatabaseConfig).mockReturnValue({
+        type: 'sqlite',
+        url: undefined,
+        host: 'localhost',
+        port: undefined,
+        username: undefined,
+        password: undefined,
+        database: 'task_app',
+        username: 'testuser'
+      });
+      vi.mocked(getDatabaseConfig).mockReturnValue({
+        type: 'sqlite',
+        url: undefined,
+        host: 'localhost',
+        port: undefined,
+        username: undefined,
+        password: undefined,
+        database: 'task_app',
+        password: 'testpass'
+      });
+      vi.mocked(getDatabaseConfig).mockReturnValue({
+        type: 'sqlite',
+        url: undefined,
+        host: 'localhost',
+        port: undefined,
+        username: undefined,
+        password: undefined,
+        database: 'task_app',
+        database: 'testdb'
+      });
+      vi.mocked(getServerConfig).mockReturnValue({
+        environment: 'development'
+      });
 
       const { createSequelizeInstance } = await import('./SequelizeConnection');
       createSequelizeInstance();
@@ -190,14 +271,68 @@ describe('SequelizeConnection', () => {
     });
 
     it('should create MySQL instance with individual parameters', async () => {
-      vi.mocked(config).database.url = undefined;
-      vi.mocked(config).database.type = 'mysql';
-      vi.mocked(config).database.host = 'testhost';
-      vi.mocked(config).database.port = 3307;
-      vi.mocked(config).database.username = 'testuser';
-      vi.mocked(config).database.password = 'testpass';
-      vi.mocked(config).database.database = 'testdb';
-      vi.mocked(config).nodeEnv = 'production';
+      vi.mocked(getDatabaseConfig).mockReturnValue({
+        type: 'mysql',
+        url: undefined,
+        host: 'localhost',
+        port: undefined,
+        username: undefined,
+        password: undefined,
+        database: 'task_app',
+      });
+      vi.mocked(getDatabaseConfig).mockReturnValue({
+        type: 'sqlite',
+        url: undefined,
+        host: 'localhost',
+        port: undefined,
+        username: undefined,
+        password: undefined,
+        database: 'task_app',
+        host: 'testhost'
+      });
+      vi.mocked(getDatabaseConfig).mockReturnValue({
+        type: 'sqlite',
+        url: undefined,
+        host: 'localhost',
+        port: undefined,
+        username: undefined,
+        password: undefined,
+        database: 'task_app',
+        port: 3307
+      });
+      vi.mocked(getDatabaseConfig).mockReturnValue({
+        type: 'sqlite',
+        url: undefined,
+        host: 'localhost',
+        port: undefined,
+        username: undefined,
+        password: undefined,
+        database: 'task_app',
+        username: 'testuser'
+      });
+      vi.mocked(getDatabaseConfig).mockReturnValue({
+        type: 'sqlite',
+        url: undefined,
+        host: 'localhost',
+        port: undefined,
+        username: undefined,
+        password: undefined,
+        database: 'task_app',
+        password: 'testpass'
+      });
+      vi.mocked(getDatabaseConfig).mockReturnValue({
+        type: 'sqlite',
+        url: undefined,
+        host: 'localhost',
+        port: undefined,
+        username: undefined,
+        password: undefined,
+        database: 'task_app',
+        database: 'testdb'
+      });
+      vi.mocked(getServerConfig).mockReturnValue({
+        environment: 'production'
+      });
 
       const { createSequelizeInstance } = await import('./SequelizeConnection');
       createSequelizeInstance();
@@ -220,14 +355,68 @@ describe('SequelizeConnection', () => {
     });
 
     it('should use default values when parameters are missing', async () => {
-      vi.mocked(config).database.url = undefined;
-      vi.mocked(config).database.type = 'postgresql';
-      vi.mocked(config).database.host = undefined;
-      vi.mocked(config).database.port = undefined;
-      vi.mocked(config).database.username = 'testuser';
-      vi.mocked(config).database.password = 'testpass';
-      vi.mocked(config).database.database = undefined;
-      vi.mocked(config).nodeEnv = 'development';
+      vi.mocked(getDatabaseConfig).mockReturnValue({
+        type: 'postgresql',
+        url: undefined,
+        host: 'localhost',
+        port: undefined,
+        username: undefined,
+        password: undefined,
+        database: 'task_app',
+      });
+      vi.mocked(getDatabaseConfig).mockReturnValue({
+        type: 'sqlite',
+        url: undefined,
+        host: 'localhost',
+        port: undefined,
+        username: undefined,
+        password: undefined,
+        database: 'task_app',
+        host: undefined
+      });
+      vi.mocked(getDatabaseConfig).mockReturnValue({
+        type: 'sqlite',
+        url: undefined,
+        host: 'localhost',
+        port: undefined,
+        username: undefined,
+        password: undefined,
+        database: 'task_app',
+        port: undefined
+      });
+      vi.mocked(getDatabaseConfig).mockReturnValue({
+        type: 'sqlite',
+        url: undefined,
+        host: 'localhost',
+        port: undefined,
+        username: undefined,
+        password: undefined,
+        database: 'task_app',
+        username: 'testuser'
+      });
+      vi.mocked(getDatabaseConfig).mockReturnValue({
+        type: 'sqlite',
+        url: undefined,
+        host: 'localhost',
+        port: undefined,
+        username: undefined,
+        password: undefined,
+        database: 'task_app',
+        password: 'testpass'
+      });
+      vi.mocked(getDatabaseConfig).mockReturnValue({
+        type: 'sqlite',
+        url: undefined,
+        host: 'localhost',
+        port: undefined,
+        username: undefined,
+        password: undefined,
+        database: 'task_app',
+        database: undefined
+      });
+      vi.mocked(getServerConfig).mockReturnValue({
+        environment: 'development'
+      });
 
       const { createSequelizeInstance } = await import('./SequelizeConnection');
       createSequelizeInstance();
@@ -247,14 +436,68 @@ describe('SequelizeConnection', () => {
     });
 
     it('should create PostgreSQL instance with individual parameters in production', async () => {
-      vi.mocked(config).database.url = undefined;
-      vi.mocked(config).database.type = 'postgresql';
-      vi.mocked(config).database.host = 'prodhost';
-      vi.mocked(config).database.port = 5433;
-      vi.mocked(config).database.username = 'produser';
-      vi.mocked(config).database.password = 'prodpass';
-      vi.mocked(config).database.database = 'proddb';
-      vi.mocked(config).nodeEnv = 'production';
+      vi.mocked(getDatabaseConfig).mockReturnValue({
+        type: 'postgresql',
+        url: undefined,
+        host: 'localhost',
+        port: undefined,
+        username: undefined,
+        password: undefined,
+        database: 'task_app',
+      });
+      vi.mocked(getDatabaseConfig).mockReturnValue({
+        type: 'sqlite',
+        url: undefined,
+        host: 'localhost',
+        port: undefined,
+        username: undefined,
+        password: undefined,
+        database: 'task_app',
+        host: 'prodhost'
+      });
+      vi.mocked(getDatabaseConfig).mockReturnValue({
+        type: 'sqlite',
+        url: undefined,
+        host: 'localhost',
+        port: undefined,
+        username: undefined,
+        password: undefined,
+        database: 'task_app',
+        port: 5433
+      });
+      vi.mocked(getDatabaseConfig).mockReturnValue({
+        type: 'sqlite',
+        url: undefined,
+        host: 'localhost',
+        port: undefined,
+        username: undefined,
+        password: undefined,
+        database: 'task_app',
+        username: 'produser'
+      });
+      vi.mocked(getDatabaseConfig).mockReturnValue({
+        type: 'sqlite',
+        url: undefined,
+        host: 'localhost',
+        port: undefined,
+        username: undefined,
+        password: undefined,
+        database: 'task_app',
+        password: 'prodpass'
+      });
+      vi.mocked(getDatabaseConfig).mockReturnValue({
+        type: 'sqlite',
+        url: undefined,
+        host: 'localhost',
+        port: undefined,
+        username: undefined,
+        password: undefined,
+        database: 'task_app',
+        database: 'proddb'
+      });
+      vi.mocked(getServerConfig).mockReturnValue({
+        environment: 'production'
+      });
 
       const { createSequelizeInstance } = await import('./SequelizeConnection');
       createSequelizeInstance();
@@ -278,9 +521,18 @@ describe('SequelizeConnection', () => {
     });
 
     it('should default to SQLite for unknown database type', async () => {
-      vi.mocked(config).database.url = undefined;
-      vi.mocked(config).database.type = 'unknown' as any;
-      vi.mocked(config).nodeEnv = 'production';
+      vi.mocked(getDatabaseConfig).mockReturnValue({
+        type: 'unknown' as any,
+        url: undefined,
+        host: 'localhost',
+        port: undefined,
+        username: undefined,
+        password: undefined,
+        database: 'task_app',
+      });
+      vi.mocked(getServerConfig).mockReturnValue({
+        environment: 'production'
+      });
 
       const { createSequelizeInstance } = await import('./SequelizeConnection');
       createSequelizeInstance();
@@ -382,7 +634,9 @@ describe('SequelizeConnection', () => {
       };
 
       MockedSequelize.mockReturnValue(mockSequelize as any);
-      vi.mocked(config).nodeEnv = 'development';
+      vi.mocked(getServerConfig).mockReturnValue({
+        environment: 'development'
+      });
 
       const { getSequelizeInstance } = await import('./SequelizeConnection');
       await getSequelizeInstance();
@@ -401,7 +655,9 @@ describe('SequelizeConnection', () => {
       };
 
       MockedSequelize.mockReturnValue(mockSequelize as any);
-      vi.mocked(config).nodeEnv = 'production';
+      vi.mocked(getServerConfig).mockReturnValue({
+        environment: 'production'
+      });
 
       const { getSequelizeInstance } = await import('./SequelizeConnection');
       await getSequelizeInstance();
