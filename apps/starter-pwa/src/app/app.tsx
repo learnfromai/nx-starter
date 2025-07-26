@@ -1,8 +1,9 @@
-import { TodoPage } from '../presentation/features/todo';
+import { RouterProvider } from 'react-router-dom';
+import { router } from '../routing/router';
 import '../styles.css';
 
 function App() {
-  return <TodoPage />;
+  return <RouterProvider router={router} />;
 }
 
 export default App;
