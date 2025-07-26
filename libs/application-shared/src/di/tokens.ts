@@ -3,6 +3,7 @@ export const TOKENS = {
   // Infrastructure Layer - HTTP and API Services
   HttpClient: 'IHttpClient',
   TodoApiService: 'ITodoApiService',
+  AuthApiService: 'IAuthApiService',
   
   // Infrastructure Layer - Repositories
   TodoRepository: 'ITodoRepository',
