@@ -14,8 +14,8 @@ concurrency:
 env:
   # Use pnpm for faster, more reliable builds
   PNPM_VERSION: '10.13.1'
-  # Node.js version matrix
-  NODE_VERSIONS: '[18, 20, 22]'
+  # Node.js version matrix (removed 18 as it's incompatible with project requirements)
+  NODE_VERSIONS: '[20, 22]'
 
 jobs:
   # Job 1: Setup and Detect Changes
@@ -38,7 +38,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -81,7 +81,7 @@ jobs:
     
     strategy:
       matrix:
-        node-version: [20] # Only run linting on LTS version
+        node-version: [22] # Use latest compatible version for linting
         
     steps:
       - name: Checkout repository
@@ -179,7 +179,7 @@ jobs:
 
       - name: Upload coverage reports
         uses: actions/upload-artifact@v4
-        if: matrix.node-version == 20
+        if: matrix.node-version == 22
         with:
           name: coverage-reports-node-${{ matrix.node-version }}
           path: |
@@ -196,7 +196,7 @@ jobs:
     
     strategy:
       matrix:
-        node-version: [20] # Only build on LTS version
+        node-version: [22] # Use latest compatible version for building
         
     steps:
       - name: Checkout repository
@@ -256,7 +256,7 @@ jobs:
     
     strategy:
       matrix:
-        node-version: [20] # Only run E2E on LTS version
+        node-version: [22] # Use latest compatible version for E2E
         
     steps:
       - name: Checkout repository
@@ -319,7 +319,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -354,7 +354,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4

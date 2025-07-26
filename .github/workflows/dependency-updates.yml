@@ -13,7 +13,7 @@ concurrency:
 
 env:
   PNPM_VERSION: '10.13.1'
-  NODE_VERSION: '20'
+  NODE_VERSION: '22'
 
 jobs:
   check-updates:
