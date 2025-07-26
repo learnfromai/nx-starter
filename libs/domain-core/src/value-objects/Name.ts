@@ -14,10 +14,10 @@ export class Name extends ValueObject<string> {
       throw new Error('Name cannot exceed 50 characters');
     }
 
-    // Allow letters, spaces, hyphens, and special character ñ
-    const nameRegex = /^[a-zA-ZñÑ\s-]+$/;
+    // Allow letters (including accented characters), spaces, hyphens, and apostrophes
+    const nameRegex = /^[a-zA-Z\u00C0-\u017F\u0100-\u024F\s'-]+$/;
     if (!nameRegex.test(value)) {
-      throw new Error('Names can only contain letters, spaces, and hyphens');
+      throw new Error('Names can only contain letters, spaces, hyphens, and apostrophes');
     }
   }
 
