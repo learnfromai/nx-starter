@@ -6,6 +6,8 @@ import { IHttpClient } from '../http/IHttpClient';
 import { AxiosHttpClient } from '../http/AxiosHttpClient';
 import { ITodoApiService } from '../api/ITodoApiService';
 import { TodoApiService } from '../api/TodoApiService';
+import { IAuthApiService } from '../api/IAuthApiService';
+import { AuthApiService } from '../api/AuthApiService';
 import { getFeatureFlags, configProvider } from '../config';
 import {
   TodoCommandService,
@@ -43,6 +45,7 @@ export const configureDI = () => {
   
   // Infrastructure Layer - API Services (always register for potential future use)
   container.registerSingleton<ITodoApiService>(TOKENS.TodoApiService, TodoApiService);
+  container.registerSingleton<IAuthApiService>(TOKENS.AuthApiService, AuthApiService);
 
   // Infrastructure Layer - Repository (conditionally based on environment)
   if (useApiBackend) {
