@@ -57,8 +57,18 @@ describe('SequelizeConnection', () => {
   describe('createSequelizeInstance', () => {
     it('should create Sequelize instance with URL for SQLite', async () => {
       const testUrl = 'sqlite:./test.db';
-      vi.mocked(config).database.url = testUrl;
-      vi.mocked(config).database.type = 'sqlite';
+      vi.mocked(getDatabaseConfig).mockReturnValue({
+        type: 'sqlite',
+        url: testUrl,
+        host: 'localhost',
+        port: undefined,
+        username: undefined,
+        password: undefined,
+        database: 'task_app',
+      });
+      vi.mocked(getServerConfig).mockReturnValue({
+        environment: 'test',
+      });
 
       const { createSequelizeInstance } = await import('./SequelizeConnection');
       createSequelizeInstance();
@@ -71,9 +81,18 @@ describe('SequelizeConnection', () => {
 
     it('should create Sequelize instance with URL for PostgreSQL in development', async () => {
       const testUrl = 'postgresql://user:pass@localhost:5432/testdb';
-      vi.mocked(config).database.url = testUrl;
-      vi.mocked(config).database.type = 'postgresql';
-      vi.mocked(config).nodeEnv = 'development';
+      vi.mocked(getDatabaseConfig).mockReturnValue({
+        type: 'postgresql',
+        url: testUrl,
+        host: 'localhost',
+        port: undefined,
+        username: undefined,
+        password: undefined,
+        database: 'task_app',
+      });
+      vi.mocked(getServerConfig).mockReturnValue({
+        environment: 'development',
+      });
 
       const { createSequelizeInstance } = await import('./SequelizeConnection');
       createSequelizeInstance();

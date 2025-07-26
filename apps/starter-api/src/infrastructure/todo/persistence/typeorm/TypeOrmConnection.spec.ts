@@ -1,15 +1,20 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { DataSource } from 'typeorm';
-import { config } from '../../../../config/config';
+import { getDatabaseConfig, getServerConfig } from '../../../../config';
 
-vi.mock('../../../../config/config', () => ({
-  config: {
-    nodeEnv: 'test',
-    database: {
-      type: 'sqlite',
-      url: './test.db',
-    },
-  },
+vi.mock('../../../../config', () => ({
+  getDatabaseConfig: vi.fn(() => ({
+    type: 'sqlite',
+    url: undefined,
+    host: 'localhost',
+    port: undefined,
+    username: undefined,
+    password: undefined,
+    database: 'task_app',
+  })),
+  getServerConfig: vi.fn(() => ({
+    environment: 'test',
+  })),
 }));
 
 vi.mock('typeorm', () => ({
@@ -53,8 +58,8 @@ describe('TypeOrmConnection', () => {
         },
       };
 
-      vi.mocked(config).nodeEnv = mockConfig.nodeEnv;
-      vi.mocked(config).database = mockConfig.database as any;
+      vi.mocked(getServerConfig).mockReturnValue({ environment: mockConfig.nodeEnv });
+      vi.mocked(getDatabaseConfig).mockReturnValue(mockConfig.database as any);
 
       const { createTypeOrmDataSource } = await import('./TypeOrmConnection');
       createTypeOrmDataSource();
@@ -87,8 +92,8 @@ describe('TypeOrmConnection', () => {
         },
       };
 
-      vi.mocked(config).nodeEnv = mockConfig.nodeEnv;
-      vi.mocked(config).database = mockConfig.database as any;
+      vi.mocked(getServerConfig).mockReturnValue({ environment: mockConfig.nodeEnv });
+      vi.mocked(getDatabaseConfig).mockReturnValue(mockConfig.database as any);
 
       const { createTypeOrmDataSource } = await import('./TypeOrmConnection');
       createTypeOrmDataSource();
@@ -119,8 +124,8 @@ describe('TypeOrmConnection', () => {
         },
       };
 
-      vi.mocked(config).nodeEnv = mockConfig.nodeEnv;
-      vi.mocked(config).database = mockConfig.database as any;
+      vi.mocked(getServerConfig).mockReturnValue({ environment: mockConfig.nodeEnv });
+      vi.mocked(getDatabaseConfig).mockReturnValue(mockConfig.database as any);
 
       const { createTypeOrmDataSource } = await import('./TypeOrmConnection');
       createTypeOrmDataSource();
@@ -148,8 +153,8 @@ describe('TypeOrmConnection', () => {
         },
       };
 
-      vi.mocked(config).nodeEnv = mockConfig.nodeEnv;
-      vi.mocked(config).database = mockConfig.database as any;
+      vi.mocked(getServerConfig).mockReturnValue({ environment: mockConfig.nodeEnv });
+      vi.mocked(getDatabaseConfig).mockReturnValue(mockConfig.database as any);
 
       const { createTypeOrmDataSource } = await import('./TypeOrmConnection');
       createTypeOrmDataSource();
@@ -171,8 +176,8 @@ describe('TypeOrmConnection', () => {
         },
       };
 
-      vi.mocked(config).nodeEnv = mockConfig.nodeEnv;
-      vi.mocked(config).database = mockConfig.database as any;
+      vi.mocked(getServerConfig).mockReturnValue({ environment: mockConfig.nodeEnv });
+      vi.mocked(getDatabaseConfig).mockReturnValue(mockConfig.database as any);
 
       const { createTypeOrmDataSource } = await import('./TypeOrmConnection');
       createTypeOrmDataSource();
@@ -194,8 +199,8 @@ describe('TypeOrmConnection', () => {
         },
       };
 
-      vi.mocked(config).nodeEnv = mockConfig.nodeEnv;
-      vi.mocked(config).database = mockConfig.database as any;
+      vi.mocked(getServerConfig).mockReturnValue({ environment: mockConfig.nodeEnv });
+      vi.mocked(getDatabaseConfig).mockReturnValue(mockConfig.database as any);
 
       const { createTypeOrmDataSource } = await import('./TypeOrmConnection');
       createTypeOrmDataSource();
