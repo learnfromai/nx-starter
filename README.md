@@ -337,6 +337,40 @@ git push origin feature/my-feature
 - [Complete CI/CD Guide](./docs/CI_CD_GUIDE.md) - Full implementation details
 - [Quick Start Guide](./docs/CI_CD_QUICK_START.md) - Developer reference
 
+## 🚀 Deployment
+
+This project supports deployment to Railway.com with separate deployments for the API (web service) and Web application (static site).
+
+### Railway.com Deployment
+
+The project is configured for automatic deployment to Railway.com:
+
+- **API Service**: Node.js web service deployed from `apps/api`
+- **Web Application**: Static site deployed from `apps/web`
+- **Automatic Deployments**: Triggered on pushes to the `main` branch
+- **Separate Services**: API and Web are deployed as independent Railway services
+
+**Quick Setup:**
+
+1. Create Railway projects for API and Web
+2. Configure GitHub secrets with Railway tokens and project IDs
+3. Connect your repository to Railway
+4. Set environment variables for production
+5. Push to `main` branch to trigger deployment
+
+**📚 Detailed Documentation:**
+- [Railway Deployment Guide](./docs/RAILWAY_DEPLOYMENT.md) - Complete setup instructions
+- [API Environment Variables](./apps/api/.env.railway) - Production configuration for API
+- [Web Environment Variables](./apps/web/.env.railway) - Production configuration for Web
+
+### Other Deployment Options
+
+The applications can also be deployed to other platforms:
+
+- **API**: Any Node.js hosting platform (Heroku, AWS Lambda, Google Cloud Run, etc.)
+- **Web**: Any static site hosting (Netlify, Vercel, AWS S3 + CloudFront, etc.)
+- **Containers**: Docker images can be built for both applications
+
 ## 📚 Learning Resources
 
 ### Nx Documentation
