@@ -1,0 +1,89 @@
+[build]
+builder = "dockerfile"
+dockerfilePath = "apps/api/Dockerfile"
+
+[deploy]
+startCommand = "node main.js"
+healthcheckPath = "/api/health"
+healthcheckTimeout = 30
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3
+
+[[deploy.environmentVariables]]
+name = "NODE_ENV"
+value = "production"
+
+[[deploy.environmentVariables]]
+name = "ENVIRONMENT"
+value = "production"
+
+[[deploy.environmentVariables]]
+name = "HOST"
+value = "0.0.0.0"
+
+[[deploy.environmentVariables]]
+name = "API_PREFIX"
+value = "/api"
+
+[[deploy.environmentVariables]]
+name = "CORS_ORIGIN"
+value = "${{WEB_APP_URL}}"
+
+# Database settings for Railway
+[[deploy.environmentVariables]]
+name = "DB_TYPE"
+value = "postgresql"
+
+[[deploy.environmentVariables]]
+name = "DB_ORM"
+value = "typeorm"
+
+# Railway provides these automatically when you add a PostgreSQL service
+# Uncomment and link to your Railway PostgreSQL service
+# [[deploy.environmentVariables]]
+# name = "DATABASE_URL"
+# value = "${{Postgres.DATABASE_URL}}"
+
+# Security settings
+[[deploy.environmentVariables]]
+name = "JWT_SECRET"
+value = "${{JWT_SECRET}}"
+
+[[deploy.environmentVariables]]
+name = "JWT_EXPIRES_IN"
+value = "24h"
+
+[[deploy.environmentVariables]]
+name = "JWT_ISSUER"
+value = "nx-starter-api"
+
+[[deploy.environmentVariables]]
+name = "JWT_AUDIENCE"
+value = "nx-starter-pwa"
+
+# Rate limiting
+[[deploy.environmentVariables]]
+name = "RATE_LIMIT_WINDOW_MS"
+value = "900000"
+
+[[deploy.environmentVariables]]
+name = "RATE_LIMIT_MAX_REQUESTS"
+value = "1000"
+
+# Logging
+[[deploy.environmentVariables]]
+name = "LOG_LEVEL"
+value = "info"
+
+[[deploy.environmentVariables]]
+name = "LOG_FORMAT"
+value = "json"
+
+# Application settings
+[[deploy.environmentVariables]]
+name = "APP_NAME"
+value = "Nx Starter API"
+
+[[deploy.environmentVariables]]
+name = "APP_VERSION"
+value = "1.0.0"

@@ -337,6 +337,47 @@ git push origin feature/my-feature
 - [Complete CI/CD Guide](./docs/CI_CD_GUIDE.md) - Full implementation details
 - [Quick Start Guide](./docs/CI_CD_QUICK_START.md) - Developer reference
 
+## 🚢 Deployment
+
+### Railway.com Deployment
+
+This project is pre-configured for easy deployment to [Railway.com](https://railway.app) with Docker containers.
+
+#### Quick Deploy
+
+1. **Validate deployment configuration:**
+   ```bash
+   pnpm validate:railway
+   ```
+
+2. **Create Railway services:**
+   - API Service: Node.js Express backend
+   - Web Service: Static React PWA 
+   - Database: PostgreSQL (optional)
+
+3. **Follow the deployment guide:**
+   📚 **[Complete Railway Deployment Guide](./docs/RAILWAY_DEPLOYMENT.md)**
+
+#### Key Features
+
+- 🐳 **Docker-based deployment** for both API and Web services
+- 🔧 **Pre-configured Railway.toml** files for each service  
+- 🌍 **Environment variable templates** for production
+- 📊 **Health checks** and monitoring built-in
+- 🔒 **Security optimizations** for production deployment
+
+#### Services Architecture
+
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   PostgreSQL    │    │   API Service   │    │   Web Service   │
+│   Database      │◄───┤   (Node.js)     │◄───┤   (Nginx)       │
+│                 │    │   Port: 4000    │    │   Port: 80      │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+```
+
+**Ready to deploy?** Check out the [Railway Deployment Guide](./docs/RAILWAY_DEPLOYMENT.md) for step-by-step instructions.
+
 ## 📚 Learning Resources
 
 ### Nx Documentation

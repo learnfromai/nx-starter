@@ -94,7 +94,8 @@
     "covapplicationshared": "pnpm test:coverage:application-shared",
     "covapplicationserver": "pnpm test:coverage:application-server",
     "covapplicationweb": "pnpm test:coverage:application-web",
-    "covutils": "pnpm test:coverage:utils"
+    "covutils": "pnpm test:coverage:utils",
+    "validate:railway": "./scripts/validate-railway-deployment.sh"
   },
   "private": true,
   "dependencies": {
