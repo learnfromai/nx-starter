@@ -71,6 +71,7 @@
     "ci": "pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run build",
     "ci:affected": "nx affected -t lint,typecheck,test,build --parallel",
     "prepare:prod": "pnpm run clean && pnpm install && pnpm run ci && pnpm run build:prod",
+    "validate:railway": "./scripts/validate-railway.sh",
     "setup": "pnpm install && pnpm run build:libs && pnpm run prepare && pnpm run setup:git-template",
     "setup:dev": "pnpm install && pnpm run build:libs && pnpm run prepare && pnpm run setup:git-template && pnpm run dev:all",
     "commit-lint": "commitlint --edit",
