@@ -337,6 +337,69 @@ git push origin feature/my-feature
 - [Complete CI/CD Guide](./docs/CI_CD_GUIDE.md) - Full implementation details
 - [Quick Start Guide](./docs/CI_CD_QUICK_START.md) - Developer reference
 
+## 🚀 Deployment
+
+### Railway.com Deployment
+
+This project is configured for easy deployment to [Railway.com](https://railway.app) with separate services for the API and web application.
+
+#### Quick Deployment
+
+```bash
+# Test API deployment locally
+pnpm run deploy:railway:api
+
+# Test web deployment locally  
+pnpm run deploy:railway:web
+
+# Test both deployments
+pnpm run deploy:railway:all
+```
+
+#### Setup Guide
+
+For complete deployment instructions, see [Railway Deployment Guide](docs/RAILWAY_DEPLOYMENT.md).
+
+**Quick Setup Summary:**
+1. Sign up at [railway.app](https://railway.app)
+2. Connect your GitHub repository
+3. Create two services:
+   - **API Service**: Root directory `apps/api`
+   - **Web Service**: Root directory `apps/web`
+4. Configure environment variables from `.env.railway` files
+5. Deploy!
+
+#### Architecture
+
+```
+┌─────────────────┐    ┌─────────────────┐
+│   Web Service   │────▶│   API Service   │
+│   (Static Site) │    │   (Node.js App) │
+│                 │    │                 │
+│ Railway Static  │    │ Railway Service │
+└─────────────────┘    └─────────────────┘
+```
+
+#### Key Features
+
+- ✅ **Separate deployments** for API and web applications
+- ✅ **Automatic deployments** via GitHub Actions
+- ✅ **Environment-specific** configurations
+- ✅ **Health checks** and monitoring
+- ✅ **Database integration** with Railway PostgreSQL
+- ✅ **HTTPS** enabled by default
+- ✅ **Custom domains** support
+
+#### Files Added
+
+- `apps/api/railway.json` - API service configuration
+- `apps/web/railway.json` - Web service configuration  
+- `apps/api/.env.railway` - API environment variables template
+- `apps/web/.env.railway` - Web environment variables template
+- `.github/workflows/deploy-railway.yml` - Automated deployment workflow
+- `scripts/deploy-*-railway.sh` - Local deployment test scripts
+- `docs/RAILWAY_DEPLOYMENT.md` - Complete deployment guide
+
 ## 📚 Learning Resources
 
 ### Nx Documentation
