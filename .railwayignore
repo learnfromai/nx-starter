@@ -1,0 +1,71 @@
+# Railway deployment ignore file
+# Files and directories to exclude from Railway deployments
+
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build artifacts that should be rebuilt
+dist/
+.nx/cache/
+.next/
+.nuxt/
+.vite/
+
+# Test files and coverage
+coverage/
+test-results/
+playwright-report/
+*.test.ts
+*.test.js
+*.spec.ts
+*.spec.js
+__tests__/
+__mocks__/
+
+# Development files
+.env
+.env.local
+.env.development
+.env.test
+*.log
+.DS_Store
+Thumbs.db
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Documentation (unless needed for deployment)
+docs/
+*.md
+LICENSE
+
+# Git files
+.git/
+.gitignore
+.gitattributes
+
+# CI/CD files
+.github/
+.husky/
+
+# Temporary files
+tmp/
+temp/
+.tmp/
+.temp/
+
+# OS files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Legacy and backup files
+legacy/
+*.backup
+*.bak
