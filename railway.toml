@@ -1,0 +1,42 @@
+# Railway Configuration for Nx Starter
+# This file defines Railway deployment settings for the entire monorepo
+
+[environments.production.variables]
+NODE_ENV = "production"
+PNPM_VERSION = "10.13.1"
+
+# API Service Configuration
+[services.api]
+source = "apps/api"
+
+[services.api.build]
+buildCommand = "cd ../.. && pnpm install && pnpm run build:libs && pnpm run build:api"
+watchPatterns = [
+  "apps/api/**",
+  "libs/**",
+  "package.json",
+  "pnpm-lock.yaml"
+]
+
+[services.api.deploy]
+startCommand = "node main.js"
+healthcheckPath = "/api/health"
+healthcheckTimeout = 100
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
+
+# Web Service Configuration  
+[services.web]
+source = "apps/web"
+
+[services.web.build]
+buildCommand = "cd ../.. && pnpm install && pnpm run build:libs && pnpm run build:web"
+watchPatterns = [
+  "apps/web/**", 
+  "libs/**",
+  "package.json",
+  "pnpm-lock.yaml"
+]
+
+[services.web.deploy]
+staticPublicPath = "/dist/apps/web"

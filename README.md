@@ -318,6 +318,7 @@ This project includes a comprehensive CI/CD setup using **GitHub Actions** with 
 | **CI Pipeline** | Code quality, testing, building | Every PR + main branch |
 | **Staging Deploy** | Automated staging deployment | Push to main/develop |
 | **Production Deploy** | Secure production deployment | Version tags + manual approval |
+| **Railway Deploy** | Deploy to Railway.com | Push to main + manual |
 | **Security Scan** | Vulnerability and compliance checking | Daily + main branch |
 | **Dependency Updates** | Automated dependency maintenance | Weekly + manual |
 | **E2E Tests** | Extended end-to-end testing | Push/PR to main |
@@ -336,6 +337,39 @@ git push origin feature/my-feature
 **📚 Documentation:**
 - [Complete CI/CD Guide](./docs/CI_CD_GUIDE.md) - Full implementation details
 - [Quick Start Guide](./docs/CI_CD_QUICK_START.md) - Developer reference
+- [Railway Deployment Guide](./docs/RAILWAY_DEPLOYMENT.md) - Deploy to Railway.com
+
+## 🚂 Railway.com Deployment
+
+This project includes ready-to-use Railway.com deployment configuration for both the API and web applications.
+
+### Quick Deploy to Railway
+
+1. **Create Railway account** at [railway.app](https://railway.app)
+2. **Install Railway CLI**: `curl -fsSL https://railway.app/install.sh | sh`
+3. **Deploy API service**:
+   ```bash
+   cd apps/api
+   railway login
+   railway up
+   ```
+4. **Deploy Web application**:
+   ```bash
+   cd apps/web
+   railway login  
+   railway up
+   ```
+
+### Features
+
+- ✅ **Separate deployments** for API (web service) and Web (static site)
+- ✅ **Auto-scaling** and **zero-downtime deployments**
+- ✅ **Environment-specific configuration** with Railway variables
+- ✅ **GitHub Actions integration** for CI/CD
+- ✅ **Health checks** and **monitoring** built-in
+- ✅ **Database support** (PostgreSQL, MySQL, or SQLite)
+
+**🔗 See [Railway Deployment Guide](./docs/RAILWAY_DEPLOYMENT.md) for complete setup instructions.**
 
 ## 📚 Learning Resources
 
