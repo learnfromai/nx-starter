@@ -22,7 +22,7 @@ jobs:
     
     strategy:
       matrix:
-        node-version: [18, 20, 22] # Use numbers instead of strings for consistency
+        node-version: [20, 22] # Removed 18 as it's incompatible with project requirements
         
     steps:
     - name: Checkout repository
@@ -92,10 +92,10 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
     
-    - name: Setup Node.js 20
+    - name: Setup Node.js 22
       uses: actions/setup-node@v4
       with:
-        node-version: 20
+        node-version: 22
     
     - name: Install pnpm
       uses: pnpm/action-setup@v4
@@ -142,10 +142,10 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
     
-    - name: Setup Node.js 20
+    - name: Setup Node.js 22
       uses: actions/setup-node@v4
       with:
-        node-version: 20
+        node-version: 22
     
     - name: Install pnpm
       uses: pnpm/action-setup@v4
