@@ -1,0 +1,44 @@
+# Ignore unnecessary files for Docker context  
+node_modules
+dist
+.nx
+.git
+.github
+.vscode
+.husky
+coverage
+tmp
+
+# Environment files (will be set via Railway env vars)
+.env
+.env.local
+.env.production
+
+# Documentation
+*.md
+docs/
+
+# Test files
+**/*.test.*
+**/*.spec.*
+**/test/
+**/tests/
+**/*e2e*
+
+# Development files
+.eslintrc.*
+.prettierrc
+.editorconfig
+
+# Logs
+*.log
+logs/
+
+# Other workspace apps
+../api
+../api-e2e
+../web-e2e
+
+# Build artifacts from other projects
+../../dist/apps/api
+../../dist/apps/*e2e

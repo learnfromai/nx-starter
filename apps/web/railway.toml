@@ -1,0 +1,84 @@
+[build]
+builder = "dockerfile"
+dockerfilePath = "apps/web/Dockerfile"
+
+[deploy]
+healthcheckPath = "/health"
+healthcheckTimeout = 30
+restartPolicyType = "on_failure" 
+restartPolicyMaxRetries = 3
+
+# Environment variables for the web application
+[[deploy.environmentVariables]]
+name = "VITE_ENVIRONMENT"
+value = "production"
+
+[[deploy.environmentVariables]]
+name = "VITE_USE_API_BACKEND"
+value = "true"
+
+# Link to your API service URL
+[[deploy.environmentVariables]]
+name = "VITE_API_BASE_URL"
+value = "${{API_APP_URL}}"
+
+[[deploy.environmentVariables]]
+name = "VITE_API_TIMEOUT"
+value = "10000"
+
+# Feature flags
+[[deploy.environmentVariables]]
+name = "VITE_ENABLE_AUTH"
+value = "true"
+
+[[deploy.environmentVariables]]
+name = "VITE_ENABLE_OFFLINE_MODE"
+value = "true"
+
+[[deploy.environmentVariables]]
+name = "VITE_ENABLE_PWA"
+value = "true"
+
+[[deploy.environmentVariables]]
+name = "VITE_ENABLE_ANALYTICS"
+value = "true"
+
+# Application settings
+[[deploy.environmentVariables]]
+name = "VITE_APP_NAME"
+value = "Nx Starter PWA"
+
+[[deploy.environmentVariables]]
+name = "VITE_APP_VERSION"
+value = "1.0.0"
+
+# Production optimizations
+[[deploy.environmentVariables]]
+name = "VITE_DEBUG_MODE"
+value = "false"
+
+[[deploy.environmentVariables]]
+name = "VITE_LOG_LEVEL"
+value = "error"
+
+# Storage settings
+[[deploy.environmentVariables]]
+name = "VITE_STORAGE_PREFIX"
+value = "nx-starter"
+
+[[deploy.environmentVariables]]
+name = "VITE_SESSION_PREFIX"
+value = "nx-starter-session"
+
+# UI settings
+[[deploy.environmentVariables]]
+name = "VITE_DEFAULT_THEME"
+value = "system"
+
+[[deploy.environmentVariables]]
+name = "VITE_DEFAULT_LANGUAGE"
+value = "en"
+
+[[deploy.environmentVariables]]
+name = "VITE_ANIMATIONS_ENABLED"
+value = "true"
