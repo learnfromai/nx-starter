@@ -337,6 +337,75 @@ git push origin feature/my-feature
 - [Complete CI/CD Guide](./docs/CI_CD_GUIDE.md) - Full implementation details
 - [Quick Start Guide](./docs/CI_CD_QUICK_START.md) - Developer reference
 
+## 🚄 Railway.com Deployment
+
+This project includes comprehensive deployment setup for [Railway.com](https://railway.app), providing easy hosting for both API and Web applications.
+
+### 🎯 Features
+
+- **🐳 Docker-based Deployment** - Consistent, isolated environments
+- **🌐 Separate Services** - API and Web deployed independently
+- **🗄️ PostgreSQL Database** - Managed database with automatic backups
+- **🔧 Environment Management** - Production and staging configurations
+- **🔄 Auto-deployment** - GitHub integration for continuous deployment
+- **📊 Health Monitoring** - Built-in health checks and logging
+
+### ⚡ Quick Deployment
+
+```bash
+# Setup Railway projects (first time only)
+pnpm run setup:railway:production
+
+# Deploy both services to production
+pnpm run deploy:railway:production
+
+# Deploy to staging
+pnpm run deploy:railway:staging
+```
+
+### 🌐 Service Architecture
+
+```
+┌─────────────────┐    ┌─────────────────┐
+│   Web App       │    │   API Service   │
+│   (Static Site) │────│   (Web Service) │
+│   Port: 3000    │    │   Port: 4000    │
+└─────────────────┘    └─────────────────┘
+         │                       │
+         │                       │
+    ┌─────────────────────────────────┐
+    │     Railway PostgreSQL      │
+    │        Database            │
+    └─────────────────────────────────┘
+```
+
+### 📋 Available Commands
+
+```bash
+# Setup commands
+pnpm run setup:railway              # Setup production projects
+pnpm run setup:railway:staging      # Setup staging projects
+
+# Deployment commands
+pnpm run deploy:railway             # Deploy both services
+pnpm run deploy:railway:api         # Deploy API only
+pnpm run deploy:railway:web         # Deploy Web only
+pnpm run deploy:railway:production  # Deploy to production
+pnpm run deploy:railway:staging     # Deploy to staging
+```
+
+### 📚 Documentation
+
+- **[Railway Deployment Guide](./docs/RAILWAY_DEPLOYMENT.md)** - Complete setup and deployment guide
+- **[Quick Reference](./RAILWAY_QUICK_REFERENCE.md)** - Commands and troubleshooting
+- **Environment Files**: `railway-api.env`, `railway-web.env` - Configuration templates
+
+### 🔧 Requirements
+
+- [Railway CLI](https://docs.railway.app/quick-start): `npm install -g @railway/cli`
+- Railway account with connected GitHub repository
+- Environment variables configured in Railway dashboard
+
 ## 📚 Learning Resources
 
 ### Nx Documentation

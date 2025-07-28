@@ -115,3 +115,22 @@ master-reference
 
 # Build targets
 target
+
+# =============================================================================
+# DEPLOYMENT & INFRASTRUCTURE
+# =============================================================================
+# Railway local files
+.railway/
+railway-data/
+
+# Terraform files (if used)
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+# Docker local files
+docker-compose.override.yml
+
+# Deployment logs
+deployment-*.log
